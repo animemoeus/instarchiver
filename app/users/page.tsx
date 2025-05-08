@@ -164,12 +164,14 @@ export default function InstagramUsersList() {
   const handleNextPage = (): void => {
     if (data?.next) {
       setCurrentPage(prev => prev + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
   const handlePrevPage = (): void => {
     if (data?.previous) {
       setCurrentPage(prev => prev - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 

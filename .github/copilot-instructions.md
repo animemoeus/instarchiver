@@ -31,7 +31,6 @@ We are building a project using the **Neo Brutalism** design system, which embra
 ## Key Technologies:
 
 - HTML, CSS, and JavaScript (or relevant frameworks).
-- The Neo Brutalism CSS framework. https://www.neobrutalism.dev/
 
 ## Additional Notes:
 
