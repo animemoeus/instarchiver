@@ -37,7 +37,8 @@ interface ApiResponse {
   results: InstagramUser[];
 }
 
-const BASE_API_URL = 'https://api.animemoe.us/instagram/users/';
+const BASE_API_URL = process.env.NEXT_PUBLIC_INSTAGRAM_API_BASE_URL || 'https://api.animemoe.us';
+const API_ENDPOINT = '/instagram/users/';
 const COUNT_PER_PAGE = 9;
 
 // Function to parse URL params from API URLs
@@ -49,7 +50,7 @@ const extractPageFromUrl = (url: string | null): number => {
 
 // Function to create API URL from page number
 const createApiUrl = (page: number): string => {
-  return `${BASE_API_URL}?count=${COUNT_PER_PAGE}&format=json&page=${page}`;
+  return `${BASE_API_URL}${API_ENDPOINT}?count=${COUNT_PER_PAGE}&format=json&page=${page}`;
 };
 
 // Function to fetch Instagram users
