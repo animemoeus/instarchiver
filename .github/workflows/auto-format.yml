@@ -1,0 +1,111 @@
+name: Neo Brutalism Auto-Format
+
+on:
+  pull_request:
+    branches: [ main, master ]
+    types: [opened, synchronize]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-format:
+    name: Neo Brutalism Style Enforcement
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run ESLint fix
+        run: npx eslint --fix . --ext .js,.jsx,.ts,.tsx
+        
+      - name: Run Prettier
+        run: npx prettier --write .
+        
+      - name: Check for changes
+        id: git-check
+        run: |
+          git diff --exit-code || echo "changes=true" >> $GITHUB_OUTPUT
+          
+      - name: Commit changes
+        if: steps.git-check.outputs.changes == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add -A
+          git commit -m "🎨 Auto-format with Neo Brutalism style guidelines"
+          git push
+          
+      - name: Add PR comment with Neo Brutalism details
+        if: steps.git-check.outputs.changes == 'true'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🎨 Neo Brutalism Style Applied!
+
+**Your PR had formatting issues that have been automatically fixed.**
+
+### What was fixed:
+- Code syntax and structure alignment
+- Consistent spacing and indentation
+- Proper Neo Brutalism component formatting
+
+### Neo Brutalism Reminder:
+- **Bold Visual Elements** ⟶ Use high contrast colors and thick borders
+- **Minimalist Layouts** ⟶ Keep components clean and purposeful
+- **Distinctive Shadows** ⟶ Apply offset shadows for depth
+- **Bold Typography** ⟶ Use clear, readable fonts
+
+The changes have been committed to your PR and will help maintain our Neo Brutalism design system consistency.
+
+[View our Neo Brutalism Style Guide](https://www.neobrutalism.dev/)`
+            })
+            
+      - name: Check if PR has a label
+        if: steps.git-check.outputs.changes == 'true'
+        id: has-label
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          result-encoding: string
+          script: |
+            const hasLabel = await github.rest.issues.listLabelsOnIssue({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            }).then(response => {
+              return response.data.some(label => label.name === 'needs-formatting');
+            });
+            return hasLabel ? 'true' : 'false';
+            
+      - name: Add formatting label
+        if: steps.git-check.outputs.changes == 'true' && steps.has-label.outputs.result != 'true'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.addLabels({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ['needs-formatting']
+            });

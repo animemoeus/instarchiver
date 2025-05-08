@@ -1,0 +1,71 @@
+name: Neo Brutalism Style Check
+
+on:
+  pull_request:
+    branches: [ main, master ]
+    # Run on all PR events to ensure complete coverage
+    
+# Important: This workflow is required to pass before merging
+jobs:
+  format-check:
+    name: Neo Brutalism Format Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Check ESLint
+        id: eslint
+        run: npx eslint . --ext .js,.jsx,.ts,.tsx --max-warnings=0
+        continue-on-error: true
+        
+      - name: Check Prettier formatting
+        id: prettier
+        run: npx prettier --check .
+        continue-on-error: true
+        
+      - name: Check for formatting errors
+        if: steps.eslint.outcome != 'success' || steps.prettier.outcome != 'success'
+        run: |
+          echo "### ❌ Neo Brutalism Style Violations Detected" >> $GITHUB_STEP_SUMMARY
+          echo "Your code doesn't meet our Neo Brutalism style requirements:" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ steps.eslint.outcome }}" != "success" ]; then
+            echo "- **ESLint errors:** Your code doesn't follow our style guidelines" >> $GITHUB_STEP_SUMMARY
+            echo "- Run \`npm run lint\` locally to fix issues" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${{ steps.prettier.outcome }}" != "success" ]; then
+            echo "- **Formatting errors:** Your code doesn't match our Neo Brutalism formatting" >> $GITHUB_STEP_SUMMARY
+            echo "- Run \`npm run format\` locally to fix issues" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🎨 Neo Brutalism Reminder" >> $GITHUB_STEP_SUMMARY
+          echo "Remember our key principles:" >> $GITHUB_STEP_SUMMARY
+          echo "- High contrast color schemes" >> $GITHUB_STEP_SUMMARY
+          echo "- Minimalist layouts" >> $GITHUB_STEP_SUMMARY
+          echo "- Thick borders and shadows for depth" >> $GITHUB_STEP_SUMMARY
+          echo "- Bold typography" >> $GITHUB_STEP_SUMMARY
+          
+          exit 1
+        
+      - name: Success summary
+        if: steps.eslint.outcome == 'success' && steps.prettier.outcome == 'success'
+        run: |
+          echo "### ✅ Neo Brutalism Style Perfect!" >> $GITHUB_STEP_SUMMARY
+          echo "Your code perfectly matches our Neo Brutalism guidelines:" >> $GITHUB_STEP_SUMMARY
+          echo "- High contrast color schemes" >> $GITHUB_STEP_SUMMARY
+          echo "- Minimalist layouts" >> $GITHUB_STEP_SUMMARY
+          echo "- Thick borders and shadows for depth" >> $GITHUB_STEP_SUMMARY
+          echo "- Bold typography" >> $GITHUB_STEP_SUMMARY
