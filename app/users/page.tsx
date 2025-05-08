@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useQuery, useQueryClient, type QueryKey } from '@tanstack/react-query';
 import {
   Card,
   CardContent,
@@ -35,63 +37,91 @@ interface ApiResponse {
   results: InstagramUser[];
 }
 
+const BASE_API_URL = 'https://api.animemoe.us/instagram/users/';
+const COUNT_PER_PAGE = 9;
+
+// Function to parse URL params from API URLs
+const extractPageFromUrl = (url: string | null): number => {
+  if (!url) return 1;
+  const match = url.match(/page=(\d+)/);
+  return match ? parseInt(match[1], 10) : 1;
+};
+
+// Function to create API URL from page number
+const createApiUrl = (page: number): string => {
+  return `${BASE_API_URL}?count=${COUNT_PER_PAGE}&format=json&page=${page}`;
+};
+
+// Function to fetch Instagram users
+const fetchInstagramUsers = async (page: number): Promise<ApiResponse> => {
+  const url = createApiUrl(page);
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error(`API request failed with status ${response.status}`);
+  }
+
+  return await response.json();
+};
+
 export default function InstagramUsersList() {
-  const [users, setUsers] = useState<InstagramUser[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
+
+  // Get the current page from the URL parameters or default to 1
+  const initialPage = searchParams.get('page')
+    ? parseInt(searchParams.get('page') as string, 10)
+    : 1;
+
+  // Local state to manage pagination and animations
+  const [currentPage, setCurrentPage] = useState<number>(initialPage);
   const [loaded, setLoaded] = useState<boolean>(false);
-  const [pageUrl, setPageUrl] = useState<string | null>(
-    'https://api.animemoe.us/instagram/users/?count=9&format=json&page=1'
-  );
-  const [prevPageUrl, setPrevPageUrl] = useState<string | null>(null);
-  const [totalCount, setTotalCount] = useState<number>(0);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [error, setError] = useState<string | null>(null);
 
-  const fetchUsers = async (url: string) => {
-    if (!url) return;
+  // Use React Query to fetch data
+  const { data, isLoading, error } = useQuery<ApiResponse, Error>({
+    queryKey: ['instagramUsers', currentPage] as QueryKey,
+    queryFn: () => fetchInstagramUsers(currentPage),
+    placeholderData: keepPreviousData => keepPreviousData,
+    staleTime: 60 * 1000, // 1 minute
+  });
 
-    setLoading(true);
-    setLoaded(false);
-    setError(null);
+  // Prefetch next page data for smoother pagination
+  useEffect(() => {
+    if (data?.next) {
+      const nextPage = extractPageFromUrl(data.next);
+      queryClient.prefetchQuery({
+        queryKey: ['instagramUsers', nextPage] as QueryKey,
+        queryFn: () => fetchInstagramUsers(nextPage),
+      });
+    }
+  }, [data, queryClient]);
 
-    try {
-      // Extract page number from URL
-      const pageMatch = url.match(/page=(\d+)/);
-      if (pageMatch && pageMatch[1]) {
-        setCurrentPage(parseInt(pageMatch[1], 10));
-      }
+  // Update URL when page changes
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (currentPage === 1) {
+      params.delete('page');
+    } else {
+      params.set('page', currentPage.toString());
+    }
 
-      // Fetch real data from the API
-      const response = await fetch(url);
+    const newUrl = params.toString() ? `?${params.toString()}` : window.location.pathname;
 
-      if (!response.ok) {
-        throw new Error(`API request failed with status ${response.status}`);
-      }
+    router.push(newUrl, { scroll: false });
+  }, [currentPage, router, searchParams]);
 
-      const data: ApiResponse = await response.json();
-
-      setUsers(data.results);
-      setPageUrl(data.next);
-      setPrevPageUrl(data.previous);
-      setTotalCount(data.count);
-
+  // Animation effect after data loads
+  useEffect(() => {
+    if (!isLoading && data) {
       // Add a slight delay before showing content to make the transition more noticeable
       setTimeout(() => {
         setLoaded(true);
-        setLoading(false);
       }, 300);
-    } catch (error) {
-      console.error('Failed to fetch Instagram users:', error);
-      setError('Failed to load Instagram users. Please try again later.');
-      setLoading(false);
+    } else {
+      setLoaded(false);
     }
-  };
-
-  useEffect(() => {
-    if (pageUrl) {
-      fetchUsers(pageUrl);
-    }
-  }, []);
+  }, [isLoading, data]);
 
   const formatNumber = (num: number): string => {
     if (num >= 1000000) {
@@ -111,8 +141,8 @@ export default function InstagramUsersList() {
     });
   };
 
-  // Generate a random pastel color for each user card header
-  const getRandomPastelColor = (seed: string) => {
+  // Generate a consistent pastel color for each user card header
+  const getRandomPastelColor = (seed: string): string => {
     // Use the hash of the username to generate a consistent color
     const hash = seed.split('').reduce((acc, char) => char.charCodeAt(0) + acc, 0);
 
@@ -132,6 +162,22 @@ export default function InstagramUsersList() {
     return colors[hash % colors.length];
   };
 
+  // Next and previous page handlers
+  const handleNextPage = (): void => {
+    if (data?.next) {
+      setCurrentPage(prev => prev + 1);
+    }
+  };
+
+  const handlePrevPage = (): void => {
+    if (data?.previous) {
+      setCurrentPage(prev => prev - 1);
+    }
+  };
+
+  // Calculate total pages
+  const totalPages = data ? Math.ceil(data.count / COUNT_PER_PAGE) : 0;
+
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Header section with neo-brutalist design */}
@@ -141,7 +187,7 @@ export default function InstagramUsersList() {
           <h1 className="text-4xl font-black tracking-tight mb-4">Instagram Users</h1>
           <div className="flex flex-wrap gap-4 items-center">
             <div className="bg-purple-400 border-4 border-black px-4 py-2 shadow-[6px_6px_0_0_rgba(0,0,0,1)]">
-              <p className="text-lg font-black text-black">Total Users: {totalCount}</p>
+              <p className="text-lg font-black text-black">Total Users: {data?.count || 0}</p>
             </div>
             <div className="bg-cyan-400 border-4 border-black px-4 py-2 shadow-[6px_6px_0_0_rgba(0,0,0,1)]">
               <p className="text-lg font-black text-black">Page: {currentPage}</p>
@@ -151,13 +197,11 @@ export default function InstagramUsersList() {
       </div>
 
       {/* Error display */}
-      {error && (
+      {error instanceof Error && (
         <div className="mb-8 bg-red-400 border-4 border-black p-4 shadow-[6px_6px_0_0_rgba(0,0,0,1)]">
-          <p className="font-bold text-black">{error}</p>
+          <p className="font-bold text-black">{error.message}</p>
           <Button
-            onClick={() =>
-              fetchUsers('https://api.animemoe.us/instagram/users/?count=9&format=json&page=1')
-            }
+            onClick={() => setCurrentPage(1)}
             className="mt-2 bg-white text-black border-4 border-black font-bold hover:bg-gray-100"
           >
             Try Again
@@ -167,8 +211,8 @@ export default function InstagramUsersList() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {/* Skeleton loaders with animations */}
-        {loading &&
-          [...Array(9)].map((_, index) => {
+        {isLoading &&
+          [...Array(COUNT_PER_PAGE)].map((_, index: number) => {
             // Predefined color and rotation classes for Neo Brutalist effect
             const bgColors = [
               'bg-pink-300',
@@ -231,8 +275,8 @@ export default function InstagramUsersList() {
           })}
 
         {/* Real content with animations */}
-        {!loading &&
-          users.map((user, index) => (
+        {!isLoading &&
+          data?.results.map((user: InstagramUser, index: number) => (
             <div
               key={user.uuid}
               className="opacity-0 transform translate-y-4 transition-all duration-500 ease-in-out"
@@ -254,7 +298,7 @@ export default function InstagramUsersList() {
                           alt={user.username}
                           fill
                           className="object-cover"
-                          onError={e => {
+                          onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
                             // Fallback on image error
                             const target = e.target as HTMLImageElement;
                             target.style.display = 'none';
@@ -321,35 +365,35 @@ export default function InstagramUsersList() {
       </div>
 
       {/* Pagination controls with animated entrance */}
-      {!loading && (
+      {!isLoading && data && (
         <div
           className="mt-12 flex flex-wrap justify-center gap-6 opacity-0 transform translate-y-4"
           style={{
             opacity: loaded ? 1 : 0,
             transform: loaded ? 'translateY(0)' : 'translateY(20px)',
             transition: 'all 500ms ease-in-out',
-            transitionDelay: `${users.length * 50}ms`,
+            transitionDelay: `${(data.results?.length || 0) * 50}ms`,
           }}
         >
           <Button
             variant="default"
             size="lg"
-            disabled={!prevPageUrl}
-            onClick={() => prevPageUrl && fetchUsers(prevPageUrl)}
+            disabled={!data.previous}
+            onClick={handlePrevPage}
             className="bg-orange-400 border-4 border-black text-black font-bold shadow-[8px_8px_0_0_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[8px] hover:translate-y-[8px] transition-all disabled:opacity-50 disabled:pointer-events-none disabled:bg-gray-300"
           >
             ← Previous Page
           </Button>
           <div className="bg-white border-4 border-black px-4 py-2 flex items-center">
             <p className="font-bold">
-              Page {currentPage} of {Math.ceil(totalCount / users.length)}
+              Page {currentPage} of {totalPages}
             </p>
           </div>
           <Button
             variant="default"
             size="lg"
-            disabled={!pageUrl}
-            onClick={() => pageUrl && fetchUsers(pageUrl)}
+            disabled={!data.next}
+            onClick={handleNextPage}
             className="bg-cyan-400 border-4 border-black text-black font-bold shadow-[8px_8px_0_0_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[8px] hover:translate-y-[8px] transition-all disabled:opacity-50 disabled:pointer-events-none disabled:bg-gray-300"
           >
             Next Page →
