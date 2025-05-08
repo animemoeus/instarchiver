@@ -114,10 +114,8 @@ export default function InstagramUsersList() {
   // Animation effect after data loads
   useEffect(() => {
     if (!isLoading && data) {
-      // Add a slight delay before showing content to make the transition more noticeable
-      setTimeout(() => {
-        setLoaded(true);
-      }, 300);
+      // No delay, immediate display
+      setLoaded(true);
     } else {
       setLoaded(false);
     }
@@ -279,11 +277,10 @@ export default function InstagramUsersList() {
           data?.results.map((user: InstagramUser, index: number) => (
             <div
               key={user.uuid}
-              className="opacity-0 transform translate-y-4 transition-all duration-500 ease-in-out"
+              className="relative"
               style={{
-                opacity: loaded ? 1 : 0,
-                transform: loaded ? 'translateY(0)' : 'translateY(20px)',
-                transitionDelay: `${index * 100}ms`,
+                opacity: 1,
+                transform: 'none',
               }}
             >
               <Card className="transform transition-all duration-300 hover:-rotate-2 hover:scale-[1.02] border-4 border-black bg-white shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
@@ -364,15 +361,13 @@ export default function InstagramUsersList() {
           ))}
       </div>
 
-      {/* Pagination controls with animated entrance */}
+      {/* Pagination controls */}
       {!isLoading && data && (
         <div
-          className="mt-12 flex flex-wrap justify-center gap-6 opacity-0 transform translate-y-4"
+          className="mt-12 flex flex-wrap justify-center gap-6"
           style={{
-            opacity: loaded ? 1 : 0,
-            transform: loaded ? 'translateY(0)' : 'translateY(20px)',
-            transition: 'all 500ms ease-in-out',
-            transitionDelay: `${(data.results?.length || 0) * 50}ms`,
+            opacity: 1,
+            transform: 'none',
           }}
         >
           <Button
