@@ -3,21 +3,13 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery, useQueryClient, type QueryKey } from '@tanstack/react-query';
-import { InstagramUser, InstagramUsersResponse } from '@/app/types/instagram';
+import { InstagramUsersResponse } from '@/app/types/instagram';
 import { fetchInstagramUsers, extractPageFromUrl, API_CONSTANTS } from './services/api';
 
 const { COUNT_PER_PAGE } = API_CONSTANTS;
 
 // Import components from the components directory
-import {
-  UserHeader,
-  UserSkeleton,
-  UsersGrid,
-  PaginationContainer,
-  UsersList,
-  PaginationControls,
-  InstagramPage,
-} from './components';
+import { UserSkeleton, UsersList, PaginationControls, InstagramPage } from './components';
 
 // Main Instagram Users page component
 export default function InstagramUsersList() {
@@ -30,9 +22,8 @@ export default function InstagramUsersList() {
     ? parseInt(searchParams.get('page') as string, 10)
     : 1;
 
-  // Local state to manage pagination and animations
+  // Local state to manage pagination
   const [currentPage, setCurrentPage] = useState<number>(initialPage);
-  const [loaded, setLoaded] = useState<boolean>(false);
 
   // Use React Query to fetch data
   const { data, isLoading, error } = useQuery<InstagramUsersResponse, Error>({
@@ -66,16 +57,6 @@ export default function InstagramUsersList() {
 
     router.push(newUrl, { scroll: false });
   }, [currentPage, router, searchParams]);
-
-  // Animation effect after data loads
-  useEffect(() => {
-    if (!isLoading && data) {
-      // No delay, immediate display
-      setLoaded(true);
-    } else {
-      setLoaded(false);
-    }
-  }, [isLoading, data]);
 
   // Next and previous page handlers
   const handleNextPage = (): void => {
