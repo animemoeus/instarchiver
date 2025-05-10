@@ -80,14 +80,26 @@ export default function InstagramUsersList() {
   // Next and previous page handlers
   const handleNextPage = (): void => {
     if (data?.next) {
-      setCurrentPage(prev => prev + 1);
+      // Option 1: Use the next URL directly
+      const nextPage = extractPageFromUrl(data.next);
+      setCurrentPage(nextPage);
+
+      // Option 2: Increment the current page
+      // setCurrentPage(prev => prev + 1);
+
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
   const handlePrevPage = (): void => {
     if (data?.previous) {
-      setCurrentPage(prev => prev - 1);
+      // Option 1: Use the previous URL directly
+      const prevPage = extractPageFromUrl(data.previous);
+      setCurrentPage(prevPage);
+
+      // Option 2: Decrement the current page
+      // setCurrentPage(prev => prev - 1);
+
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
@@ -98,6 +110,15 @@ export default function InstagramUsersList() {
   const handleRetry = () => {
     setCurrentPage(1);
   };
+
+  // Add a direct navigation function to go to a specific page
+  const goToPage = (page: number) => {
+    if (page >= 1 && page <= totalPages && page !== currentPage) {
+      setCurrentPage(page);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   return (
     <InstagramPage
       totalUsers={data?.count || 0}
@@ -137,6 +158,7 @@ export default function InstagramUsersList() {
               hasNext={!!data.next}
               onPrevPage={handlePrevPage}
               onNextPage={handleNextPage}
+              goToPage={goToPage}
             />
           )}
         </Suspense>

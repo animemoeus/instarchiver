@@ -34,53 +34,53 @@ export function PaginationControls({
   const getPageNumbers = (): (number | string)[] => {
     const pages: (number | string)[] = [];
     const maxVisiblePages = 5; // Max visible numbered pages
-
+    
     // Always add page 1
     pages.push(1);
-
+    
     // Determine start and end pages around current page
     let startPage = Math.max(2, currentPage - 1);
     let endPage = Math.min(totalPages - 1, currentPage + 1);
-
+    
     // Adjust when near the beginning
     if (currentPage <= 3) {
       endPage = Math.min(totalPages - 1, maxVisiblePages - 1);
     }
-
+    
     // Adjust when near the end
     if (currentPage >= totalPages - 2) {
       startPage = Math.max(2, totalPages - maxVisiblePages + 1);
     }
-
+    
     // Add ellipsis if there's a gap after page 1
     if (startPage > 2) {
       pages.push('start-ellipsis');
     }
-
+    
     // Add middle pages
     for (let i = startPage; i <= endPage; i++) {
       if (i > 1 && i < totalPages) {
         pages.push(i);
       }
     }
-
+    
     // Add ellipsis if there's a gap before the last page
     if (endPage < totalPages - 1 && totalPages > 1) {
       pages.push('end-ellipsis');
     }
-
+    
     // Add last page if there is more than one page
     if (totalPages > 1) {
       pages.push(totalPages);
     }
-
+    
     return pages;
   };
 
   // Function to navigate to a specific page
   const handlePageClick = (targetPage: number) => {
     if (targetPage === currentPage) return;
-
+    
     if (goToPage) {
       // Use the direct navigation if provided
       goToPage(targetPage);
@@ -107,14 +107,14 @@ export function PaginationControls({
     <Pagination className="mt-12">
       <PaginationContent>
         <PaginationItem>
-          <PaginationPrevious
-            href="#"
-            onClick={e => {
+          <PaginationPrevious 
+            href="#" 
+            onClick={(e) => {
               e.preventDefault();
               if (hasPrevious) onPrevPage();
             }}
             aria-disabled={!hasPrevious}
-            className={!hasPrevious ? 'opacity-50 pointer-events-none' : ''}
+            className={!hasPrevious ? "opacity-50 pointer-events-none" : ""}
           />
         </PaginationItem>
 
@@ -126,13 +126,13 @@ export function PaginationControls({
               </PaginationItem>
             );
           }
-
+          
           const pageNum = page as number;
           return (
             <PaginationItem key={`page-${pageNum}`}>
               <PaginationLink
                 href="#"
-                onClick={e => {
+                onClick={(e) => {
                   e.preventDefault();
                   handlePageClick(pageNum);
                 }}
@@ -145,14 +145,14 @@ export function PaginationControls({
         })}
 
         <PaginationItem>
-          <PaginationNext
-            href="#"
-            onClick={e => {
+          <PaginationNext 
+            href="#" 
+            onClick={(e) => {
               e.preventDefault();
               if (hasNext) onNextPage();
             }}
             aria-disabled={!hasNext}
-            className={!hasNext ? 'opacity-50 pointer-events-none' : ''}
+            className={!hasNext ? "opacity-50 pointer-events-none" : ""}
           />
         </PaginationItem>
       </PaginationContent>
