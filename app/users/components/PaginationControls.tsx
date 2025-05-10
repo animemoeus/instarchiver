@@ -120,10 +120,15 @@ export function PaginationControls({
         </PaginationItem>
 
         {/* Mobile view: Only show current page indicator */}
-        <PaginationItem className="sm:hidden flex items-center">
-          <span className="px-3 py-2 border-4 border-black font-bold">
-            {currentPage} / {totalPages}
-          </span>
+        <PaginationItem className="sm:hidden">
+          <PaginationLink
+            href="#"
+            isActive={true}
+            onClick={e => e.preventDefault()}
+            className="px-6"
+          >
+            {currentPage}/{totalPages}
+          </PaginationLink>
         </PaginationItem>
 
         {/* Desktop view: Show full pagination */}
