@@ -13,29 +13,7 @@ import {
   CardDescription,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-
-// Define types based on the provided API response
-interface InstagramUser {
-  uuid: string;
-  instagram_id: string;
-  username: string;
-  full_name: string;
-  profile_picture: string;
-  biography: string;
-  follower_count: number;
-  following_count: number;
-  allow_auto_update_stories: boolean;
-  updated_from_api_datetime: string;
-  created_at: string;
-  updated_at: string;
-}
-
-interface ApiResponse {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: InstagramUser[];
-}
+import { InstagramUser, InstagramUsersResponse } from '@/app/types/instagram';
 
 const BASE_API_URL = process.env.NEXT_PUBLIC_INSTAGRAM_API_BASE_URL || 'https://api.animemoe.us';
 const API_ENDPOINT = '/instagram/users/';
@@ -54,7 +32,7 @@ const createApiUrl = (page: number): string => {
 };
 
 // Function to fetch Instagram users
-const fetchInstagramUsers = async (page: number): Promise<ApiResponse> => {
+const fetchInstagramUsers = async (page: number): Promise<InstagramUsersResponse> => {
   const url = createApiUrl(page);
   const response = await fetch(url);
 
@@ -159,7 +137,7 @@ function InstagramUsersContent() {
   const [loaded, setLoaded] = useState<boolean>(false);
 
   // Use React Query to fetch data
-  const { data, isLoading, error } = useQuery<ApiResponse, Error>({
+  const { data, isLoading, error } = useQuery<InstagramUsersResponse, Error>({
     queryKey: ['instagramUsers', currentPage] as QueryKey,
     queryFn: () => fetchInstagramUsers(currentPage),
     placeholderData: keepPreviousData => keepPreviousData,
