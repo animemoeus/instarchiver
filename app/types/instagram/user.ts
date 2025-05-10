@@ -1,6 +1,3 @@
-// Interfaces for Instagram API entities
-import { ApiResponse } from './api';
-
 /**
  * Represents an Instagram user from the API
  */
@@ -18,8 +15,3 @@ export interface InstagramUser {
   created_at: string;
   updated_at: string;
 }
-
-/**
- * Type alias for an Instagram users API response
- */
-export type InstagramUsersResponse = ApiResponse<InstagramUser>;
