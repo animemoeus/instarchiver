@@ -22,7 +22,7 @@ export function UserSkeleton({ index }: UserSkeletonProps) {
 
   return (
     <div className="relative">
-      <Card className="transform transition-all duration-300 border-4 border-black bg-white shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
+      <Card className="border-4 border-black bg-white shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
         <CardHeader className={`border-b-4 border-black ${bgColorClass}`}>
           <div className="flex items-center gap-4">
             <Skeleton className="w-16 h-16 border-4 border-black rounded-full overflow-hidden" />

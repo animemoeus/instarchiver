@@ -60,7 +60,7 @@ const getRandomPastelColor = (seed: string): string => {
 export function UserCard({ user }: UserCardProps) {
   return (
     <div className="relative">
-      <Card className="transform transition-all duration-300 hover:-rotate-2 hover:scale-[1.02] border-4 border-black bg-white shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
+      <Card className="border-4 border-black bg-white shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
         <CardHeader className={`border-b-4 border-black ${getRandomPastelColor(user.username)}`}>
           <div className="flex items-center gap-4">
             <div className="relative w-16 h-16 border-4 border-black rounded-full overflow-hidden bg-white">
@@ -122,7 +122,7 @@ export function UserCard({ user }: UserCardProps) {
           <Button
             variant="default"
             size="sm"
-            className="bg-purple-500 text-white border-2 border-black font-bold transform transition-all hover:translate-y-[-2px] hover:translate-x-[-2px]"
+            className="bg-purple-500 text-white border-2 border-black font-bold"
           >
             View Profile
           </Button>
