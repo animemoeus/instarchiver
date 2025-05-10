@@ -105,7 +105,8 @@ export function PaginationControls({
 
   return (
     <Pagination className="mt-12">
-      <PaginationContent>
+      <PaginationContent className="flex-wrap gap-2">
+        {/* Previous button always visible */}
         <PaginationItem>
           <PaginationPrevious
             href="#"
@@ -118,18 +119,35 @@ export function PaginationControls({
           />
         </PaginationItem>
 
+        {/* Mobile view: Only show current page indicator */}
+        <PaginationItem className="sm:hidden flex items-center">
+          <span className="px-3 py-2 border-4 border-black font-bold">
+            {currentPage} / {totalPages}
+          </span>
+        </PaginationItem>
+
+        {/* Desktop view: Show full pagination */}
         {pageNumbers.map((page, index) => {
           if (page === 'start-ellipsis' || page === 'end-ellipsis') {
             return (
-              <PaginationItem key={`ellipsis-${index}`} className="md:flex hidden">
+              <PaginationItem key={`ellipsis-${index}`} className="hidden sm:flex">
                 <PaginationEllipsis />
               </PaginationItem>
             );
           }
 
           const pageNum = page as number;
+          // Important pages: first, last, current and adjacent
+          const isImportantPage =
+            pageNum === 1 || pageNum === totalPages || Math.abs(pageNum - currentPage) <= 1;
+
+          // On smallest screens, only show current page
+          // On small screens, show important pages
+          // On medium and up, show all calculated pages
+          const visibilityClass = isImportantPage ? 'hidden sm:flex' : 'hidden md:flex';
+
           return (
-            <PaginationItem key={`page-${pageNum}`}>
+            <PaginationItem key={`page-${pageNum}`} className={visibilityClass}>
               <PaginationLink
                 href="#"
                 onClick={e => {
@@ -144,6 +162,7 @@ export function PaginationControls({
           );
         })}
 
+        {/* Next button always visible */}
         <PaginationItem>
           <PaginationNext
             href="#"
