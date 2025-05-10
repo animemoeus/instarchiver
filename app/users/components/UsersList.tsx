@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { InstagramUser } from '@/app/types/instagram';
 import UserCard from './UserCard';
 import UserSkeleton from './UserSkeleton';
+import StreamedUserCard from './StreamedUserCard';
 
 interface UsersListProps {
   users: InstagramUser[];
@@ -15,6 +16,7 @@ interface UsersListProps {
 }
 
 export function UsersList({ users, isLoading, error, count, onRetry }: UsersListProps) {
+  // Optimized rendering to support partial loading and streaming
   return (
     <>
       {/* Error display */}
@@ -31,14 +33,22 @@ export function UsersList({ users, isLoading, error, count, onRetry }: UsersList
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {/* Skeleton loaders with animations */}
-        {isLoading &&
-          [...Array(count)].map((_, index: number) => (
-            <UserSkeleton key={`skeleton-${index}`} index={index} />
-          ))}
+        {/* Display users when available, otherwise show skeletons */}
+        {!isLoading && users.length > 0
+          ? users.map((user: InstagramUser, index: number) => (
+              <StreamedUserCard key={user.uuid} user={user} index={index} />
+            ))
+          : isLoading &&
+            [...Array(count)].map((_, index: number) => (
+              <UserSkeleton key={`skeleton-${index}`} index={index} />
+            ))}
 
-        {/* Real content with animations */}
-        {!isLoading && users.map((user: InstagramUser) => <UserCard key={user.uuid} user={user} />)}
+        {/* Display message when no users are found */}
+        {!isLoading && users.length === 0 && !error && (
+          <div className="col-span-3 text-center p-8 bg-gray-100 border-4 border-black">
+            <p className="text-xl font-bold">No Instagram users found</p>
+          </div>
+        )}
       </div>
     </>
   );

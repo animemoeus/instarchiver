@@ -9,10 +9,18 @@ import { fetchInstagramUsers, extractPageFromUrl, API_CONSTANTS } from './servic
 const { COUNT_PER_PAGE } = API_CONSTANTS;
 
 // Import components from the components directory
-import { UserHeader, UsersList, PaginationControls, LoadingState } from './components';
+import {
+  UserHeader,
+  UserSkeleton,
+  UsersGrid,
+  PaginationContainer,
+  UsersList,
+  PaginationControls,
+  InstagramPage,
+} from './components';
 
-// Main content component
-function InstagramUsersContent() {
+// Main Instagram Users page component
+export default function InstagramUsersList() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
@@ -90,41 +98,49 @@ function InstagramUsersContent() {
   const handleRetry = () => {
     setCurrentPage(1);
   };
-
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Header section with neo-brutalist design */}
-      <UserHeader totalUsers={data?.count || 0} currentPage={currentPage} />
-
-      {/* User list with error handling and loading states */}
-      <UsersList
-        users={data?.results || []}
-        isLoading={isLoading}
-        error={error instanceof Error ? error : null}
-        count={COUNT_PER_PAGE}
-        onRetry={handleRetry}
-      />
-
-      {/* Pagination controls */}
-      {!isLoading && data && (
-        <PaginationControls
-          currentPage={currentPage}
-          totalPages={totalPages}
-          hasPrevious={!!data.previous}
-          hasNext={!!data.next}
-          onPrevPage={handlePrevPage}
-          onNextPage={handleNextPage}
-        />
-      )}
-    </div>
-  );
-}
-
-// Default export with Suspense boundary
-export default function InstagramUsersList() {
-  return (
-    <Suspense fallback={<LoadingState />}>
-      <InstagramUsersContent />
-    </Suspense>
+    <InstagramPage
+      totalUsers={data?.count || 0}
+      currentPage={currentPage}
+      usersList={
+        <Suspense
+          fallback={
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[...Array(COUNT_PER_PAGE)].map((_, index) => (
+                <UserSkeleton key={`skeleton-${index}`} index={index} />
+              ))}
+            </div>
+          }
+        >
+          <UsersList
+            users={data?.results || []}
+            isLoading={isLoading}
+            error={error instanceof Error ? error : null}
+            count={COUNT_PER_PAGE}
+            onRetry={handleRetry}
+          />
+        </Suspense>
+      }
+      pagination={
+        <Suspense
+          fallback={
+            <div className="mt-12 flex justify-center">
+              <div className="bg-gray-200 border-4 border-black h-12 w-64 animate-pulse"></div>
+            </div>
+          }
+        >
+          {!isLoading && data && (
+            <PaginationControls
+              currentPage={currentPage}
+              totalPages={totalPages}
+              hasPrevious={!!data.previous}
+              hasNext={!!data.next}
+              onPrevPage={handlePrevPage}
+              onNextPage={handleNextPage}
+            />
+          )}
+        </Suspense>
+      }
+    />
   );
 }
