@@ -69,6 +69,7 @@ export function UserCard({ user }: UserCardProps) {
                   src={user.profile_picture}
                   alt={user.username}
                   fill
+                  sizes="(max-width: 768px) 64px, 64px"
                   className="object-cover"
                   onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
                     // Fallback on image error
