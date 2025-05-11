@@ -18,16 +18,14 @@ export function SearchBar({ initialQuery = '', onSearch }: SearchBarProps) {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    // Create new URLSearchParams object
-    const params = new URLSearchParams(searchParams.toString());
+    // Create a fresh URLSearchParams object (not keeping other params)
+    const params = new URLSearchParams();
 
-    // Update or remove the search parameter
+    // Add search parameter if it exists
     if (searchQuery.trim()) {
       params.set('search', searchQuery.trim());
-      // Reset to page 1 when searching
-      params.delete('page');
-    } else {
-      params.delete('search');
+      // We don't add page param here - the page.tsx component will handle
+      // setting currentPage to 1 for new searches
     }
 
     // Build the new URL
@@ -59,14 +57,8 @@ export function SearchBar({ initialQuery = '', onSearch }: SearchBarProps) {
               type="button"
               onClick={() => {
                 setSearchQuery('');
-                // Clear search parameter and submit the form
-                const params = new URLSearchParams(searchParams.toString());
-                params.delete('search');
-                params.delete('page');
-                const newUrl = params.toString()
-                  ? `?${params.toString()}`
-                  : window.location.pathname;
-                router.push(newUrl);
+                // Clear all parameters and go back to the base URL
+                router.push(window.location.pathname);
               }}
               className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
               aria-label="Clear search"
