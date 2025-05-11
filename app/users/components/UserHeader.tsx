@@ -17,7 +17,7 @@ export function UserHeader({ totalUsers, currentPage }: UserHeaderProps) {
     <div className="mb-12">
       <Card>
         <CardHeader>
-          <CardTitle>Instagram Users</CardTitle>
+          <CardTitle>Instagram User Archive</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-4 items-center mb-6">
