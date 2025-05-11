@@ -112,11 +112,11 @@ export function UserCard({ user }: UserCardProps) {
           )}
 
           <div className="grid grid-cols-2 gap-4 mt-4">
-            <div className="border-2 border-black p-3 bg-green-200 transform rotate-1 rounded-base">
+            <div className="border-2 border-black p-3 bg-green-200 rounded-base">
               <p className="text-sm font-bold">FOLLOWERS</p>
               <p className="text-xl font-black">{formatNumber(user.follower_count)}</p>
             </div>
-            <div className="border-2 border-black p-3 bg-yellow-200 transform -rotate-1 rounded-base">
+            <div className="border-2 border-black p-3 bg-yellow-200 rounded-base">
               <p className="text-sm font-bold">FOLLOWING</p>
               <p className="text-xl font-black">{formatNumber(user.following_count)}</p>
             </div>

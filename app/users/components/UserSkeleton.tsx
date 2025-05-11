@@ -37,11 +37,11 @@ export function UserSkeleton({ index }: UserSkeletonProps) {
           <Skeleton className="mb-4 h-[120px] border-2 border-black rounded-base" />
 
           <div className="grid grid-cols-2 gap-4 mt-4">
-            <div className="border-2 border-black p-3 bg-green-200 transform rotate-1 rounded-base">
+            <div className="border-2 border-black p-3 bg-green-200 rounded-base">
               <Skeleton className="h-4 w-20 border-2 border-black mb-2 rounded-base" />
               <Skeleton className="h-6 w-12 border-2 border-black rounded-base" />
             </div>
-            <div className="border-2 border-black p-3 bg-yellow-200 transform -rotate-1 rounded-base">
+            <div className="border-2 border-black p-3 bg-yellow-200 rounded-base">
               <Skeleton className="h-4 w-20 border-2 border-black mb-2 rounded-base" />
               <Skeleton className="h-6 w-12 border-2 border-black rounded-base" />
             </div>
