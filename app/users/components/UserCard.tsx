@@ -61,16 +61,20 @@ const getRandomPastelColor = (seed: string): string => {
 export function UserCard({ user }: UserCardProps) {
   return (
     <div className="relative">
-      <Card className="w-full shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
-        <CardHeader className={`border-b-2 border-black ${getRandomPastelColor(user.username)}`}>
-          <div className="flex items-center gap-4">
-            <div className="relative w-16 h-16 border-2 border-black rounded-full overflow-hidden bg-white">
+      <Card className="w-full shadow-[8px_8px_0_0_rgba(0,0,0,1)] overflow-hidden">
+        {/* Instagram-style header with a more condensed layout */}
+        <CardHeader
+          className={`border-b-2 border-black py-3 ${getRandomPastelColor(user.username)}`}
+        >
+          <div className="flex items-center gap-3">
+            {/* Profile image with Instagram-style border */}
+            <div className="relative w-14 h-14 border-2 border-black rounded-full overflow-hidden bg-white">
               {user.profile_picture ? (
                 <Image
                   src={user.profile_picture}
                   alt={user.username}
                   fill
-                  sizes="(max-width: 768px) 64px, 64px"
+                  sizes="(max-width: 768px) 56px, 56px"
                   className="object-cover"
                   onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
                     // Fallback on image error
@@ -95,42 +99,53 @@ export function UserCard({ user }: UserCardProps) {
                 </CardDescription>
               )}
             </div>
+
+            {/* Instagram-style verified badge (if needed) */}
+            {/* <div className="ml-auto border-2 border-black rounded-md px-2 py-1 bg-blue-400">
+              <span className="text-xs font-black">VERIFIED</span>
+            </div> */}
           </div>
         </CardHeader>
 
-        <CardContent className="p-6">
+        <CardContent className="p-4">
+          {/* Instagram-style statistics */}
+          <div className="grid grid-cols-3 gap-2 mb-4 border-2 border-black rounded-base overflow-hidden">
+            <div className="p-3 bg-pink-200 flex flex-col items-center justify-center">
+              <p className="text-xs font-black">POSTS</p>
+              <p className="text-lg font-black">--</p>
+            </div>
+            <div className="p-3 bg-green-200 flex flex-col items-center justify-center">
+              <p className="text-xs font-black">FOLLOWERS</p>
+              <p className="text-lg font-black">{formatNumber(user.follower_count)}</p>
+            </div>
+            <div className="p-3 bg-yellow-200 flex flex-col items-center justify-center">
+              <p className="text-xs font-black">FOLLOWING</p>
+              <p className="text-lg font-black">{formatNumber(user.following_count)}</p>
+            </div>
+          </div>
+
+          {/* Instagram-style bio */}
           {user.biography ? (
             <div className="mb-4 border-2 border-black rounded-base bg-blue-100">
-              <ScrollArea className="h-[120px] w-full p-4 text-black rounded-base">
-                <p className="font-medium">{user.biography}</p>
+              <ScrollArea className="h-[100px] w-full p-3 text-black rounded-base">
+                <p className="font-medium text-sm">{user.biography}</p>
               </ScrollArea>
             </div>
           ) : (
-            <div className="mb-4 p-3 border-2 border-black rounded-base bg-gray-100 h-[120px] flex items-center justify-center">
-              <p className="font-medium text-gray-500 italic">No biography available</p>
+            <div className="mb-4 p-3 border-2 border-black rounded-base bg-gray-100 h-[100px] flex items-center justify-center">
+              <p className="font-medium text-gray-500 italic text-sm">No biography available</p>
             </div>
           )}
-
-          <div className="grid grid-cols-2 gap-4 mt-4">
-            <div className="border-2 border-black p-3 bg-green-200 rounded-base">
-              <p className="text-sm font-bold">FOLLOWERS</p>
-              <p className="text-xl font-black">{formatNumber(user.follower_count)}</p>
-            </div>
-            <div className="border-2 border-black p-3 bg-yellow-200 rounded-base">
-              <p className="text-sm font-bold">FOLLOWING</p>
-              <p className="text-xl font-black">{formatNumber(user.following_count)}</p>
-            </div>
-          </div>
         </CardContent>
 
-        <CardFooter className="border-t-2 border-black bg-gray-100 flex-col gap-2">
-          <p className="text-xs font-bold w-full">Updated: {formatDate(user.updated_at)}</p>
+        <CardFooter className="border-t-2 border-black bg-gray-100 flex-col gap-2 p-3">
+          <p className="text-xs font-bold w-full">Last Update: {formatDate(user.updated_at)}</p>
           <div className="flex w-full gap-2">
-            <Button variant="default" className="flex-1">
-              View Profile
+            <Button variant="default" className="flex-1 font-black text-xs py-2 h-auto">
+              VIEW PROFILE
             </Button>
-            <Button variant="neutral" className="flex-1">
-              Archive Posts
+            <Button variant="neutral" className="flex-1 font-black text-xs py-2 h-auto">
+              ARCHIVE POSTS
             </Button>
           </div>
         </CardFooter>
