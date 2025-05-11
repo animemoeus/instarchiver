@@ -14,7 +14,7 @@ interface StreamedUserCardProps {
 export function StreamedUserCard({ user, index }: StreamedUserCardProps) {
   return (
     <Suspense fallback={<UserSkeleton index={index} />}>
-      <UserCard user={user} />
+      <UserCard user={user} index={index} />
     </Suspense>
   );
 }
