@@ -9,6 +9,7 @@ export * from './StreamedUserCard';
 export * from './UsersGrid';
 export * from './PaginationContainer';
 export * from './InstagramPage';
+export * from './SearchBar';
 
 // Default exports
 import UserCard from './UserCard';
@@ -21,6 +22,7 @@ import StreamedUserCard from './StreamedUserCard';
 import UsersGrid from './UsersGrid';
 import PaginationContainer from './PaginationContainer';
 import InstagramPage from './InstagramPage';
+import SearchBar from './SearchBar';
 
 export {
   UserCard,
@@ -33,4 +35,5 @@ export {
   UsersGrid,
   PaginationContainer,
   InstagramPage,
+  SearchBar,
 };

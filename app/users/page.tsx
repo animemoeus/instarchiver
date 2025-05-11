@@ -22,13 +22,21 @@ export default function InstagramUsersList() {
     ? parseInt(searchParams.get('page') as string, 10)
     : 1;
 
+  // Get search query from URL parameters
+  const searchQuery = searchParams.get('search') || '';
+
   // Local state to manage pagination
-  const [currentPage, setCurrentPage] = useState<number>(initialPage);
+  // If there's a search query, always start at page 1 to ensure we're showing the first page of results
+  const [currentPage, setCurrentPage] = useState<number>(searchQuery ? 1 : initialPage);
 
   // Use React Query to fetch data
   const { data, isLoading, error } = useQuery<InstagramUsersResponse, Error>({
-    queryKey: ['instagramUsers', currentPage] as QueryKey,
-    queryFn: () => fetchInstagramUsers(currentPage),
+    queryKey: ['instagramUsers', currentPage, searchQuery] as QueryKey,
+    queryFn: () => {
+      // Always use page 1 when searching
+      const pageToUse = searchQuery ? 1 : currentPage;
+      return fetchInstagramUsers(pageToUse, searchQuery);
+    },
     placeholderData: keepPreviousData => keepPreviousData,
     staleTime: 60 * 1000, // 1 minute
   });
@@ -37,51 +45,74 @@ export default function InstagramUsersList() {
   useEffect(() => {
     if (data?.next) {
       const nextPage = extractPageFromUrl(data.next);
-      queryClient.prefetchQuery({
-        queryKey: ['instagramUsers', nextPage] as QueryKey,
-        queryFn: () => fetchInstagramUsers(nextPage),
-      });
+      // Don't prefetch if we're searching (we'll stay on page 1)
+      if (!searchQuery) {
+        queryClient.prefetchQuery({
+          queryKey: ['instagramUsers', nextPage, searchQuery] as QueryKey,
+          queryFn: () => fetchInstagramUsers(nextPage, searchQuery),
+        });
+      }
     }
-  }, [data, queryClient]);
+  }, [data, queryClient, searchQuery]);
 
-  // Update URL when page changes
+  // Update URL when page or search changes
   useEffect(() => {
-    const params = new URLSearchParams(searchParams.toString());
-    if (currentPage === 1) {
-      params.delete('page');
-    } else {
+    const params = new URLSearchParams();
+
+    // Add search parameter if present
+    if (searchQuery) {
+      params.set('search', searchQuery);
+      // Don't add page parameter if search is present, even if currentPage > 1
+    } else if (currentPage > 1) {
+      // Only add page parameter if there's no search query
       params.set('page', currentPage.toString());
     }
 
     const newUrl = params.toString() ? `?${params.toString()}` : window.location.pathname;
 
     router.push(newUrl, { scroll: false });
-  }, [currentPage, router, searchParams]);
+  }, [currentPage, router, searchQuery]);
+
+  // Reset to page 1 when search query changes from URL
+  useEffect(() => {
+    const urlSearchQuery = searchParams.get('search') || '';
+
+    // Always reset to page 1 when there's any search query
+    if (urlSearchQuery && currentPage !== 1) {
+      setCurrentPage(1);
+    }
+    // Handle when search is cleared
+    else if (!urlSearchQuery && urlSearchQuery !== searchQuery) {
+      setCurrentPage(1);
+
+      // When search is cleared, we can go to page 1 or whatever page is in the URL
+      const urlPage = searchParams.get('page');
+      if (urlPage) {
+        setCurrentPage(parseInt(urlPage, 10));
+      }
+    }
+  }, [searchParams, searchQuery, currentPage]);
 
   // Next and previous page handlers
   const handleNextPage = (): void => {
-    if (data?.next) {
-      // Option 1: Use the next URL directly
+    // Don't navigate to next page if we're searching (always stay on page 1)
+    if (data?.next && !searchQuery) {
       const nextPage = extractPageFromUrl(data.next);
       setCurrentPage(nextPage);
-
-      // Option 2: Increment the current page
-      // setCurrentPage(prev => prev + 1);
-
       window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // URL will be updated by the useEffect
     }
   };
 
   const handlePrevPage = (): void => {
-    if (data?.previous) {
-      // Option 1: Use the previous URL directly
+    // Don't navigate to previous page if we're searching (always stay on page 1)
+    if (data?.previous && !searchQuery) {
       const prevPage = extractPageFromUrl(data.previous);
       setCurrentPage(prevPage);
-
-      // Option 2: Decrement the current page
-      // setCurrentPage(prev => prev - 1);
-
       window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // URL will be updated by the useEffect
     }
   };
 
@@ -89,14 +120,31 @@ export default function InstagramUsersList() {
   const totalPages = data ? Math.ceil(data.count / COUNT_PER_PAGE) : 0;
 
   const handleRetry = () => {
+    // Reset page to 1
     setCurrentPage(1);
-  };
 
-  // Add a direct navigation function to go to a specific page
+    // Clear all parameters and go back to the base URL
+    router.push(window.location.pathname);
+  }; // Add a direct navigation function to go to a specific page
   const goToPage = (page: number) => {
+    // Don't navigate to different pages if we're searching (always stay on page 1)
+    if (searchQuery) {
+      return;
+    }
+
     if (page >= 1 && page <= totalPages && page !== currentPage) {
       setCurrentPage(page);
       window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Update URL with the new page
+      const params = new URLSearchParams();
+
+      if (page > 1) {
+        params.set('page', page.toString());
+      }
+
+      const newUrl = params.toString() ? `?${params.toString()}` : window.location.pathname;
+      router.push(newUrl, { scroll: false });
     }
   };
 
@@ -120,6 +168,7 @@ export default function InstagramUsersList() {
             error={error instanceof Error ? error : null}
             count={COUNT_PER_PAGE}
             onRetry={handleRetry}
+            searchQuery={searchQuery}
           />
         </Suspense>
       }
@@ -131,7 +180,7 @@ export default function InstagramUsersList() {
             </div>
           }
         >
-          {!isLoading && data && (
+          {!isLoading && data && !searchQuery && (
             <PaginationControls
               currentPage={currentPage}
               totalPages={totalPages}

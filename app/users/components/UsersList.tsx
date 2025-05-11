@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { InstagramUser } from '@/app/types/instagram';
 import UserCard from './UserCard';
 import UserSkeleton from './UserSkeleton';
@@ -13,23 +14,28 @@ interface UsersListProps {
   error: Error | null;
   count: number;
   onRetry: () => void;
+  searchQuery?: string;
 }
 
-export function UsersList({ users, isLoading, error, count, onRetry }: UsersListProps) {
+export function UsersList({
+  users,
+  isLoading,
+  error,
+  count,
+  onRetry,
+  searchQuery = '',
+}: UsersListProps) {
   // Optimized rendering to support partial loading and streaming
   return (
     <>
       {/* Error display */}
       {error && (
-        <div className="mb-8 bg-red-400 border-4 border-black p-4 shadow-[6px_6px_0_0_rgba(0,0,0,1)]">
-          <p className="font-bold text-black">{error.message}</p>
-          <Button
-            onClick={onRetry}
-            className="mt-2 bg-white text-black border-4 border-black font-bold hover:bg-gray-100"
-          >
-            Try Again
-          </Button>
-        </div>
+        <Card className="mb-8">
+          <CardContent className="p-6">
+            <p className="font-bold mb-4">{error.message}</p>
+            <Button onClick={onRetry}>Try Again</Button>
+          </CardContent>
+        </Card>
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -45,8 +51,21 @@ export function UsersList({ users, isLoading, error, count, onRetry }: UsersList
 
         {/* Display message when no users are found */}
         {!isLoading && users.length === 0 && !error && (
-          <div className="col-span-3 text-center p-8 bg-gray-100 border-4 border-black">
-            <p className="text-xl font-bold">No Instagram users found</p>
+          <div className="col-span-3">
+            <Card className="text-center">
+              <CardContent className="p-6">
+                {searchQuery ? (
+                  <>
+                    <p className="text-lg font-semibold mb-4">
+                      No Users Found for &quot;{searchQuery}&quot;
+                    </p>
+                    <Button onClick={onRetry}>Clear Search</Button>
+                  </>
+                ) : (
+                  <p className="text-lg font-semibold">No Instagram users found</p>
+                )}
+              </CardContent>
+            </Card>
           </div>
         )}
       </div>

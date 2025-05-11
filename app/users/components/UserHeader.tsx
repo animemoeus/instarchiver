@@ -1,6 +1,8 @@
-'use client';
-
 import React from 'react';
+import { SearchBar } from './SearchBar';
+import { useSearchParams } from 'next/navigation';
+import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 interface UserHeaderProps {
   totalUsers: number;
@@ -8,20 +10,26 @@ interface UserHeaderProps {
 }
 
 export function UserHeader({ totalUsers, currentPage }: UserHeaderProps) {
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get('search') || '';
+
   return (
-    <div className="mb-12 relative">
-      <div className="absolute -top-2 -left-2 w-full h-full bg-yellow-400 border-4 border-black -z-10 transform rotate-1"></div>
-      <div className="bg-white border-4 border-black p-6 relative z-10">
-        <h1 className="text-4xl font-black tracking-tight mb-4">Instagram Users</h1>
-        <div className="flex flex-wrap gap-4 items-center">
-          <div className="bg-purple-400 border-4 border-black px-4 py-2 shadow-[6px_6px_0_0_rgba(0,0,0,1)]">
-            <p className="text-lg font-black text-black">Total Users: {totalUsers}</p>
+    <div className="mb-12">
+      <Card>
+        <CardHeader>
+          <CardTitle>Instagram User Archive</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-wrap gap-4 items-center mb-6">
+            <Badge variant="default">Total Users: {totalUsers}</Badge>
+            <Badge variant="default">Page: {currentPage}</Badge>
+            {searchQuery && <Badge variant="default">Search: {searchQuery}</Badge>}
           </div>
-          <div className="bg-cyan-400 border-4 border-black px-4 py-2 shadow-[6px_6px_0_0_rgba(0,0,0,1)]">
-            <p className="text-lg font-black text-black">Page: {currentPage}</p>
-          </div>
-        </div>
-      </div>
+
+          {/* Add the search bar component */}
+          <SearchBar initialQuery={searchQuery} />
+        </CardContent>
+      </Card>
     </div>
   );
 }

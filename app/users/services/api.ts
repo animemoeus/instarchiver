@@ -14,14 +14,21 @@ export const extractPageFromUrl = (url: string | null): number => {
   return match ? parseInt(match[1], 10) : 1;
 };
 
-// Function to create API URL from page number
-export const createApiUrl = (page: number): string => {
-  return `${BASE_API_URL}${API_ENDPOINT}?count=${COUNT_PER_PAGE}&format=json&page=${page}`;
+// Function to create API URL from page number and search query
+export const createApiUrl = (page: number, search?: string): string => {
+  let url = `${BASE_API_URL}${API_ENDPOINT}?count=${COUNT_PER_PAGE}&format=json&page=${page}`;
+  if (search) {
+    url += `&search=${encodeURIComponent(search)}`;
+  }
+  return url;
 };
 
 // Function to fetch Instagram users
-export const fetchInstagramUsers = async (page: number): Promise<InstagramUsersResponse> => {
-  const url = createApiUrl(page);
+export const fetchInstagramUsers = async (
+  page: number,
+  search?: string
+): Promise<InstagramUsersResponse> => {
+  const url = createApiUrl(page, search);
   const response = await fetch(url);
 
   if (!response.ok) {
