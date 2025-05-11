@@ -1,9 +1,8 @@
 import React from 'react';
 import { SearchBar } from './SearchBar';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Card, CardHeader, CardContent, CardTitle, CardFooter } from '@/components/ui/card';
+import { useSearchParams } from 'next/navigation';
+import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 
 interface UserHeaderProps {
   totalUsers: number;
@@ -13,11 +12,6 @@ interface UserHeaderProps {
 export function UserHeader({ totalUsers, currentPage }: UserHeaderProps) {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get('search') || '';
-  const router = useRouter();
-
-  const handleResetFilters = () => {
-    router.push('/users');
-  };
 
   return (
     <div className="mb-12">
@@ -35,13 +29,6 @@ export function UserHeader({ totalUsers, currentPage }: UserHeaderProps) {
           {/* Add the search bar component */}
           <SearchBar initialQuery={searchQuery} />
         </CardContent>
-        {(searchQuery || currentPage > 1) && (
-          <CardFooter className="flex justify-end">
-            <Button variant="neutral" onClick={handleResetFilters}>
-              Reset Filters
-            </Button>
-          </CardFooter>
-        )}
       </Card>
     </div>
   );
