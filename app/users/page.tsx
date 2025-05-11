@@ -22,13 +22,16 @@ export default function InstagramUsersList() {
     ? parseInt(searchParams.get('page') as string, 10)
     : 1;
 
+  // Get search query from URL parameters
+  const searchQuery = searchParams.get('search') || '';
+
   // Local state to manage pagination
   const [currentPage, setCurrentPage] = useState<number>(initialPage);
 
   // Use React Query to fetch data
   const { data, isLoading, error } = useQuery<InstagramUsersResponse, Error>({
-    queryKey: ['instagramUsers', currentPage] as QueryKey,
-    queryFn: () => fetchInstagramUsers(currentPage),
+    queryKey: ['instagramUsers', currentPage, searchQuery] as QueryKey,
+    queryFn: () => fetchInstagramUsers(currentPage, searchQuery),
     placeholderData: keepPreviousData => keepPreviousData,
     staleTime: 60 * 1000, // 1 minute
   });
@@ -38,25 +41,40 @@ export default function InstagramUsersList() {
     if (data?.next) {
       const nextPage = extractPageFromUrl(data.next);
       queryClient.prefetchQuery({
-        queryKey: ['instagramUsers', nextPage] as QueryKey,
-        queryFn: () => fetchInstagramUsers(nextPage),
+        queryKey: ['instagramUsers', nextPage, searchQuery] as QueryKey,
+        queryFn: () => fetchInstagramUsers(nextPage, searchQuery),
       });
     }
-  }, [data, queryClient]);
+  }, [data, queryClient, searchQuery]);
 
   // Update URL when page changes
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
+
+    // Handle page parameter
     if (currentPage === 1) {
       params.delete('page');
     } else {
       params.set('page', currentPage.toString());
     }
 
+    // Preserve search parameter
+    if (searchQuery) {
+      params.set('search', searchQuery);
+    }
+
     const newUrl = params.toString() ? `?${params.toString()}` : window.location.pathname;
 
     router.push(newUrl, { scroll: false });
-  }, [currentPage, router, searchParams]);
+  }, [currentPage, router, searchParams, searchQuery]);
+
+  // Reset to page 1 when search query changes from URL
+  useEffect(() => {
+    const urlSearchQuery = searchParams.get('search') || '';
+    if (urlSearchQuery !== searchQuery && currentPage !== 1) {
+      setCurrentPage(1);
+    }
+  }, [searchParams, searchQuery, currentPage]);
 
   // Next and previous page handlers
   const handleNextPage = (): void => {
@@ -64,9 +82,6 @@ export default function InstagramUsersList() {
       // Option 1: Use the next URL directly
       const nextPage = extractPageFromUrl(data.next);
       setCurrentPage(nextPage);
-
-      // Option 2: Increment the current page
-      // setCurrentPage(prev => prev + 1);
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -78,9 +93,6 @@ export default function InstagramUsersList() {
       const prevPage = extractPageFromUrl(data.previous);
       setCurrentPage(prevPage);
 
-      // Option 2: Decrement the current page
-      // setCurrentPage(prev => prev - 1);
-
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
@@ -90,6 +102,11 @@ export default function InstagramUsersList() {
 
   const handleRetry = () => {
     setCurrentPage(1);
+
+    // Clear search and reset to the first page
+    const params = new URLSearchParams();
+    const newUrl = window.location.pathname;
+    router.push(newUrl);
   };
 
   // Add a direct navigation function to go to a specific page
@@ -97,6 +114,23 @@ export default function InstagramUsersList() {
     if (page >= 1 && page <= totalPages && page !== currentPage) {
       setCurrentPage(page);
       window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Update URL with the new page while preserving search
+      const params = new URLSearchParams(searchParams.toString());
+
+      if (page === 1) {
+        params.delete('page');
+      } else {
+        params.set('page', page.toString());
+      }
+
+      // Preserve search parameter
+      if (searchQuery) {
+        params.set('search', searchQuery);
+      }
+
+      const newUrl = params.toString() ? `?${params.toString()}` : window.location.pathname;
+      router.push(newUrl, { scroll: false });
     }
   };
 
@@ -120,6 +154,7 @@ export default function InstagramUsersList() {
             error={error instanceof Error ? error : null}
             count={COUNT_PER_PAGE}
             onRetry={handleRetry}
+            searchQuery={searchQuery}
           />
         </Suspense>
       }
