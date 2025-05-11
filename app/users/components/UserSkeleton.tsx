@@ -10,9 +10,10 @@ interface UserSkeletonProps {
 }
 
 export function UserSkeleton({ index }: UserSkeletonProps) {
-  // Use a consistent identifier for colors
-  const identifier = `skeleton-${index}`;
-  const headerColorClass = getConsistentColor(identifier);
+  // Use the position index to get a consistent color that will match UserCard
+  // Each page will have skeletons at indices 0-N, matching the eventual user positions
+  // This ensures skeleton colors will match user colors when they load
+  const headerColorClass = neoBrutalistColors.header[index % neoBrutalistColors.header.length];
 
   return (
     <div className="relative">

@@ -17,6 +17,7 @@ import { getConsistentColor, neoBrutalistColors } from '../utils/colors';
 
 interface UserCardProps {
   user: InstagramUser;
+  index?: number; // Optional index for consistent color matching with skeleton
 }
 
 // Helper functions
@@ -38,12 +39,18 @@ const formatDate = (dateString: string): string => {
   });
 };
 
-export function UserCard({ user }: UserCardProps) {
+export function UserCard({ user, index }: UserCardProps) {
+  // If index is provided, use it to get the same color as the skeleton
+  // Otherwise fall back to username-based color for backward compatibility
+  const headerColorClass =
+    index !== undefined
+      ? neoBrutalistColors.header[index % neoBrutalistColors.header.length]
+      : getConsistentColor(user.username);
   return (
     <div className="relative">
       <Card className="w-full shadow-[8px_8px_0_0_rgba(0,0,0,1)] overflow-hidden">
         {/* Instagram-style header with a more condensed layout */}
-        <CardHeader className={`border-b-2 border-black py-3 ${getConsistentColor(user.username)}`}>
+        <CardHeader className={`border-b-2 border-black py-3 ${headerColorClass}`}>
           <div className="flex items-center gap-3">
             {/* Profile image with Instagram-style border */}
             <div className="relative w-14 h-14 border-2 border-black rounded-full overflow-hidden bg-white">
