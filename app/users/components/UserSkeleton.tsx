@@ -22,10 +22,10 @@ export function UserSkeleton({ index }: UserSkeletonProps) {
 
   return (
     <div className="relative">
-      <Card className="border-4 border-black bg-white shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
-        <CardHeader className={`border-b-4 border-black ${bgColorClass}`}>
+      <Card className="w-full shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
+        <CardHeader className={`border-b-2 border-black ${bgColorClass}`}>
           <div className="flex items-center gap-4">
-            <Skeleton className="w-16 h-16 border-4 border-black rounded-full overflow-hidden" />
+            <Skeleton className="w-16 h-16 border-2 border-black rounded-full overflow-hidden" />
             <div className="space-y-2">
               <Skeleton className="h-6 w-32 border-2 border-black" />
               <Skeleton className="h-4 w-20 border-2 border-black" />
@@ -33,24 +33,27 @@ export function UserSkeleton({ index }: UserSkeletonProps) {
           </div>
         </CardHeader>
 
-        <CardContent className="pt-4">
-          <Skeleton className="mb-4 h-20 p-3 border-2 border-black" />
+        <CardContent className="p-6">
+          <Skeleton className="mb-4 h-[120px] border-2 border-black rounded-base" />
 
-          <div className="grid grid-cols-2 gap-4 mt-2">
-            <div className="border-2 border-black p-3 bg-green-200 transform rotate-1">
-              <Skeleton className="h-4 w-20 border-2 border-black mb-2" />
-              <Skeleton className="h-6 w-12 border-2 border-black" />
+          <div className="grid grid-cols-2 gap-4 mt-4">
+            <div className="border-2 border-black p-3 bg-green-200 transform rotate-1 rounded-base">
+              <Skeleton className="h-4 w-20 border-2 border-black mb-2 rounded-base" />
+              <Skeleton className="h-6 w-12 border-2 border-black rounded-base" />
             </div>
-            <div className="border-2 border-black p-3 bg-yellow-200 transform -rotate-1">
-              <Skeleton className="h-4 w-20 border-2 border-black mb-2" />
-              <Skeleton className="h-6 w-12 border-2 border-black" />
+            <div className="border-2 border-black p-3 bg-yellow-200 transform -rotate-1 rounded-base">
+              <Skeleton className="h-4 w-20 border-2 border-black mb-2 rounded-base" />
+              <Skeleton className="h-6 w-12 border-2 border-black rounded-base" />
             </div>
           </div>
         </CardContent>
 
-        <CardFooter className="border-t-4 border-black bg-gray-100 justify-between">
-          <Skeleton className="h-4 w-24 border-2 border-black" />
-          <Skeleton className="h-8 w-20 border-2 border-black" />
+        <CardFooter className="border-t-2 border-black bg-gray-100 flex-col gap-2">
+          <Skeleton className="h-4 w-24 border-2 border-black rounded-base" />
+          <div className="flex w-full gap-2">
+            <Skeleton className="h-8 w-full border-2 border-black rounded-base" />
+            <Skeleton className="h-8 w-full border-2 border-black rounded-base" />
+          </div>
         </CardFooter>
       </Card>
     </div>
