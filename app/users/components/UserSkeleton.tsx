@@ -57,7 +57,9 @@ export function UserSkeleton({ index }: UserSkeletonProps) {
         </CardContent>
 
         <CardFooter className="border-t-2 border-black bg-gray-100 flex-col gap-2 p-3">
-          <Skeleton className="h-4 w-24 border-2 border-black rounded-base" />
+          <div className="w-full flex justify-start">
+            <Skeleton className="h-4 w-1/2 border-2 border-black rounded-base" />
+          </div>
           <div className="flex w-full gap-2">
             <Skeleton className="h-8 w-full border-2 border-black rounded-base" />
             <Skeleton className="h-8 w-full border-2 border-black rounded-base" />
