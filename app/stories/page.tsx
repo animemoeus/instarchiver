@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { StoriesGrid } from './components/StoriesGrid';
-import { StorySkeleton } from './components/StorySkeleton';
-import { PaginationControls } from '../users/components/PaginationControls';
+import { StoriesGrid, StorySkeleton } from './components';
 import { SearchBar } from '../users/components/SearchBar';
 import { fetchStories } from './services/api';
 import { InstagramStory } from '@/app/types/instagram/story';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { PaginationWrapper } from '@/components/ui/pagination-wrapper';
 
 export default function StoriesPage() {
   const [stories, setStories] = useState<InstagramStory[]>([]); // Correct type for stories
@@ -54,9 +55,7 @@ export default function StoriesPage() {
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="mb-10">
-        <h1 className="font-black text-5xl mb-4 bg-yellow-400 inline-block px-4 py-2 border-4 border-black shadow-[8px_8px_0px_rgba(0,0,0,1)]">
-          INSTAGRAM STORIES ARCHIVE
-        </h1>
+        <h1 className="font-black text-5xl mb-4">INSTAGRAM STORIES ARCHIVE</h1>
         <p className="text-xl mt-4 font-medium">
           Browse and discover the latest Instagram stories across all users.
         </p>
@@ -64,18 +63,17 @@ export default function StoriesPage() {
         <div className="mt-6 flex items-center gap-6">
           <label className="text-lg font-bold">
             Volume:
-            <input
+            <Input
               type="range"
               min="0"
               max="1"
               step="0.1"
               value={volume}
               onChange={e => setVolume(parseFloat(e.target.value))}
-              className="ml-2"
             />
           </label>
           <label className="text-lg font-bold flex items-center gap-2">
-            <input
+            <Input
               type="checkbox"
               checked={isLooping}
               onChange={e => setIsLooping(e.target.checked)}
@@ -97,11 +95,9 @@ export default function StoriesPage() {
         <>
           <StoriesGrid stories={stories} volume={volume} isLooping={isLooping} />
           <div className="mt-12">
-            <PaginationControls
+            <PaginationWrapper
               currentPage={currentPage}
               totalPages={totalPages}
-              hasPrevious={currentPage > 1}
-              hasNext={currentPage < totalPages}
               onPrevPage={handlePrevPage}
               onNextPage={handleNextPage}
             />

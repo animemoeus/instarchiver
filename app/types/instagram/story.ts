@@ -1,4 +1,4 @@
-import { InstagramUser } from '../user';
+import { InstagramUser } from './user';
 
 /**
  * Interface representing an Instagram Story
