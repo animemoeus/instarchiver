@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useState, useRef, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
+import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
@@ -137,18 +137,11 @@ export function StoryCard({ story, volume, isLooping, isMuted }: StoryCardProps)
   const userColor = generateColor(story.user.username);
 
   return (
-    <Card className="overflow-hidden border-4 border-black shadow-[6px_6px_0px_rgba(0,0,0,1)]">
-      <div className="p-4 flex flex-col gap-3">
-        <div className="flex justify-between items-center">
-          {/* Removed individual volume and loop controls */}
-        </div>
-      </div>{' '}
+    <Card>
       <div className="relative">
-        <div
-          className={`absolute top-0 left-0 w-full ${userColor} p-3 border-b-4 border-black z-10`}
-        >
+        <div className={`absolute top-0 left-0 w-full ${userColor} p-3 z-10`}>
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full overflow-hidden border-2 border-black">
+            <div className="h-10 w-10 rounded-full overflow-hidden">
               <Image
                 src={story.user.profile_picture}
                 alt={story.user.username}
@@ -228,83 +221,82 @@ export function StoryCard({ story, volume, isLooping, isMuted }: StoryCardProps)
           )}
         </div>
 
-        <div
-          className="pt-20 relative"
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
-          {isVideo ? (
-            <>
-              <video
-                ref={videoRef}
-                src={story.media}
-                muted={localMuted}
-                playsInline
-                preload="auto"
-                loop
-                poster={story.thumbnail}
-                className={`w-full h-[300px] object-cover ${!isHovered ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
-                onLoadedData={() => {
-                  setIsLoading(false);
-                  // Set initial volume when loaded
-                  if (videoRef.current) {
-                    videoRef.current.volume = volume;
-                    videoRef.current.muted = localMuted;
-                  }
-                }}
-                onError={() => {
-                  console.error('Error loading video:', story.media);
-                  setIsLoading(false);
-                }}
-              />
-              {(!isHovered || (isHovered && isLoading)) && (
-                <Image
-                  src={story.thumbnail}
-                  alt="Story thumbnail"
-                  width={400}
-                  height={600}
-                  objectFit="cover"
-                  className={`absolute inset-0 w-full h-[300px] object-cover transition-opacity duration-300`}
-                  onLoad={() => setIsLoading(false)}
+        <CardContent>
+          <div
+            className="pt-20 relative"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
+            {isVideo ? (
+              <>
+                <video
+                  ref={videoRef}
+                  src={story.media}
+                  muted={localMuted}
+                  playsInline
+                  preload="auto"
+                  loop
+                  poster={story.thumbnail}
+                  className={`w-full h-[300px] object-cover ${!isHovered ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
+                  onLoadedData={() => {
+                    setIsLoading(false);
+                    // Set initial volume when loaded
+                    if (videoRef.current) {
+                      videoRef.current.volume = volume;
+                      videoRef.current.muted = localMuted;
+                    }
+                  }}
                   onError={() => {
-                    console.error('Error loading thumbnail:', story.thumbnail);
+                    console.error('Error loading video:', story.media);
                     setIsLoading(false);
                   }}
                 />
-              )}
-            </>
-          ) : (
-            <Image
-              src={story.thumbnail}
-              alt="Story thumbnail"
-              width={400}
-              height={600}
-              objectFit="cover"
-              className={`w-full h-[300px] object-cover ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
-              onLoad={() => setIsLoading(false)}
-              onError={() => setIsLoading(false)}
-            />
-          )}
+                {(!isHovered || (isHovered && isLoading)) && (
+                  <Image
+                    src={story.thumbnail}
+                    alt="Story thumbnail"
+                    width={400}
+                    height={600}
+                    objectFit="cover"
+                    className={`absolute inset-0 w-full h-[300px] object-cover transition-opacity duration-300`}
+                    onLoad={() => setIsLoading(false)}
+                    onError={() => {
+                      console.error('Error loading thumbnail:', story.thumbnail);
+                      setIsLoading(false);
+                    }}
+                  />
+                )}
+              </>
+            ) : (
+              <Image
+                src={story.thumbnail}
+                alt="Story thumbnail"
+                width={400}
+                height={600}
+                objectFit="cover"
+                className={`w-full h-[300px] object-cover ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
+                onLoad={() => setIsLoading(false)}
+                onError={() => setIsLoading(false)}
+              />
+            )}
 
-          {isLoading && (
-            <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
-              <div className="w-10 h-10 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
+            {isLoading && (
+              <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
+                <div className="w-10 h-10 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            )}
+
+            <div className="absolute bottom-0 left-0 right-0 bg-black/70 p-2">
+              <p className="text-white text-sm">{formatDate(story.story_created_at)}</p>
             </div>
-          )}
 
-          <div className="absolute bottom-0 left-0 right-0 bg-black/70 p-2">
-            <p className="text-white text-sm">{formatDate(story.story_created_at)}</p>
+            <div className="absolute top-2 right-2">
+              <Badge className="bg-white text-black font-bold">{isVideo ? 'VIDEO' : 'IMAGE'}</Badge>
+            </div>
           </div>
+        </CardContent>
 
-          <div className="absolute top-2 right-2">
-            <Badge className="bg-white text-black border-2 border-black font-bold">
-              {isVideo ? 'VIDEO' : 'IMAGE'}
-            </Badge>
-          </div>
-        </div>
-      </div>
-      <div className="p-4 flex flex-col gap-3">
-        <div className="flex justify-between items-center">
+        <CardFooter className="flex justify-between items-center gap-2">
           <span className="text-sm">
             Followers: <strong>{story.user.follower_count.toLocaleString()}</strong>
           </span>
@@ -321,7 +313,7 @@ export function StoryCard({ story, volume, isLooping, isMuted }: StoryCardProps)
                   console.error('Download error:', error);
                 }
               }}
-              className="bg-green-500 text-white hover:bg-green-600 font-bold border-2 border-black shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_rgba(0,0,0,1)] hover:-translate-y-0.5 transition-all"
+              className="bg-green-500 text-white font-bold"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -344,14 +336,12 @@ export function StoryCard({ story, volume, isLooping, isMuted }: StoryCardProps)
 
             <Dialog>
               <DialogTrigger asChild>
-                <Button className="bg-black text-white hover:bg-gray-800 font-bold border-2 border-black shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_rgba(0,0,0,1)] hover:-translate-y-0.5 transition-all">
-                  View
-                </Button>
+                <Button className="bg-black text-white font-bold">View</Button>
               </DialogTrigger>
-              <DialogContent className="border-4 border-black p-0 max-w-3xl overflow-hidden">
-                <div className="bg-black p-4 border-b-4 border-black">
+              <DialogContent className="p-0 max-w-3xl overflow-hidden">
+                <div className="bg-black p-4">
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full overflow-hidden border-2 border-white">
+                    <div className="h-10 w-10 rounded-full overflow-hidden">
                       <Image
                         src={story.user.profile_picture}
                         alt={story.user.username}
@@ -389,7 +379,7 @@ export function StoryCard({ story, volume, isLooping, isMuted }: StoryCardProps)
                     />
                   )}
                 </div>
-                <div className="p-4 bg-white border-t-4 border-black">
+                <div className="p-4 bg-white">
                   <p className="text-sm">
                     <strong>Posted:</strong> {formatDate(story.story_created_at)}
                   </p>
@@ -400,7 +390,7 @@ export function StoryCard({ story, volume, isLooping, isMuted }: StoryCardProps)
               </DialogContent>
             </Dialog>
           </div>
-        </div>
+        </CardFooter>
       </div>
     </Card>
   );

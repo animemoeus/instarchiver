@@ -24,9 +24,13 @@ export function StoriesGrid({ stories, volume, isLooping, isMuted }: StoriesGrid
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
       {stories.map(story => (
-        <Card key={story.story_id}>
-          <StoryCard story={story} volume={volume} isLooping={isLooping} isMuted={isMuted} />
-        </Card>
+        <StoryCard
+          key={story.story_id}
+          story={story}
+          volume={volume}
+          isLooping={isLooping}
+          isMuted={isMuted}
+        />
       ))}
     </div>
   );

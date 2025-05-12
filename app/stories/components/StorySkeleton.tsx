@@ -5,11 +5,11 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export function StorySkeleton() {
   return (
-    <Card className="overflow-hidden border-4 border-black shadow-[6px_6px_0px_rgba(0,0,0,1)]">
+    <Card className="overflow-hidden">
       <div className="relative">
-        <div className="absolute top-0 left-0 w-full bg-gray-300 p-3 border-b-4 border-black z-10">
+        <div className="absolute top-0 left-0 w-full bg-gray-300 p-3 border-b-2 border-black z-10">
           <div className="flex items-center gap-3">
-            <Skeleton className="h-10 w-10 rounded-full border-2 border-black" />
+            <Skeleton className="h-10 w-10 rounded-full" />
             <div>
               <Skeleton className="h-4 w-24" />
               <Skeleton className="h-3 w-16 mt-1" />
