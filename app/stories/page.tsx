@@ -17,6 +17,7 @@ export default function StoriesPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [volume, setVolume] = useState(1); // Default volume at 100%
   const [isLooping, setIsLooping] = useState(true); // Default looping enabled
+  const [isMuted, setIsMuted] = useState(true); // Default muted (sound disabled)
 
   useEffect(() => {
     const getStories = async () => {
@@ -70,6 +71,8 @@ export default function StoriesPage() {
               step="0.1"
               value={volume}
               onChange={e => setVolume(parseFloat(e.target.value))}
+              className={`${isMuted ? 'opacity-50' : 'opacity-100'}`}
+              disabled={isMuted}
             />
           </label>
           <label className="text-lg font-bold flex items-center gap-2">
@@ -79,6 +82,10 @@ export default function StoriesPage() {
               onChange={e => setIsLooping(e.target.checked)}
             />
             Loop
+          </label>
+          <label className="text-lg font-bold flex items-center gap-2">
+            <Input type="checkbox" checked={isMuted} onChange={e => setIsMuted(e.target.checked)} />
+            Mute
           </label>
         </div>
       </div>
@@ -93,7 +100,7 @@ export default function StoriesPage() {
         </div>
       ) : (
         <>
-          <StoriesGrid stories={stories} volume={volume} isLooping={isLooping} />
+          <StoriesGrid stories={stories} volume={volume} isLooping={isLooping} isMuted={isMuted} />
           <div className="mt-12">
             <PaginationWrapper
               currentPage={currentPage}

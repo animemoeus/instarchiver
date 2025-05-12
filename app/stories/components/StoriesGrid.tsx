@@ -8,9 +8,10 @@ interface StoriesGridProps {
   stories: InstagramStory[];
   volume: number; // Volume control passed from parent
   isLooping: boolean; // Loop control passed from parent
+  isMuted: boolean; // Mute control passed from parent
 }
 
-export function StoriesGrid({ stories, volume, isLooping }: StoriesGridProps) {
+export function StoriesGrid({ stories, volume, isLooping, isMuted }: StoriesGridProps) {
   if (stories.length === 0) {
     return (
       <Card className="text-center">
@@ -24,7 +25,7 @@ export function StoriesGrid({ stories, volume, isLooping }: StoriesGridProps) {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
       {stories.map(story => (
         <Card key={story.story_id}>
-          <StoryCard story={story} volume={volume} isLooping={isLooping} />
+          <StoryCard story={story} volume={volume} isLooping={isLooping} isMuted={isMuted} />
         </Card>
       ))}
     </div>
