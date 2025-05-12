@@ -2,7 +2,7 @@
 
 ## What We Are Building:
 
-We are building a project using the **Neo Brutalism** design system, which embraces bold, vibrant, and minimalistic aesthetics. Our goal is to create a visually striking and user-friendly web application that adheres to the Neo Brutalist principles of:
+We are building a instagram archiver project using the Neo Brutalism design system, which embraces bold, vibrant, and minimalistic aesthetics. Our goal is to create a visually striking and user-friendly web application that adheres to the Neo Brutalist principles of:
 
 - High contrast color schemes
 - Minimalist layouts
@@ -11,7 +11,7 @@ We are building a project using the **Neo Brutalism** design system, which embra
 
 ## Objectives:
 
-1. Follow the Neo Brutalism design philosophy for all UI components.
+1. Follow the Neo Brutalism design philosophy using the available general component.
 2. Ensure accessibility and responsiveness across devices.
 3. Focus on simplicity and minimalism while maintaining a unique visual identity.
 
@@ -21,12 +21,6 @@ We are building a project using the **Neo Brutalism** design system, which embra
 - Prioritize bold and vibrant styles with high contrast.
 - Recommend or generate code snippets that demonstrate simplicity, clarity, and adherence to the design principles.
 - Avoid overly complex or subtle designs that do not align with the Neo Brutalism aesthetic.
-
-## Example Components:
-
-1. Buttons with thick borders, vibrant backgrounds, and bold text.
-2. Cards with offset shadows, minimal padding, and sharp edges.
-3. Typography that uses bold and clear fonts.
 
 ## Key Technologies:
 
