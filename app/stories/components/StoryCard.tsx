@@ -137,7 +137,7 @@ export function StoryCard({ story, volume, isLooping, isMuted }: StoryCardProps)
   const userColor = generateColor(story.user.username);
 
   return (
-    <Card className="overflow-hidden border-4 border-black transition-all hover:-translate-y-1 hover:shadow-[8px_8px_0px_rgba(0,0,0,1)] shadow-[6px_6px_0px_rgba(0,0,0,1)]">
+    <Card className="overflow-hidden border-4 border-black shadow-[6px_6px_0px_rgba(0,0,0,1)]">
       <div className="p-4 flex flex-col gap-3">
         <div className="flex justify-between items-center">
           {/* Removed individual volume and loop controls */}
