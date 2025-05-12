@@ -1,10 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 import { StoriesGrid, StorySkeleton } from './components';
 import { SearchBar } from '../users/components/SearchBar';
 import { fetchStories } from './services/api';
-import { InstagramStory } from '@/app/types/instagram/story';
+import { InstagramStory, InstagramStoriesResponse } from '@/app/types/instagram/story';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -18,50 +20,50 @@ import {
 } from '@/components/ui/pagination';
 
 export default function StoriesPage() {
-  const [stories, setStories] = useState<InstagramStory[]>([]); // Correct type for stories
-  const [isLoading, setIsLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [volume, setVolume] = useState(1); // Default volume at 100%
-  const [isLooping, setIsLooping] = useState(true); // Default looping enabled
-  const [isMuted, setIsMuted] = useState(true); // Default muted (sound disabled)
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  useEffect(() => {
-    const getStories = async () => {
-      setIsLoading(true);
-      try {
-        const data = await fetchStories(currentPage, searchQuery);
-        setStories(data.results);
-        setTotalPages(Math.ceil(data.count / 10)); // Assuming 10 items per page
-      } catch (error) {
-        console.error('Error fetching stories:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const [currentPage, setCurrentPage] = useState(() => parseInt(searchParams.get('page') ?? '1'));
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('search') ?? '');
+  const [volume, setVolume] = useState(1);
+  const [isLooping, setIsLooping] = useState(true);
+  const [isMuted, setIsMuted] = useState(true);
 
-    getStories();
-  }, [currentPage, searchQuery]);
+  const { data, isLoading } = useQuery({
+    queryKey: ['stories', currentPage, searchQuery],
+    queryFn: () => fetchStories(currentPage, searchQuery),
+    staleTime: 5000,
+  });
 
-  useEffect(() => {
-    console.log(`Current Page: ${currentPage}, Total Pages: ${totalPages}`);
-  }, [currentPage, totalPages]);
+  const totalPages = data ? Math.ceil(data.count / 10) : 1;
+  const stories = data ? data.results : [];
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    setCurrentPage(1); // Reset to first page on new search
+    setCurrentPage(1);
+    router.push(`/stories?search=${encodeURIComponent(query)}&page=1`);
   };
 
   const handlePrevPage = () => {
     if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
+      const newPage = currentPage - 1;
+      setCurrentPage(newPage);
+      router.push(`/stories?search=${encodeURIComponent(searchQuery)}&page=${newPage}`);
     }
   };
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
+      const newPage = currentPage + 1;
+      setCurrentPage(newPage);
+      router.push(`/stories?search=${encodeURIComponent(searchQuery)}&page=${newPage}`);
+    }
+  };
+
+  const handlePageClick = (targetPage: number) => {
+    if (targetPage !== currentPage) {
+      setCurrentPage(targetPage);
+      router.push(`/stories?search=${encodeURIComponent(searchQuery)}&page=${targetPage}`);
     }
   };
 
@@ -104,12 +106,6 @@ export default function StoriesPage() {
   };
 
   const pageNumbers = getPageNumbers();
-
-  const handlePageClick = (targetPage: number) => {
-    if (targetPage !== currentPage) {
-      setCurrentPage(targetPage);
-    }
-  };
 
   return (
     <div className="container mx-auto px-4 py-12">
