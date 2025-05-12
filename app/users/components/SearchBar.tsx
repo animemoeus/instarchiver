@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 interface SearchBarProps {
   initialQuery?: string;
   onSearch?: (query: string) => void;
+  placeholder?: string; // Add placeholder prop
 }
 
 export function SearchBar({ initialQuery = '', onSearch }: SearchBarProps) {

@@ -12,9 +12,11 @@ import { toast } from 'sonner';
 
 interface StoryCardProps {
   story: InstagramStory;
+  volume: number; // Volume control passed from parent
+  isLooping: boolean; // Loop control passed from parent
 }
 
-export function StoryCard({ story }: StoryCardProps) {
+export function StoryCard({ story, volume, isLooping }: StoryCardProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -35,6 +37,13 @@ export function StoryCard({ story }: StoryCardProps) {
       }
     }
   }, [isHovered, isVideo, videoRef]);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.volume = volume; // Set video volume
+      videoRef.current.loop = isLooping; // Set looping
+    }
+  }, [volume, isLooping]);
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -69,6 +78,12 @@ export function StoryCard({ story }: StoryCardProps) {
 
   return (
     <Card className="overflow-hidden border-4 border-black transition-all hover:-translate-y-1 hover:shadow-[8px_8px_0px_rgba(0,0,0,1)] shadow-[6px_6px_0px_rgba(0,0,0,1)]">
+      <div className="p-4 flex flex-col gap-3">
+        <div className="flex justify-between items-center">
+          {/* Removed individual volume and loop controls */}
+        </div>
+      </div>
+
       <div className="relative">
         <div
           className={`absolute top-0 left-0 w-full ${userColor} p-3 border-b-4 border-black z-10`}
