@@ -141,7 +141,7 @@ export function StoryCard({ story, volume, isLooping, isMuted }: StoryCardProps)
       <div className="relative">
         <div className={`absolute top-0 left-0 w-full ${userColor} p-3 z-10`}>
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full overflow-hidden">
+            <div className="h-10 w-10 rounded-full overflow-hidden border-2 border-black">
               <Image
                 src={story.user.profile_picture}
                 alt={story.user.username}
@@ -341,7 +341,7 @@ export function StoryCard({ story, volume, isLooping, isMuted }: StoryCardProps)
               <DialogContent className="p-0 max-w-3xl overflow-hidden">
                 <div className="bg-black p-4">
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full overflow-hidden">
+                    <div className="h-10 w-10 rounded-full overflow-hidden border-2 border-black">
                       <Image
                         src={story.user.profile_picture}
                         alt={story.user.username}

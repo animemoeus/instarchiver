@@ -9,12 +9,13 @@ export function StorySkeleton() {
       <div className="relative">
         <div className="absolute top-0 left-0 w-full bg-gray-300 p-3 z-10">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full overflow-hidden">
-              <Skeleton className="h-full w-full" />
+            {/* Match exact profile picture styling from StoryCard */}
+            <div className="h-10 w-10 rounded-full overflow-hidden bg-gray-200 border-2 border-black">
+              <Skeleton className="w-full h-full" />
             </div>
             <div>
-              <Skeleton className="h-5 w-24 mb-1" />
-              <Skeleton className="h-3 w-16" />
+              <Skeleton className="h-[19px] w-32 mb-1" /> {/* Match font-bold text height */}
+              <Skeleton className="h-[14px] w-24" /> {/* Match text-xs height */}
             </div>
           </div>
         </div>
