@@ -6,6 +6,11 @@ import { InstagramStory, InstagramStoriesResponse } from '@/app/types/instagram/
 // Base URL for the API
 const API_BASE_URL = 'https://api.animemoe.us';
 
+// Constants
+export const API_CONSTANTS = {
+  COUNT_PER_PAGE: 12,
+};
+
 /**
  * Fetch stories with optional filtering
  */
@@ -15,7 +20,9 @@ export async function fetchStories(
 ): Promise<InstagramStoriesResponse> {
   try {
     const searchParam = searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : '';
-    const response = await fetch(`${API_BASE_URL}/instagram/stories/?page=${page}${searchParam}`);
+    const response = await fetch(
+      `${API_BASE_URL}/instagram/stories/?page=${page}&count=${API_CONSTANTS.COUNT_PER_PAGE}${searchParam}`
+    );
 
     if (!response.ok) {
       throw new Error(`API error: ${response.status}`);

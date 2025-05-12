@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { StoriesGrid, StorySkeleton } from './components';
 import { SearchBar } from '../users/components/SearchBar';
-import { fetchStories } from './services/api';
+import { fetchStories, API_CONSTANTS } from './services/api';
 import { InstagramStory, InstagramStoriesResponse } from '@/app/types/instagram/story';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -35,7 +35,7 @@ export default function StoriesPage() {
     staleTime: 5000,
   });
 
-  const totalPages = data ? Math.ceil(data.count / 10) : 1;
+  const totalPages = data ? Math.ceil(data.count / API_CONSTANTS.COUNT_PER_PAGE) : 1;
   const stories = data ? data.results : [];
 
   const handleSearch = (query: string) => {
