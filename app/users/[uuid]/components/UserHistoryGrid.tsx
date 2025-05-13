@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,15 @@ import { InstagramUserHistory } from '@/app/types/instagram/history';
 import { formatNumber, formatDate } from '../../utils/formatters';
 import { fetchUserHistory } from '../services/history';
 import { neoBrutalistColors } from '../../utils/colors';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 type HistoryChangeField = Extract<
   keyof InstagramUserHistory,
@@ -32,11 +41,22 @@ interface UserHistoryGridProps {
 }
 
 export function UserHistoryGrid({ uuid }: UserHistoryGridProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const currentPage = Number(searchParams.get('page')) || 1;
+
   const { data, isLoading, error } = useQuery({
-    queryKey: ['userHistory', uuid],
-    queryFn: () => fetchUserHistory(uuid),
+    queryKey: ['userHistory', uuid, currentPage],
+    queryFn: () => fetchUserHistory(uuid, currentPage),
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   });
+
+  const handlePageChange = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', page.toString());
+    router.push(`${pathname}?${params.toString()}`);
+  };
 
   if (error) {
     return (
@@ -199,6 +219,49 @@ export function UserHistoryGrid({ uuid }: UserHistoryGridProps) {
             );
           })}
         </div>
+        {data && (
+          <div className="mt-6">
+            <Pagination className="font-black">
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    href="#"
+                    onClick={e => {
+                      e.preventDefault();
+                      if (currentPage > 1) handlePageChange(currentPage - 1);
+                    }}
+                    aria-disabled={currentPage === 1}
+                  />
+                </PaginationItem>
+                {[...Array(Math.ceil(data.count / 10))].map((_, i) => (
+                  <PaginationItem key={i + 1}>
+                    <PaginationLink
+                      href="#"
+                      onClick={e => {
+                        e.preventDefault();
+                        handlePageChange(i + 1);
+                      }}
+                      isActive={currentPage === i + 1}
+                    >
+                      {i + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+                <PaginationItem>
+                  <PaginationNext
+                    href="#"
+                    onClick={e => {
+                      e.preventDefault();
+                      if (currentPage < Math.ceil(data.count / 10))
+                        handlePageChange(currentPage + 1);
+                    }}
+                    aria-disabled={currentPage === Math.ceil(data.count / 10)}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
