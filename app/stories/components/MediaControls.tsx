@@ -55,7 +55,7 @@ export function MediaControls({
             <Slider
               min={0}
               max={1}
-              step={0.1}
+              step={0.01}
               value={[volume]}
               onValueChange={values => setVolume(values[0])}
               disabled={isMuted}

@@ -63,7 +63,7 @@ export function StoryCard({ story, volume, isLooping, isMuted }: StoryCardProps)
         await currentVideo.play();
         console.log('Video playing, muted:', localMuted, 'volume:', volume);
       } catch (error) {
-        if (error.name === 'NotAllowedError') {
+        if (error instanceof Error && error.name === 'NotAllowedError') {
           // Browser requires user interaction - try muted playback
           try {
             currentVideo.muted = true;
@@ -78,7 +78,7 @@ export function StoryCard({ story, volume, isLooping, isMuted }: StoryCardProps)
           } catch (e) {
             console.warn('Failed to play even with mute:', e);
           }
-        } else if (error.name !== 'AbortError') {
+        } else if (error instanceof Error && error.name !== 'AbortError') {
           // Log errors other than abort errors (which are expected during normal operation)
           console.warn('Video playback error:', error);
         }
