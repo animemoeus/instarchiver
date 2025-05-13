@@ -1,15 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-import { StoriesGrid, StorySkeleton } from './components';
+import { StoriesGrid, StorySkeleton, MediaControls } from './components';
 import { SearchBar } from '../users/components/SearchBar';
 import { fetchStories, API_CONSTANTS } from './services/api';
 import { InstagramStory, InstagramStoriesResponse } from '@/app/types/instagram/story';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Slider } from '@/components/ui/slider';
 import {
   Pagination,
   PaginationContent,
@@ -19,7 +16,6 @@ import {
   PaginationNext,
   PaginationEllipsis,
 } from '@/components/ui/pagination';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
 export default function StoriesPage() {
   const router = useRouter();
@@ -31,6 +27,16 @@ export default function StoriesPage() {
   const [isLooping, setIsLooping] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
 
+  // Ensure URL params are set on initial load
+  useEffect(() => {
+    const page = searchParams.get('page');
+    const search = searchParams.get('search');
+
+    if (!page || search !== searchQuery) {
+      router.push(`/stories?search=${encodeURIComponent(searchQuery)}&page=${currentPage}`);
+    }
+  }, []);
+
   const { data, isLoading } = useQuery({
     queryKey: ['stories', currentPage, searchQuery],
     queryFn: () => fetchStories(currentPage, searchQuery),
@@ -40,10 +46,15 @@ export default function StoriesPage() {
   const totalPages = data ? Math.ceil(data.count / API_CONSTANTS.COUNT_PER_PAGE) : 1;
   const stories = data ? data.results : [];
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     setCurrentPage(1);
     router.push(`/stories?search=${encodeURIComponent(query)}&page=1`);
+    scrollToTop();
   };
 
   const handlePrevPage = () => {
@@ -51,6 +62,7 @@ export default function StoriesPage() {
       const newPage = currentPage - 1;
       setCurrentPage(newPage);
       router.push(`/stories?search=${encodeURIComponent(searchQuery)}&page=${newPage}`);
+      scrollToTop();
     }
   };
 
@@ -59,6 +71,7 @@ export default function StoriesPage() {
       const newPage = currentPage + 1;
       setCurrentPage(newPage);
       router.push(`/stories?search=${encodeURIComponent(searchQuery)}&page=${newPage}`);
+      scrollToTop();
     }
   };
 
@@ -66,23 +79,24 @@ export default function StoriesPage() {
     if (targetPage !== currentPage) {
       setCurrentPage(targetPage);
       router.push(`/stories?search=${encodeURIComponent(searchQuery)}&page=${targetPage}`);
+      scrollToTop();
     }
   };
 
   const getPageNumbers = (): (number | string)[] => {
     const pages: (number | string)[] = [];
-    const maxVisiblePages = 5;
+    const maxVisiblePages = window.innerWidth < 640 ? 3 : 5; // Reduced pages for mobile
 
     pages.push(1);
 
-    let startPage = Math.max(2, currentPage - 1);
-    let endPage = Math.min(totalPages - 1, currentPage + 1);
+    let startPage = Math.max(2, currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(totalPages - 1, startPage + maxVisiblePages - 2);
 
-    if (currentPage <= 3) {
+    if (currentPage <= Math.floor(maxVisiblePages / 2)) {
       endPage = Math.min(totalPages - 1, maxVisiblePages - 1);
     }
 
-    if (currentPage >= totalPages - 2) {
+    if (currentPage >= totalPages - Math.floor(maxVisiblePages / 2)) {
       startPage = Math.max(2, totalPages - maxVisiblePages + 1);
     }
 
@@ -117,61 +131,17 @@ export default function StoriesPage() {
           Browse and discover the latest Instagram stories across all users.
         </p>
 
-        <Card className="mt-8 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] bg-fuchsia-100">
-          <CardHeader className="border-b-4 border-black bg-amber-300">
-            <CardTitle className="text-3xl font-black uppercase">Media Controls</CardTitle>
-          </CardHeader>
-          <CardContent className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="flex flex-col space-y-4">
-                <label className="text-lg font-bold flex items-center gap-2 border-2 border-black p-3 rounded-md shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-white">
-                  <Input
-                    type="checkbox"
-                    checked={isMuted}
-                    onChange={e => setIsMuted(e.target.checked)}
-                    className="w-6 h-6 border-2 border-black rounded"
-                  />
-                  <span className="uppercase">Mute Audio</span>
-                </label>
-
-                <label className="text-lg font-bold flex items-center gap-2 border-2 border-black p-3 rounded-md shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-white">
-                  <Input
-                    type="checkbox"
-                    checked={isLooping}
-                    onChange={e => setIsLooping(e.target.checked)}
-                    className="w-6 h-6 border-2 border-black rounded"
-                  />
-                  <span className="uppercase">Loop Videos</span>
-                </label>
-              </div>
-
-              <div
-                className={`p-4 border-2 border-black rounded-md shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${isMuted ? 'opacity-50 bg-gray-100' : 'bg-blue-100'}`}
-              >
-                <label className="text-lg font-black block mb-3 uppercase">Volume Control:</label>
-                <Slider
-                  min={0}
-                  max={1}
-                  step={0.1}
-                  value={[volume]}
-                  onValueChange={values => setVolume(values[0])}
-                  disabled={isMuted}
-                  className="mb-2"
-                />
-                <div className="flex justify-between text-sm font-bold mt-2">
-                  <span className="px-2 py-1 bg-black text-white rounded">0%</span>
-                  <span className="px-2 py-1 bg-black text-white rounded">
-                    {Math.round(volume * 100)}%
-                  </span>
-                  <span className="px-2 py-1 bg-black text-white rounded">100%</span>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <MediaControls
+          isMuted={isMuted}
+          setIsMuted={setIsMuted}
+          isLooping={isLooping}
+          setIsLooping={setIsLooping}
+          volume={volume}
+          setVolume={setVolume}
+        />
       </div>
 
-      <SearchBar onSearch={handleSearch} placeholder="Search by username..." />
+      {/* <SearchBar onSearch={handleSearch} placeholder="Search by username..." /> */}
 
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
@@ -183,8 +153,8 @@ export default function StoriesPage() {
         <>
           <StoriesGrid stories={stories} volume={volume} isLooping={isLooping} isMuted={isMuted} />
           <Pagination className="mt-12">
-            <PaginationContent className="flex-wrap gap-2">
-              <PaginationItem>
+            <PaginationContent className="flex flex-wrap justify-center gap-1 sm:gap-2">
+              <PaginationItem className="min-w-9 sm:min-w-10">
                 <PaginationPrevious
                   href="#"
                   onClick={e => {
@@ -192,21 +162,21 @@ export default function StoriesPage() {
                     if (currentPage > 1) handlePrevPage();
                   }}
                   aria-disabled={currentPage === 1}
-                  className={currentPage === 1 ? 'opacity-50 pointer-events-none' : ''}
+                  className={`${currentPage === 1 ? 'opacity-50 pointer-events-none' : ''} px-2 sm:px-3`}
                 />
               </PaginationItem>
 
               {pageNumbers.map((page, index) => {
                 if (page === 'start-ellipsis' || page === 'end-ellipsis') {
                   return (
-                    <PaginationItem key={`ellipsis-${index}`} className="hidden sm:flex">
+                    <PaginationItem key={`ellipsis-${index}`}>
                       <PaginationEllipsis />
                     </PaginationItem>
                   );
                 }
 
                 return (
-                  <PaginationItem key={page}>
+                  <PaginationItem key={page} className="min-w-9 sm:min-w-10">
                     <PaginationLink
                       href="#"
                       onClick={e => {
@@ -214,6 +184,7 @@ export default function StoriesPage() {
                         if (typeof page === 'number') handlePageClick(page);
                       }}
                       isActive={currentPage === page}
+                      className="px-2 sm:px-3 h-9 sm:h-10"
                     >
                       {page}
                     </PaginationLink>
@@ -221,7 +192,7 @@ export default function StoriesPage() {
                 );
               })}
 
-              <PaginationItem>
+              <PaginationItem className="min-w-9 sm:min-w-10">
                 <PaginationNext
                   href="#"
                   onClick={e => {
@@ -229,7 +200,7 @@ export default function StoriesPage() {
                     if (currentPage < totalPages) handleNextPage();
                   }}
                   aria-disabled={currentPage === totalPages}
-                  className={currentPage === totalPages ? 'opacity-50 pointer-events-none' : ''}
+                  className={`${currentPage === totalPages ? 'opacity-50 pointer-events-none' : ''} px-2 sm:px-3`}
                 />
               </PaginationItem>
             </PaginationContent>

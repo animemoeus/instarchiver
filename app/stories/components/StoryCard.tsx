@@ -48,51 +48,60 @@ export function StoryCard({ story, volume, isLooping, isMuted }: StoryCardProps)
 
   // Play/pause video on hover
   useEffect(() => {
-    if (isVideo && videoRef.current) {
+    const currentVideo = videoRef.current;
+    let isPlaying = false;
+
+    const playVideo = async () => {
+      if (!currentVideo || isPlaying) return;
+
+      try {
+        // Set initial properties
+        currentVideo.volume = volume;
+        currentVideo.muted = localMuted;
+
+        isPlaying = true;
+        await currentVideo.play();
+        console.log('Video playing, muted:', localMuted, 'volume:', volume);
+      } catch (error) {
+        if (error instanceof Error && error.name === 'NotAllowedError') {
+          // Browser requires user interaction - try muted playback
+          try {
+            currentVideo.muted = true;
+            await currentVideo.play();
+            console.log('Playing muted due to autoplay restrictions');
+            if (!localMuted) {
+              toast.info('Click the sound icon to enable audio', {
+                duration: 2000,
+                id: 'sound-toast',
+              });
+            }
+          } catch (e) {
+            console.warn('Failed to play even with mute:', e);
+          }
+        } else if (error instanceof Error && error.name !== 'AbortError') {
+          // Log errors other than abort errors (which are expected during normal operation)
+          console.warn('Video playback error:', error);
+        }
+      }
+    };
+
+    const stopVideo = () => {
+      if (!currentVideo) return;
+
+      isPlaying = false;
+      // Only pause if the video is actually playing
+      if (!currentVideo.paused) {
+        currentVideo.pause();
+      }
+      currentVideo.currentTime = 0;
+      currentVideo.muted = localMuted;
+    };
+
+    if (isVideo && currentVideo) {
       if (isHovered) {
-        // First, set the volume and muted state
-        videoRef.current.volume = volume;
-        videoRef.current.muted = localMuted;
-
-        // Start playing the video
-        const playPromise = videoRef.current.play();
-        if (playPromise !== undefined) {
-          playPromise
-            .then(() => {
-              console.log('Video playing, muted:', localMuted, 'volume:', volume);
-            })
-            .catch(error => {
-              console.error('Error playing video:', error);
-              // If autoplay fails, force muted play (browser policy workaround)
-              if (videoRef.current) {
-                // Save the original mute state
-                const wasOriginiallyMuted = localMuted;
-
-                // Try to play muted
-                videoRef.current.muted = true;
-                videoRef.current
-                  .play()
-                  .then(() => {
-                    // If successful and should be unmuted, try to unmute after user interaction
-                    console.log('Playing muted due to autoplay restrictions');
-                    if (!wasOriginiallyMuted) {
-                      toast.info('Click the sound icon to enable audio', {
-                        duration: 2000,
-                        id: 'sound-toast',
-                      });
-                    }
-                  })
-                  .catch(e => console.error('Failed to play even with mute:', e));
-              }
-            });
-        }
+        playVideo();
       } else {
-        // When not hovering
-        if (!videoRef.current.paused) {
-          videoRef.current.pause();
-        }
-        videoRef.current.currentTime = 0;
-        videoRef.current.muted = localMuted; // Maintain the local mute setting
+        stopVideo();
       }
     }
   }, [isHovered, isVideo, volume, localMuted]);
@@ -119,15 +128,16 @@ export function StoryCard({ story, volume, isLooping, isMuted }: StoryCardProps)
   // Generate a vibrant color based on the username
   const generateColor = (username: string) => {
     const colors = [
-      'bg-pink-500',
-      'bg-purple-500',
-      'bg-blue-500',
-      'bg-teal-500',
-      'bg-green-500',
-      'bg-yellow-500',
-      'bg-orange-500',
-      'bg-red-500',
-      'bg-indigo-500',
+      'bg-pink-300',
+      'bg-purple-300',
+      'bg-blue-300',
+      'bg-green-300',
+      'bg-yellow-300',
+      'bg-orange-300',
+      'bg-red-300',
+      'bg-indigo-300',
+      'bg-cyan-300',
+      'bg-lime-300',
     ];
 
     const sum = username.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
@@ -152,8 +162,8 @@ export function StoryCard({ story, volume, isLooping, isMuted }: StoryCardProps)
               />
             </div>
             <div>
-              <h3 className="font-bold text-white">@{story.user.username}</h3>
-              <p className="text-xs text-white/90">{story.user.full_name}</p>
+              <h3 className="text-2xl font-black text-black">@{story.user.username}</h3>
+              <p className="text-sm font-medium text-black/90">{story.user.full_name}</p>
             </div>
           </div>
           {isVideo && (

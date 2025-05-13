@@ -5,7 +5,9 @@ import UserHeader from './UserHeader';
 import UserSkeleton from './UserSkeleton';
 
 interface InstagramPageProps {
-  totalUsers: number;
+  title?: string;
+  subtitle?: string;
+  totalCount: number;
   currentPage: number;
   usersList: React.ReactNode;
   pagination: React.ReactNode;
@@ -13,7 +15,9 @@ interface InstagramPageProps {
 
 // A component that structures the Instagram users page with Suspense boundaries
 export function InstagramPage({
-  totalUsers,
+  title = 'Instagram User Archive',
+  subtitle,
+  totalCount,
   currentPage,
   usersList,
   pagination,
@@ -29,7 +33,12 @@ export function InstagramPage({
           </div>
         }
       >
-        <UserHeader totalUsers={totalUsers} currentPage={currentPage} />
+        <UserHeader
+          totalUsers={totalCount}
+          currentPage={currentPage}
+          title={title}
+          subtitle={subtitle}
+        />
       </Suspense>
 
       {/* Users list with streaming */}

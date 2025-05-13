@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import {
   Card,
   CardContent,
@@ -134,9 +135,11 @@ export function UserCard({ user, index }: UserCardProps) {
         >
           <p className="text-xs font-bold w-full">Last Update: {formatDate(user.updated_at)}</p>
           <div className="flex w-full gap-2">
-            <Button variant="default" className="flex-1 font-black text-xs py-2 h-auto">
-              VIEW PROFILE
-            </Button>
+            <Link href={`/users/${user.uuid}`} className="flex-1">
+              <Button variant="default" className="w-full font-black text-xs py-2 h-auto">
+                VIEW PROFILE
+              </Button>
+            </Link>
             <Button variant="neutral" className="flex-1 font-black text-xs py-2 h-auto">
               ARCHIVE POSTS
             </Button>
