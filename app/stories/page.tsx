@@ -36,10 +36,15 @@ export default function StoriesPage() {
   const totalPages = data ? Math.ceil(data.count / API_CONSTANTS.COUNT_PER_PAGE) : 1;
   const stories = data ? data.results : [];
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     setCurrentPage(1);
     router.push(`/stories?search=${encodeURIComponent(query)}&page=1`);
+    scrollToTop();
   };
 
   const handlePrevPage = () => {
@@ -47,6 +52,7 @@ export default function StoriesPage() {
       const newPage = currentPage - 1;
       setCurrentPage(newPage);
       router.push(`/stories?search=${encodeURIComponent(searchQuery)}&page=${newPage}`);
+      scrollToTop();
     }
   };
 
@@ -55,6 +61,7 @@ export default function StoriesPage() {
       const newPage = currentPage + 1;
       setCurrentPage(newPage);
       router.push(`/stories?search=${encodeURIComponent(searchQuery)}&page=${newPage}`);
+      scrollToTop();
     }
   };
 
@@ -62,6 +69,7 @@ export default function StoriesPage() {
     if (targetPage !== currentPage) {
       setCurrentPage(targetPage);
       router.push(`/stories?search=${encodeURIComponent(searchQuery)}&page=${targetPage}`);
+      scrollToTop();
     }
   };
 
