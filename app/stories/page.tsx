@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { StoriesGrid, StorySkeleton, MediaControls } from './components';
@@ -26,6 +26,16 @@ export default function StoriesPage() {
   const [volume, setVolume] = useState(1);
   const [isLooping, setIsLooping] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
+
+  // Ensure URL params are set on initial load
+  useEffect(() => {
+    const page = searchParams.get('page');
+    const search = searchParams.get('search');
+
+    if (!page || search !== searchQuery) {
+      router.push(`/stories?search=${encodeURIComponent(searchQuery)}&page=${currentPage}`);
+    }
+  }, []);
 
   const { data, isLoading } = useQuery({
     queryKey: ['stories', currentPage, searchQuery],
