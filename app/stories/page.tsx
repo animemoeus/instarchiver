@@ -111,7 +111,7 @@ export default function StoriesPage() {
 
   return (
     <div className="container mx-auto px-4 py-12">
-      <div className="mb-10">
+      <div>
         <h1 className="font-black text-5xl mb-4">INSTAGRAM STORIES ARCHIVE</h1>
         <p className="text-xl mt-4 font-medium">
           Browse and discover the latest Instagram stories across all users.

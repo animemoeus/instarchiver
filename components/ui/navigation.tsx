@@ -24,7 +24,7 @@ export function Navigation() {
   ];
 
   return (
-    <Card className="w-full border-b-4 border-black bg-white rounded-none shadow-none mb-6">
+    <Card className="w-full border-b-4 border-black bg-white rounded-none shadow-none">
       <div className="container mx-auto px-4 flex justify-between items-center h-16">
         <Link href="/" className="flex items-center">
           <span className="font-black text-xl bg-yellow-400 px-3 py-2 border-2 border-black shadow-[4px_4px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all">
