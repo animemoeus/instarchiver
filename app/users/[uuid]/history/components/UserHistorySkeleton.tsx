@@ -31,17 +31,22 @@ export function UserHistorySkeleton({ index }: UserHistorySkeletonProps) {
       <CardContent className="p-4">
         {/* Statistics Skeleton */}
         <div className="grid grid-cols-3 gap-2 mb-4 border-2 border-black rounded-base overflow-hidden">
-          {[...Array(3)].map((_, i) => (
-            <div
-              key={i}
-              className={`p-3 ${
-                neoBrutalistColors.stats[Object.keys(neoBrutalistColors.stats)[i]]
-              } flex flex-col items-center justify-center`}
-            >
-              <Skeleton className="h-3 w-12 border-2 border-black mb-2 rounded-base" />
-              <Skeleton className="h-5 w-8 border-2 border-black rounded-base" />
-            </div>
-          ))}
+          {[...Array(3)].map((_, i) => {
+            // Create a type-safe way to access the stats colors
+            const statKeys = ['posts', 'followers', 'following'] as const;
+            const statKey = statKeys[i % statKeys.length];
+            return (
+              <div
+                key={i}
+                className={`p-3 ${
+                  neoBrutalistColors.stats[statKey]
+                } flex flex-col items-center justify-center`}
+              >
+                <Skeleton className="h-3 w-12 border-2 border-black mb-2 rounded-base" />
+                <Skeleton className="h-5 w-8 border-2 border-black rounded-base" />
+              </div>
+            );
+          })}
         </div>
 
         {/* Biography Skeleton */}

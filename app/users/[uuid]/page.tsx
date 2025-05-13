@@ -8,12 +8,12 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
-// Remove dialog import as we're using direct links now
 import { InstagramUser } from '@/app/types/instagram';
 import { neoBrutalistColors } from '../utils/colors';
 import { formatNumber, formatDate } from '../utils/formatters';
 import { UserDetailSkeleton } from './components/UserDetailSkeleton';
 import { UserHistoryGrid } from './components/UserHistoryGrid';
+import { DiscussionEmbed, CommentCount } from 'disqus-react';
 
 interface UserDetailPageProps {
   params: Promise<{
@@ -30,7 +30,6 @@ async function fetchUserDetail(uuid: string): Promise<InstagramUser> {
 }
 
 export default function UserDetailPage({ params }: UserDetailPageProps) {
-  // Properly unwrap params using React.use()
   const resolvedParams = React.use(params);
   const { uuid } = resolvedParams;
 
@@ -41,7 +40,7 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
   } = useQuery<InstagramUser>({
     queryKey: ['user', uuid],
     queryFn: () => fetchUserDetail(uuid),
-    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    staleTime: 1000 * 60 * 5,
     retry: 2,
   });
 
@@ -69,15 +68,19 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
 
   if (!user) return null;
 
+  const disqusConfig = {
+    url: `https://instagram-archiver.com/users/${user.uuid}`,
+    identifier: user.uuid,
+    title: `${user.username}'s Profile`,
+  };
+
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 space-y-8">
       <Card className="w-full max-w-4xl mx-auto shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
-        {/* Profile Header */}
         <CardHeader
           className={`border-b-2 border-black ${neoBrutalistColors.header[0]} p-4 sm:p-6`}
         >
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
-            {/* Profile Image */}
             <div className="relative w-24 h-24 sm:w-32 sm:h-32 border-4 border-black rounded-full overflow-hidden bg-white shrink-0">
               {user.profile_picture ? (
                 <Image
@@ -95,7 +98,6 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
               )}
             </div>
 
-            {/* User Info */}
             <div className="flex-1 w-full">
               <div className="flex flex-col items-center sm:items-start">
                 <div className="text-center sm:text-left">
@@ -108,7 +110,6 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
                 </div>
               </div>
 
-              {/* Stats Grid */}
               <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-4">
                 <div
                   className={`${neoBrutalistColors.stats.posts} border-2 border-black rounded-base p-2 sm:p-4 text-center`}
@@ -138,7 +139,6 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
         </CardHeader>
 
         <CardContent className="p-4 sm:p-8">
-          {/* Biography */}
           <div className="mb-6 sm:mb-8">
             <h2 className="text-lg sm:text-xl font-black mb-3 sm:mb-4">Biography</h2>
             {user.biography ? (
@@ -156,7 +156,6 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
             )}
           </div>
 
-          {/* Account Info */}
           <div>
             <h2 className="text-lg sm:text-xl font-black mb-3 sm:mb-4">Account Information</h2>
             <div className="grid gap-3 sm:gap-4">
@@ -203,6 +202,15 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
             </Button>
           </div>
         </CardFooter>
+      </Card>
+
+      <Card className="w-full max-w-4xl mx-auto border-4 border-black shadow-neo">
+        <CardHeader>
+          <CardTitle className="text-2xl font-black"></CardTitle>
+        </CardHeader>
+        <CardContent>
+          <DiscussionEmbed shortname="instagram-archiver" config={disqusConfig} />
+        </CardContent>
       </Card>
     </div>
   );

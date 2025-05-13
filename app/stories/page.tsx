@@ -35,7 +35,7 @@ export default function StoriesPage() {
     if (!page || search !== searchQuery) {
       router.push(`/stories?search=${encodeURIComponent(searchQuery)}&page=${currentPage}`);
     }
-  }, []);
+  }, [searchParams, searchQuery, currentPage, router]);
 
   const { data, isLoading } = useQuery({
     queryKey: ['stories', currentPage, searchQuery],

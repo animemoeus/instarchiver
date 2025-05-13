@@ -10,13 +10,14 @@ import { PaginationControls } from '../../components/PaginationControls';
 import { useSearchParams, useRouter } from 'next/navigation';
 
 interface UserHistoryPageProps {
-  params: {
+  params: Promise<{
     uuid: string;
-  };
+  }>;
 }
 
 export default function UserHistoryPage({ params }: UserHistoryPageProps) {
-  const { uuid } = params;
+  const resolvedParams = React.use(params);
+  const { uuid } = resolvedParams;
   const router = useRouter();
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
