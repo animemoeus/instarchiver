@@ -75,18 +75,18 @@ export default function StoriesPage() {
 
   const getPageNumbers = (): (number | string)[] => {
     const pages: (number | string)[] = [];
-    const maxVisiblePages = 5;
+    const maxVisiblePages = window.innerWidth < 640 ? 3 : 5; // Reduced pages for mobile
 
     pages.push(1);
 
-    let startPage = Math.max(2, currentPage - 1);
-    let endPage = Math.min(totalPages - 1, currentPage + 1);
+    let startPage = Math.max(2, currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(totalPages - 1, startPage + maxVisiblePages - 2);
 
-    if (currentPage <= 3) {
+    if (currentPage <= Math.floor(maxVisiblePages / 2)) {
       endPage = Math.min(totalPages - 1, maxVisiblePages - 1);
     }
 
-    if (currentPage >= totalPages - 2) {
+    if (currentPage >= totalPages - Math.floor(maxVisiblePages / 2)) {
       startPage = Math.max(2, totalPages - maxVisiblePages + 1);
     }
 
@@ -143,8 +143,8 @@ export default function StoriesPage() {
         <>
           <StoriesGrid stories={stories} volume={volume} isLooping={isLooping} isMuted={isMuted} />
           <Pagination className="mt-12">
-            <PaginationContent className="flex-wrap gap-2">
-              <PaginationItem>
+            <PaginationContent className="flex flex-wrap justify-center gap-1 sm:gap-2">
+              <PaginationItem className="min-w-9 sm:min-w-10">
                 <PaginationPrevious
                   href="#"
                   onClick={e => {
@@ -152,21 +152,21 @@ export default function StoriesPage() {
                     if (currentPage > 1) handlePrevPage();
                   }}
                   aria-disabled={currentPage === 1}
-                  className={currentPage === 1 ? 'opacity-50 pointer-events-none' : ''}
+                  className={`${currentPage === 1 ? 'opacity-50 pointer-events-none' : ''} px-2 sm:px-3`}
                 />
               </PaginationItem>
 
               {pageNumbers.map((page, index) => {
                 if (page === 'start-ellipsis' || page === 'end-ellipsis') {
                   return (
-                    <PaginationItem key={`ellipsis-${index}`} className="hidden sm:flex">
+                    <PaginationItem key={`ellipsis-${index}`}>
                       <PaginationEllipsis />
                     </PaginationItem>
                   );
                 }
 
                 return (
-                  <PaginationItem key={page}>
+                  <PaginationItem key={page} className="min-w-9 sm:min-w-10">
                     <PaginationLink
                       href="#"
                       onClick={e => {
@@ -174,6 +174,7 @@ export default function StoriesPage() {
                         if (typeof page === 'number') handlePageClick(page);
                       }}
                       isActive={currentPage === page}
+                      className="px-2 sm:px-3 h-9 sm:h-10"
                     >
                       {page}
                     </PaginationLink>
@@ -181,7 +182,7 @@ export default function StoriesPage() {
                 );
               })}
 
-              <PaginationItem>
+              <PaginationItem className="min-w-9 sm:min-w-10">
                 <PaginationNext
                   href="#"
                   onClick={e => {
@@ -189,7 +190,7 @@ export default function StoriesPage() {
                     if (currentPage < totalPages) handleNextPage();
                   }}
                   aria-disabled={currentPage === totalPages}
-                  className={currentPage === totalPages ? 'opacity-50 pointer-events-none' : ''}
+                  className={`${currentPage === totalPages ? 'opacity-50 pointer-events-none' : ''} px-2 sm:px-3`}
                 />
               </PaginationItem>
             </PaginationContent>
