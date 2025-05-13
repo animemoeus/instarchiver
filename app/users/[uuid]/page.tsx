@@ -107,7 +107,7 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
 
             {/* User Info */}
             <div className="flex-1 w-full">
-              <div className="flex flex-col sm:flex-row items-center sm:items-start sm:justify-between gap-4 sm:gap-0">
+              <div className="flex flex-col items-center sm:items-start">
                 <div className="text-center sm:text-left">
                   <CardTitle className="text-2xl sm:text-3xl font-black mb-2">
                     @{user.username}
@@ -116,11 +116,6 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
                     <p className="text-lg sm:text-xl font-bold mb-4">{user.full_name}</p>
                   )}
                 </div>
-                <Link href="/users" className="w-full sm:w-auto">
-                  <Button variant="neutral" className="w-full sm:w-auto font-black">
-                    BACK TO USERS
-                  </Button>
-                </Link>
               </div>
 
               {/* Stats Grid */}
