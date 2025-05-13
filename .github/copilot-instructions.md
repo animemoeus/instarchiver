@@ -5,6 +5,7 @@
 We are building a instagram archiver project using the Neo Brutalism design system, which embraces bold, vibrant, and minimalistic aesthetics.
 
 - Only use the UI component provided in the repository.
+- Use React Query for data fetching.
 
 ## Objectives:
 

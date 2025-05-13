@@ -11,7 +11,10 @@ export interface InstagramUser {
   follower_count: number;
   following_count: number;
   allow_auto_update_stories: boolean;
-  updated_from_api_datetime: string;
+  is_private: boolean;
+  is_verified: boolean;
+  media_count: number;
   created_at: string;
   updated_at: string;
+  updated_at_from_api: string;
 }
