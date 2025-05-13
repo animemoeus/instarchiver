@@ -83,10 +83,12 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
     <div className="container mx-auto px-4 py-8">
       <Card className="w-full max-w-4xl mx-auto shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
         {/* Profile Header */}
-        <CardHeader className={`border-b-2 border-black ${neoBrutalistColors.header[0]}`}>
-          <div className="flex items-start gap-6">
+        <CardHeader
+          className={`border-b-2 border-black ${neoBrutalistColors.header[0]} p-4 sm:p-6`}
+        >
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
             {/* Profile Image */}
-            <div className="relative w-32 h-32 border-4 border-black rounded-full overflow-hidden bg-white shrink-0">
+            <div className="relative w-24 h-24 sm:w-32 sm:h-32 border-4 border-black rounded-full overflow-hidden bg-white shrink-0">
               {user.profile_picture ? (
                 <Image
                   src={user.profile_picture}
@@ -104,89 +106,105 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
             </div>
 
             {/* User Info */}
-            <div className="flex-1">
-              <div className="flex items-start justify-between">
-                <div>
-                  <CardTitle className="text-3xl font-black mb-2">@{user.username}</CardTitle>
-                  {user.full_name && <p className="text-xl font-bold mb-4">{user.full_name}</p>}
+            <div className="flex-1 w-full">
+              <div className="flex flex-col sm:flex-row items-center sm:items-start sm:justify-between gap-4 sm:gap-0">
+                <div className="text-center sm:text-left">
+                  <CardTitle className="text-2xl sm:text-3xl font-black mb-2">
+                    @{user.username}
+                  </CardTitle>
+                  {user.full_name && (
+                    <p className="text-lg sm:text-xl font-bold mb-4">{user.full_name}</p>
+                  )}
                 </div>
-                <Link href="/users">
-                  <Button variant="neutral" className="font-black">
+                <Link href="/users" className="w-full sm:w-auto">
+                  <Button variant="neutral" className="w-full sm:w-auto font-black">
                     BACK TO USERS
                   </Button>
                 </Link>
               </div>
 
               {/* Stats Grid */}
-              <div className="grid grid-cols-3 gap-4 mt-4">
+              <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-4">
                 <div
-                  className={`${neoBrutalistColors.stats.posts} border-2 border-black rounded-base p-4 text-center`}
+                  className={`${neoBrutalistColors.stats.posts} border-2 border-black rounded-base p-2 sm:p-4 text-center`}
                 >
-                  <p className="text-sm font-black">POSTS</p>
-                  <p className="text-2xl font-black">{formatNumber(user.media_count)}</p>
+                  <p className="text-xs sm:text-sm font-black">POSTS</p>
+                  <p className="text-lg sm:text-2xl font-black">{formatNumber(user.media_count)}</p>
                 </div>
                 <div
-                  className={`${neoBrutalistColors.stats.followers} border-2 border-black rounded-base p-4 text-center`}
+                  className={`${neoBrutalistColors.stats.followers} border-2 border-black rounded-base p-2 sm:p-4 text-center`}
                 >
-                  <p className="text-sm font-black">FOLLOWERS</p>
-                  <p className="text-2xl font-black">{formatNumber(user.follower_count)}</p>
+                  <p className="text-xs sm:text-sm font-black">FOLLOWERS</p>
+                  <p className="text-lg sm:text-2xl font-black">
+                    {formatNumber(user.follower_count)}
+                  </p>
                 </div>
                 <div
-                  className={`${neoBrutalistColors.stats.following} border-2 border-black rounded-base p-4 text-center`}
+                  className={`${neoBrutalistColors.stats.following} border-2 border-black rounded-base p-2 sm:p-4 text-center`}
                 >
-                  <p className="text-sm font-black">FOLLOWING</p>
-                  <p className="text-2xl font-black">{formatNumber(user.following_count)}</p>
+                  <p className="text-xs sm:text-sm font-black">FOLLOWING</p>
+                  <p className="text-lg sm:text-2xl font-black">
+                    {formatNumber(user.following_count)}
+                  </p>
                 </div>
               </div>
             </div>
           </div>
         </CardHeader>
 
-        <CardContent className="p-8">
+        <CardContent className="p-4 sm:p-8">
           {/* Biography */}
-          <div className="mb-8">
-            <h2 className="text-xl font-black mb-4">Biography</h2>
+          <div className="mb-6 sm:mb-8">
+            <h2 className="text-lg sm:text-xl font-black mb-3 sm:mb-4">Biography</h2>
             {user.biography ? (
               <div className={`border-2 border-black rounded-base ${neoBrutalistColors.bio}`}>
-                <ScrollArea className="h-[120px] w-full p-4">
-                  <p className="font-medium">{user.biography}</p>
+                <ScrollArea className="h-[100px] sm:h-[120px] w-full p-3 sm:p-4">
+                  <p className="font-medium text-sm sm:text-base">{user.biography}</p>
                 </ScrollArea>
               </div>
             ) : (
-              <div className="border-2 border-black rounded-base bg-gray-100 p-4">
-                <p className="font-medium text-gray-500 italic">No biography available</p>
+              <div className="border-2 border-black rounded-base bg-gray-100 p-3 sm:p-4">
+                <p className="font-medium text-sm sm:text-base text-gray-500 italic">
+                  No biography available
+                </p>
               </div>
             )}
           </div>
 
           {/* Account Info */}
           <div>
-            <h2 className="text-xl font-black mb-4">Account Information</h2>
-            <div className="grid gap-4">
-              <div className="flex gap-4 items-center">
-                <Badge variant="neutral" className="font-bold">
+            <h2 className="text-lg sm:text-xl font-black mb-3 sm:mb-4">Account Information</h2>
+            <div className="grid gap-3 sm:gap-4">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 sm:items-center">
+                <Badge variant="neutral" className="font-bold w-fit">
                   LAST UPDATED
                 </Badge>
-                <span className="font-medium">{formatDate(user.updated_at)}</span>
+                <span className="font-medium text-sm sm:text-base">
+                  {formatDate(user.updated_at)}
+                </span>
               </div>
-              <div className="flex gap-4 items-center">
-                <Badge variant="neutral" className="font-bold">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 sm:items-center">
+                <Badge variant="neutral" className="font-bold w-fit">
                   VERIFIED
                 </Badge>
-                <span className="font-medium">{user.is_verified ? 'Yes' : 'No'}</span>
+                <span className="font-medium text-sm sm:text-base">
+                  {user.is_verified ? 'Yes' : 'No'}
+                </span>
               </div>
-              <div className="flex gap-4 items-center">
-                <Badge variant="neutral" className="font-bold">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 sm:items-center">
+                <Badge variant="neutral" className="font-bold w-fit">
                   PRIVATE
                 </Badge>
-                <span className="font-medium">{user.is_private ? 'Yes' : 'No'}</span>
+                <span className="font-medium text-sm sm:text-base">
+                  {user.is_private ? 'Yes' : 'No'}
+                </span>
               </div>
             </div>
           </div>
         </CardContent>
 
-        <CardFooter className={`border-t-2 border-black ${neoBrutalistColors.footer} p-6`}>
-          <div className="flex gap-4 w-full">
+        <CardFooter className={`border-t-2 border-black ${neoBrutalistColors.footer} p-4 sm:p-6`}>
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
             <Button disabled={user.is_private} className="flex-1 font-black">
               VIEW STORIES
             </Button>
