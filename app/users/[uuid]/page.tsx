@@ -8,10 +8,12 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
+// Remove dialog import as we're using direct links now
 import { InstagramUser } from '@/app/types/instagram';
 import { neoBrutalistColors } from '../utils/colors';
 import { formatNumber, formatDate } from '../utils/formatters';
 import { UserDetailSkeleton } from './components/UserDetailSkeleton';
+import { UserHistoryGrid } from './components/UserHistoryGrid';
 
 interface UserDetailPageProps {
   params: Promise<{
@@ -188,6 +190,11 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
 
         <CardFooter className={`border-t-2 border-black ${neoBrutalistColors.footer} p-4 sm:p-6`}>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
+            <Link href={`/users/${user.uuid}/history`}>
+              <Button variant="neutral" className="w-full font-black" data-testid="history-button">
+                VIEW HISTORY
+              </Button>
+            </Link>
             <Button disabled={user.is_private} className="flex-1 font-black">
               VIEW STORIES
             </Button>

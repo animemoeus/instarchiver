@@ -150,7 +150,7 @@ export default function InstagramUsersList() {
 
   return (
     <InstagramPage
-      totalUsers={data?.count || 0}
+      totalCount={data?.count || 0}
       currentPage={currentPage}
       usersList={
         <Suspense
