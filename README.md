@@ -1,4 +1,32 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Instagram Archiver
+
+A modern Instagram story and user archiving application built with Next.js and the Neo Brutalism design system.
+
+![Neo Brutalism Design](https://placeholder-for-project-screenshot.com)
+
+## Features
+
+- Archive and browse Instagram stories
+- User profile management and history tracking
+- Bold Neo Brutalism design with vibrant aesthetics
+- Fully responsive across all devices
+- Accessible interface meeting WCAG standards
+
+## Design Philosophy
+
+This project embraces the Neo Brutalism design system, which features:
+
+- Bold, vibrant colors with high contrast
+- Minimalist yet expressive UI elements
+- Strong visual hierarchy and clear interaction design
+- Honest representation of digital elements
+
+## Tech Stack
+
+- **Framework**: [Next.js](https://nextjs.org)
+- **Data Fetching**: React Query
+- **UI Components**: Custom Neo Brutalism components
+- **Styling**: Tailwind CSS with custom design tokens
 
 ## Getting Started
 
@@ -16,21 +44,28 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `/app` - Application pages and routes
+  - `/stories` - Instagram stories archiving features
+  - `/users` - User management and history features
+- `/components` - Reusable UI components following Neo Brutalism
+- `/hooks` - Custom React hooks
+- `/lib` - Shared utilities and helper functions
 
-## Learn More
+## Accessibility
 
-To learn more about Next.js, take a look at the following resources:
+This project prioritizes accessibility with:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Semantic HTML structure
+- ARIA attributes where necessary
+- Keyboard navigation support
+- High contrast color schemes (conforming to WCAG 2.1)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Contributing
 
-## Deploy on Vercel
+Contributions are welcome! Please ensure any UI changes adhere to the Neo Brutalism design guidelines outlined in this documentation.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+[MIT](https://choosealicense.com/licenses/mit/)
