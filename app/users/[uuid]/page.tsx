@@ -190,11 +190,16 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
         <CardFooter className={`border-t-2 border-black ${neoBrutalistColors.footer} p-4 sm:p-6`}>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
             <Link href={`/users/${user.uuid}/history`}>
-              <Button variant="neutral" className="w-full font-black" data-testid="history-button">
+              <Button
+                variant="neutral"
+                className="w-full font-black"
+                data-testid="history-button"
+                disabled={!user.has_history}
+              >
                 VIEW HISTORY
               </Button>
             </Link>
-            <Button disabled={user.is_private} className="flex-1 font-black">
+            <Button disabled={user.is_private || !user.has_stories} className="flex-1 font-black">
               VIEW STORIES
             </Button>
             <Button disabled={user.is_private} variant="neutral" className="flex-1 font-black">
