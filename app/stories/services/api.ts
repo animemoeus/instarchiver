@@ -16,13 +16,23 @@ export const API_CONSTANTS = {
  */
 export async function fetchStories(
   page = 1,
-  searchQuery?: string
+  searchQuery?: string,
+  userId?: string
 ): Promise<InstagramStoriesResponse> {
   try {
-    const searchParam = searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : '';
-    const response = await fetch(
-      `${API_BASE_URL}/instagram/stories/?page=${page}&count=${API_CONSTANTS.COUNT_PER_PAGE}${searchParam}`
-    );
+    const params = new URLSearchParams();
+    params.set('page', page.toString());
+    params.set('count', API_CONSTANTS.COUNT_PER_PAGE.toString());
+
+    if (searchQuery) {
+      params.set('search', searchQuery);
+    }
+
+    if (userId) {
+      params.set('user', userId);
+    }
+
+    const response = await fetch(`${API_BASE_URL}/instagram/stories/?${params.toString()}`);
 
     if (!response.ok) {
       throw new Error(`API error: ${response.status}`);

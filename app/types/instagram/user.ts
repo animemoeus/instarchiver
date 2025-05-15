@@ -3,6 +3,8 @@
  */
 export interface InstagramUser {
   uuid: string;
+  has_stories: boolean;
+  has_history: boolean;
   instagram_id: string;
   username: string;
   full_name: string;
