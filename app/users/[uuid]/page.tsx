@@ -190,7 +190,7 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
         <CardFooter className={`border-t-2 border-black ${neoBrutalistColors.footer} p-4 sm:p-6`}>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
             {user.has_history ? (
-              <Link href={`/users/${user.uuid}/history`}>
+              <Link href={`/users/${user.uuid}/history`} className="flex-1">
                 <Button
                   variant="neutral"
                   className="w-full font-black"
@@ -200,29 +200,35 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
                 </Button>
               </Link>
             ) : (
-              <Button
-                variant="neutral"
-                className="w-full font-black"
-                data-testid="history-button"
-                disabled
-              >
-                VIEW HISTORY
-              </Button>
+              <div className="flex-1">
+                <Button
+                  variant="neutral"
+                  className="w-full font-black"
+                  data-testid="history-button"
+                  disabled
+                >
+                  VIEW HISTORY
+                </Button>
+              </div>
             )}
             {user.has_stories ? (
-              <Link href={`/stories?user=${user.uuid}`}>
-                <Button className="flex-1 font-black" disabled={user.is_private}>
+              <Link href={`/stories?user=${user.uuid}`} className="flex-1">
+                <Button className="w-full font-black" disabled={user.is_private}>
                   VIEW STORIES
                 </Button>
               </Link>
             ) : (
-              <Button disabled={true} className="flex-1 font-black">
-                VIEW STORIES
-              </Button>
+              <div className="flex-1">
+                <Button disabled={true} className="w-full font-black">
+                  VIEW STORIES
+                </Button>
+              </div>
             )}
-            <Button disabled={true} variant="neutral" className="flex-1 font-black">
-              ARCHIVE POSTS
-            </Button>
+            <div className="flex-1">
+              <Button disabled={true} variant="neutral" className="w-full font-black">
+                ARCHIVE POSTS
+              </Button>
+            </div>
           </div>
         </CardFooter>
       </Card>
