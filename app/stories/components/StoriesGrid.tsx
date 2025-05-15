@@ -14,9 +14,9 @@ interface StoriesGridProps {
 export function StoriesGrid({ stories, volume, isLooping, isMuted }: StoriesGridProps) {
   if (stories.length === 0) {
     return (
-      <Card className="text-center">
-        <h3 className="text-2xl font-bold">No stories found</h3>
-        <p className="mt-2">Try a different search query or check back later.</p>
+      <Card className="mt-8 p-12 text-center border-2 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)]">
+        <h3 className="text-4xl font-black mb-4">NO STORIES FOUND</h3>
+        <p className="text-xl font-medium">Try a different search query or check back later.</p>
       </Card>
     );
   }
