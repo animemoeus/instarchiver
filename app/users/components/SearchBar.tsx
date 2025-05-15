@@ -8,10 +8,16 @@ import { Input } from '@/components/ui/input';
 interface SearchBarProps {
   initialQuery?: string;
   onSearch?: (query: string) => void;
-  placeholder?: string; // Add placeholder prop
+  placeholder?: string;
+  className?: string;
 }
 
-export function SearchBar({ initialQuery = '', onSearch }: SearchBarProps) {
+export function SearchBar({
+  initialQuery = '',
+  onSearch,
+  placeholder = 'Search users by username...',
+  className,
+}: SearchBarProps) {
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -42,14 +48,14 @@ export function SearchBar({ initialQuery = '', onSearch }: SearchBarProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full mb-6">
+    <form onSubmit={handleSubmit} className={`w-full ${className || 'mb-6'}`}>
       <div className="flex gap-2">
         <div className="relative flex-1">
           <Input
             type="text"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            placeholder="Search users by username..."
+            placeholder={placeholder}
             className="pr-10" // Add padding for the clear button
             data-testid="search-input"
           />

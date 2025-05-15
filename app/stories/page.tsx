@@ -128,7 +128,8 @@ export default function StoriesPage() {
       <div>
         <h1 className="font-black text-5xl mb-4">INSTAGRAM STORIES ARCHIVE</h1>
         <p className="text-xl mt-4 font-medium">
-          Browse and discover the latest Instagram stories across all users.
+          Browse and discover the latest Instagram stories. Search by username to find stories from
+          specific users.
         </p>
 
         <MediaControls
@@ -141,7 +142,7 @@ export default function StoriesPage() {
         />
       </div>
 
-      {/* <SearchBar onSearch={handleSearch} placeholder="Search by username..." /> */}
+      <SearchBar onSearch={handleSearch} placeholder="Search by username..." className="mt-8" />
 
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">

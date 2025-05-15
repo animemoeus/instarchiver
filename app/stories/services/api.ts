@@ -25,7 +25,7 @@ export async function fetchStories(
     params.set('count', API_CONSTANTS.COUNT_PER_PAGE.toString());
 
     if (searchQuery) {
-      params.set('search', searchQuery);
+      params.set('user__username', searchQuery);
     }
 
     if (userId) {

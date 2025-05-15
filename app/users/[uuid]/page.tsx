@@ -212,10 +212,11 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
               </div>
             )}
             {user.has_stories ? (
-              <Link href={`/stories?user=${user.uuid}`} className="flex-1">
-                <Button className="w-full font-black" disabled={user.is_private}>
-                  VIEW STORIES
-                </Button>
+              <Link
+                href={`/stories?search=${encodeURIComponent(user.username)}&page=1`}
+                className="flex-1"
+              >
+                <Button className="w-full font-black">VIEW STORIES</Button>
               </Link>
             ) : (
               <div className="flex-1">
