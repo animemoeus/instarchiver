@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Button } from './button';
 import { Card } from './card';
@@ -17,6 +17,16 @@ export function Navigation() {
   // Neo Brutalism color palette
   const colors = ['bg-yellow-400', 'bg-pink-500', 'bg-blue-500', 'bg-green-500', 'bg-purple-500'];
 
+  const router = useRouter();
+
+  const handleNavClick = async (path: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    // Force a clean navigation by replacing the current URL state
+    await router.replace(path);
+    // Then push the new path to ensure a fresh state
+    router.push(path);
+  };
+
   const navLinks = [
     { name: 'Home', path: '/', color: colors[0] },
     { name: 'Users', path: '/users', color: colors[1] },
@@ -26,7 +36,7 @@ export function Navigation() {
   return (
     <Card className="w-full border-b-4 border-black bg-white rounded-none shadow-none">
       <div className="container mx-auto px-4 flex justify-between items-center h-16">
-        <Link href="/" className="flex items-center">
+        <Link href="/" className="flex items-center" onClick={e => handleNavClick('/', e)}>
           <span className="font-black text-xl bg-yellow-400 px-3 py-2 border-2 border-black shadow-[4px_4px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all">
             INSTA ARCHIVER
           </span>
@@ -76,7 +86,9 @@ export function Navigation() {
                   : 'bg-white hover:shadow-[4px_4px_0px_rgba(0,0,0,1)] hover:bg-gray-100'
               } hover:shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px]`}
             >
-              <Link href={link.path}>{link.name.toUpperCase()}</Link>
+              <Link href={link.path} onClick={e => handleNavClick(link.path, e)}>
+                {link.name.toUpperCase()}
+              </Link>
             </Button>
           ))}
         </div>
@@ -94,7 +106,10 @@ export function Navigation() {
                   ? `${link.color} text-white border-l-4 border-black`
                   : 'hover:bg-gray-100 hover:border-l-4 hover:border-black'
               }`}
-              onClick={() => setIsMenuOpen(false)}
+              onClick={e => {
+                setIsMenuOpen(false);
+                handleNavClick(link.path, e);
+              }}
             >
               {link.name.toUpperCase()}
             </Link>
