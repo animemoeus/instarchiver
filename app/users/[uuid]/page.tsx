@@ -189,20 +189,38 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
 
         <CardFooter className={`border-t-2 border-black ${neoBrutalistColors.footer} p-4 sm:p-6`}>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
-            <Link href={`/users/${user.uuid}/history`}>
+            {user.has_history ? (
+              <Link href={`/users/${user.uuid}/history`}>
+                <Button
+                  variant="neutral"
+                  className="w-full font-black"
+                  data-testid="history-button"
+                >
+                  VIEW HISTORY
+                </Button>
+              </Link>
+            ) : (
               <Button
                 variant="neutral"
                 className="w-full font-black"
                 data-testid="history-button"
-                disabled={!user.has_history}
+                disabled
               >
                 VIEW HISTORY
               </Button>
-            </Link>
-            <Button disabled={user.is_private || !user.has_stories} className="flex-1 font-black">
-              VIEW STORIES
-            </Button>
-            <Button disabled={user.is_private} variant="neutral" className="flex-1 font-black">
+            )}
+            {user.has_stories ? (
+              <Link href={`/stories?user=${user.uuid}`}>
+                <Button className="flex-1 font-black" disabled={user.is_private}>
+                  VIEW STORIES
+                </Button>
+              </Link>
+            ) : (
+              <Button disabled={true} className="flex-1 font-black">
+                VIEW STORIES
+              </Button>
+            )}
+            <Button disabled={true} variant="neutral" className="flex-1 font-black">
               ARCHIVE POSTS
             </Button>
           </div>
