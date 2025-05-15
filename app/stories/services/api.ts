@@ -11,6 +11,48 @@ export const API_CONSTANTS = {
   COUNT_PER_PAGE: 12,
 };
 
+// API error class
+export class APIError extends Error {
+  constructor(
+    public status: number,
+    message: string
+  ) {
+    super(message);
+    this.name = 'APIError';
+  }
+}
+
+/**
+ * Make an API request with error handling
+ */
+async function makeRequest<T>(endpoint: string, options?: RequestInit): Promise<T> {
+  try {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
+
+    if (!response.ok) {
+      throw new APIError(response.status, `API request failed with status ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    if (error instanceof APIError) {
+      throw error;
+    }
+    throw new Error('Failed to fetch data from API');
+  }
+}
+
+/**
+ * Create API URL with query parameters
+ */
+function createApiUrl(endpoint: string, params: Record<string, string>): string {
+  const searchParams = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value) searchParams.set(key, value);
+  });
+  return `${endpoint}?${searchParams.toString()}`;
+}
+
 /**
  * Fetch stories with optional filtering
  */
@@ -19,48 +61,22 @@ export async function fetchStories(
   searchQuery?: string,
   userId?: string
 ): Promise<InstagramStoriesResponse> {
-  try {
-    const params = new URLSearchParams();
-    params.set('page', page.toString());
-    params.set('count', API_CONSTANTS.COUNT_PER_PAGE.toString());
+  const params = {
+    page: page.toString(),
+    count: API_CONSTANTS.COUNT_PER_PAGE.toString(),
+    ...(searchQuery && { user__username: searchQuery }),
+    ...(userId && { user: userId }),
+  };
 
-    if (searchQuery) {
-      params.set('user__username', searchQuery);
-    }
-
-    if (userId) {
-      params.set('user', userId);
-    }
-
-    const response = await fetch(`${API_BASE_URL}/instagram/stories/?${params.toString()}`);
-
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Error fetching stories:', error);
-    throw error;
-  }
+  const endpoint = createApiUrl('/instagram/stories/', params);
+  return makeRequest<InstagramStoriesResponse>(endpoint);
 }
 
 /**
  * Fetch a single story by ID
  */
 export async function fetchStoryById(storyId: string): Promise<InstagramStory> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/instagram/stories/${storyId}/`);
-
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error(`Error fetching story ${storyId}:`, error);
-    throw error;
-  }
+  return makeRequest<InstagramStory>(`/instagram/stories/${storyId}/`);
 }
 
 /**
@@ -68,7 +84,6 @@ export async function fetchStoryById(storyId: string): Promise<InstagramStory> {
  */
 export async function downloadStoryMedia(story: InstagramStory): Promise<void> {
   try {
-    // Get file extension from the media URL
     const fileExtension = story.media.split('.').pop() || 'jpg';
     const fileName = `story_${story.story_id}.${fileExtension}`;
 
@@ -76,11 +91,12 @@ export async function downloadStoryMedia(story: InstagramStory): Promise<void> {
     const link = document.createElement('a');
     link.href = story.media;
     link.download = fileName;
+    link.style.display = 'none';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   } catch (error) {
     console.error('Error downloading story media:', error);
-    throw error;
+    throw new Error('Failed to download story media');
   }
 }

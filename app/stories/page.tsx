@@ -2,11 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
 import { StoriesGrid, StorySkeleton, MediaControls } from './components';
 import { SearchBar } from '../users/components/SearchBar';
-import { fetchStories, API_CONSTANTS } from './services/api';
-import { InstagramStory, InstagramStoriesResponse } from '@/app/types/instagram/story';
+import { API_CONSTANTS } from './services/api';
+import { useStoriesQuery } from './hooks/useStories';
 import {
   Pagination,
   PaginationContent,
@@ -65,11 +64,7 @@ export default function StoriesPage() {
     router.push(newUrl);
   }, [searchParams, searchQuery, currentPage, router]);
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['stories', currentPage, searchQuery],
-    queryFn: () => fetchStories(currentPage, searchQuery),
-    staleTime: 5000,
-  });
+  const { data, isLoading, isError } = useStoriesQuery(currentPage, searchQuery);
 
   const totalPages = data ? Math.ceil(data.count / API_CONSTANTS.COUNT_PER_PAGE) : 1;
   const stories = data ? data.results : [];
