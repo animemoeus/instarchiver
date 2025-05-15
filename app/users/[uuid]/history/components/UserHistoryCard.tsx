@@ -70,32 +70,35 @@ export function UserHistoryCard({ record, previousRecord, index }: UserHistoryCa
     <Card className="w-full shadow-[8px_8px_0_0_rgba(0,0,0,1)] overflow-hidden">
       {/* Header with profile info */}
       <CardHeader className={`border-b-2 border-black py-3 ${headerColorClass}`}>
-        <div className="flex items-center gap-3">
-          {/* Profile image */}
-          <div className="relative w-14 h-14 border-2 border-black rounded-full overflow-hidden bg-white">
-            {record.profile_picture ? (
-              <Image
-                src={record.profile_picture}
-                alt={record.username}
-                fill
-                sizes="56px"
-                className="object-cover"
-              />
-            ) : (
-              <div className="w-full h-full bg-gray-300 flex items-center justify-center">
-                <span className="text-2xl font-black">
-                  {record.username.charAt(0).toUpperCase()}
-                </span>
-              </div>
-            )}
+        <div className="flex flex-wrap items-start gap-3 justify-between">
+          <div className="flex items-center gap-3 min-w-0">
+            {/* Profile image */}
+            <div className="relative w-14 h-14 min-w-[56px] min-h-[56px] border-2 border-black rounded-full overflow-hidden bg-white">
+              {record.profile_picture ? (
+                <Image
+                  src={record.profile_picture}
+                  alt={record.username}
+                  fill
+                  sizes="56px"
+                  style={{ objectFit: 'cover' }}
+                  className="object-cover !rounded-full aspect-square w-full h-full"
+                />
+              ) : (
+                <div className="w-full h-full bg-gray-300 flex items-center justify-center rounded-full">
+                  <span className="text-2xl font-black">
+                    {record.username.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+              )}
+            </div>
+            <div className="min-w-0">
+              <CardTitle className="text-xl font-black truncate">@{record.username}</CardTitle>
+              {record.full_name && (
+                <p className="font-medium text-black text-sm truncate">{record.full_name}</p>
+              )}
+            </div>
           </div>
-          <div>
-            <CardTitle className="text-xl font-black">@{record.username}</CardTitle>
-            {record.full_name && (
-              <p className="font-medium text-black text-sm">{record.full_name}</p>
-            )}
-          </div>
-          <Badge variant="neutral" className="ml-auto">
+          <Badge variant="neutral" className="mt-1">
             {formatDate(record.history_date)}
           </Badge>
         </div>
