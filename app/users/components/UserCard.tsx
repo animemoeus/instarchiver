@@ -41,112 +41,108 @@ const formatDate = (dateString: string): string => {
 };
 
 export function UserCard({ user, index }: UserCardProps) {
-  // If index is provided, use it to get the same color as the skeleton
-  // Otherwise fall back to username-based color for backward compatibility
-  const headerColorClass =
-    index !== undefined
-      ? neoBrutalistColors.header[index % neoBrutalistColors.header.length]
-      : getConsistentColor(user.username);
   return (
-    <div className="relative">
-      <Card className="w-full shadow-[8px_8px_0_0_rgba(0,0,0,1)] overflow-hidden">
-        {/* Instagram-style header with a more condensed layout */}
-        <CardHeader className={`border-b-2 border-black py-3 ${headerColorClass}`}>
-          <div className="flex items-center gap-3">
-            {/* Profile image with Instagram-style border */}
-            <div className="relative w-14 h-14 border-2 border-black rounded-full overflow-hidden bg-white">
-              {user.profile_picture ? (
-                <Image
-                  src={user.profile_picture}
-                  alt={user.username}
-                  fill
-                  sizes="(max-width: 768px) 56px, 56px"
-                  className="object-cover"
-                  onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
-                    // Fallback on image error
-                    const target = e.target as HTMLImageElement;
-                    target.style.display = 'none';
-                    target.parentElement!.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-gray-300"><span class="text-2xl font-black">${user.username.charAt(0).toUpperCase()}</span></div>`;
-                  }}
-                />
-              ) : (
-                <div className="w-full h-full bg-gray-300 flex items-center justify-center">
-                  <span className="text-2xl font-black">
-                    {user.username.charAt(0).toUpperCase()}
-                  </span>
-                </div>
-              )}
-            </div>
-            <div>
-              <CardTitle className="text-xl font-black">@{user.username}</CardTitle>
-              {user.full_name && (
-                <CardDescription className="font-medium text-black">
-                  {user.full_name}
-                </CardDescription>
-              )}
-            </div>
-
-            {/* Instagram-style verified badge (if needed) */}
-            {/* <div className="ml-auto border-2 border-black rounded-md px-2 py-1 bg-blue-400">
-              <span className="text-xs font-black">VERIFIED</span>
-            </div> */}
+    <Card className="w-full shadow-[var(--shadow)] bg-[var(--background)]">
+      <CardHeader className="border-b-2 border-[var(--border)] py-3 bg-[var(--main)]">
+        <div className="flex items-center gap-3">
+          {/* Profile image */}
+          <div className="relative w-14 h-14 border-2 border-[var(--border)] rounded-full overflow-hidden bg-[var(--secondary-background)]">
+            {user.profile_picture ? (
+              <Image
+                src={user.profile_picture}
+                alt={user.username}
+                fill
+                sizes="(max-width: 768px) 56px, 56px"
+                className="object-cover"
+                onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                  target.parentElement!.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-[var(--secondary-background)]"><span class="text-2xl font-[var(--font-weight-heading)] text-[var(--foreground)]">${user.username.charAt(0).toUpperCase()}</span></div>`;
+                }}
+              />
+            ) : (
+              <div className="w-full h-full bg-[var(--secondary-background)] flex items-center justify-center">
+                <span className="text-2xl font-[var(--font-weight-heading)] text-[var(--foreground)]">
+                  {user.username.charAt(0).toUpperCase()}
+                </span>
+              </div>
+            )}
           </div>
-        </CardHeader>
-
-        <CardContent className="p-4">
-          {/* Instagram-style statistics */}
-          <div className="grid grid-cols-3 gap-2 mb-4 border-2 border-black rounded-base overflow-hidden">
-            <div
-              className={`p-3 ${neoBrutalistColors.stats.posts} flex flex-col items-center justify-center`}
-            >
-              <p className="text-xs font-black">POSTS</p>
-              <p className="text-lg font-black">--</p>
-            </div>
-            <div
-              className={`p-3 ${neoBrutalistColors.stats.followers} flex flex-col items-center justify-center`}
-            >
-              <p className="text-xs font-black">FOLLOWERS</p>
-              <p className="text-lg font-black">{formatNumber(user.follower_count)}</p>
-            </div>
-            <div
-              className={`p-3 ${neoBrutalistColors.stats.following} flex flex-col items-center justify-center`}
-            >
-              <p className="text-xs font-black">FOLLOWING</p>
-              <p className="text-lg font-black">{formatNumber(user.following_count)}</p>
-            </div>
+          <div>
+            <CardTitle className="text-xl text-[var(--foreground)] font-[var(--font-weight-heading)]">
+              @{user.username}
+            </CardTitle>
+            {user.full_name && (
+              <CardDescription className="font-[var(--font-weight-base)] text-[var(--foreground)]">
+                {user.full_name}
+              </CardDescription>
+            )}
           </div>
+        </div>
+      </CardHeader>
 
-          {/* Instagram-style bio */}
-          {user.biography ? (
-            <div className={`mb-4 border-2 border-black rounded-base ${neoBrutalistColors.bio}`}>
-              <ScrollArea className="h-[100px] w-full p-3 text-black rounded-base">
-                <p className="font-medium text-sm">{user.biography}</p>
-              </ScrollArea>
-            </div>
-          ) : (
-            <div className="mb-4 p-3 border-2 border-black rounded-base bg-gray-100 h-[100px] flex items-center justify-center">
-              <p className="font-medium text-gray-500 italic text-sm">No biography available</p>
-            </div>
-          )}
-        </CardContent>
+      <CardContent className="p-4">
+        {/* User Statistics */}
+        <div className="grid grid-cols-3 gap-2 mb-4">
+          <div className="p-3 border-2 border-[var(--border)] rounded-[var(--radius-base)] bg-[var(--secondary-background)] flex flex-col items-center">
+            <p className="text-xs text-[var(--foreground)] font-[var(--font-weight-heading)]">
+              POSTS
+            </p>
+            <p className="text-lg text-[var(--foreground)] font-[var(--font-weight-heading)]">--</p>
+          </div>
+          <div className="p-3 border-2 border-[var(--border)] rounded-[var(--radius-base)] bg-[var(--secondary-background)] flex flex-col items-center">
+            <p className="text-xs text-[var(--foreground)] font-[var(--font-weight-heading)]">
+              FOLLOWERS
+            </p>
+            <p className="text-lg text-[var(--foreground)] font-[var(--font-weight-heading)]">
+              {formatNumber(user.follower_count)}
+            </p>
+          </div>
+          <div className="p-3 border-2 border-[var(--border)] rounded-[var(--radius-base)] bg-[var(--secondary-background)] flex flex-col items-center">
+            <p className="text-xs text-[var(--foreground)] font-[var(--font-weight-heading)]">
+              FOLLOWING
+            </p>
+            <p className="text-lg text-[var(--foreground)] font-[var(--font-weight-heading)]">
+              {formatNumber(user.following_count)}
+            </p>
+          </div>
+        </div>
 
-        <CardFooter
-          className={`border-t-2 border-black ${neoBrutalistColors.footer} flex-col gap-2 p-3`}
-        >
-          <p className="text-xs font-bold w-full">Last Update: {formatDate(user.updated_at)}</p>
-          <div className="flex w-full gap-2">
-            <Link href={`/users/${user.uuid}`} className="flex-1">
-              <Button variant="default" className="w-full font-black text-xs py-2 h-auto">
-                VIEW PROFILE
-              </Button>
-            </Link>
-            <Button variant="neutral" className="flex-1 font-black text-xs py-2 h-auto">
-              ARCHIVE POSTS
+        {/* User Bio */}
+        {user.biography ? (
+          <div className="border-2 border-[var(--border)] rounded-[var(--radius-base)] bg-[var(--secondary-background)]">
+            <ScrollArea className="h-[100px] w-full p-3 text-[var(--foreground)] rounded-[var(--radius-base)]">
+              <p className="font-[var(--font-weight-base)] text-sm">{user.biography}</p>
+            </ScrollArea>
+          </div>
+        ) : (
+          <div className="p-3 border-2 border-[var(--border)] rounded-[var(--radius-base)] bg-[var(--secondary-background)] h-[100px] flex items-center justify-center">
+            <p className="font-[var(--font-weight-base)] text-[var(--foreground)] italic text-sm">
+              No biography available
+            </p>
+          </div>
+        )}
+      </CardContent>
+
+      <CardFooter className="border-t-2 border-[var(--border)] bg-[var(--secondary-background)] flex-col gap-2 p-3">
+        <p className="text-xs font-[var(--font-weight-base)] text-[var(--foreground)] w-full">
+          Last Update: {formatDate(user.updated_at)}
+        </p>
+        <div className="flex w-full gap-2">
+          <Link href={`/users/${user.uuid}`} className="flex-1">
+            <Button className="w-full font-[var(--font-weight-heading)] text-xs py-2 h-auto">
+              VIEW PROFILE
             </Button>
-          </div>
-        </CardFooter>
-      </Card>
-    </div>
+          </Link>
+          <Button
+            variant="neutral"
+            className="flex-1 font-[var(--font-weight-heading)] text-xs py-2 h-auto"
+          >
+            ARCHIVE POSTS
+          </Button>
+        </div>
+      </CardFooter>
+    </Card>
   );
 }
 
