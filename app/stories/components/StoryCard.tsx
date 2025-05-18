@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { InstagramStory } from '@/app/types/instagram/story';
-import { downloadStoryMedia } from '../services/api';
+import { useDownloadStoryMedia } from '../hooks/useStories';
 import { toast } from 'sonner';
 
 interface StoryCardProps {
@@ -22,7 +22,8 @@ export function StoryCard({ story, volume, isLooping, isMuted }: StoryCardProps)
   const [isHovered, setIsHovered] = useState(false);
   const [localMuted, setLocalMuted] = useState(isMuted); // Local mute state that can be toggled by the button
   const videoRef = useRef<HTMLVideoElement>(null);
-  const isVideo = story.media.includes('.mp4');
+  const isVideo = story.media.match(/\.(mp4|webm)$/i) !== null;
+  const downloadMutation = useDownloadStoryMedia();
 
   // Update local mute state when global setting changes
   useEffect(() => {
@@ -313,35 +314,39 @@ export function StoryCard({ story, volume, isLooping, isMuted }: StoryCardProps)
 
           <div className="flex gap-2">
             <Button
-              onClick={async (e: React.MouseEvent) => {
+              onClick={(e: React.MouseEvent) => {
                 e.preventDefault();
-                try {
-                  await downloadStoryMedia(story);
-                  toast.success('Story downloaded successfully!');
-                } catch (error) {
-                  toast.error('Failed to download story');
-                  console.error('Download error:', error);
-                }
+                downloadMutation.mutate(story);
               }}
+              disabled={downloadMutation.isPending}
               className="bg-green-500 text-white font-bold"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="mr-1"
-              >
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7 10 12 15 17 10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
-              </svg>
-              Save
+              {downloadMutation.isPending ? (
+                <div className="flex items-center">
+                  <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                  Saving...
+                </div>
+              ) : (
+                <>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="mr-1"
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                  Save
+                </>
+              )}
             </Button>
 
             <Dialog>
