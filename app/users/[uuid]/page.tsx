@@ -165,32 +165,34 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
             )}
           </div>
 
-          <div>
-            <h2 className="text-lg sm:text-xl font-[var(--font-weight-heading)] text-[var(--foreground)] mb-3 sm:mb-4">
+          <div className="mb-6">
+            <h2 className="text-lg sm:text-xl font-[var(--font-weight-heading)] text-[var(--foreground)] mb-4">
               Account Information
             </h2>
-            <div className="grid gap-3 sm:gap-4">
-              <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 sm:items-center">
-                <Badge variant="neutral" className="font-[var(--font-weight-heading)] w-fit">
-                  LAST UPDATED
-                </Badge>
-                <span className="font-[var(--font-weight-base)] text-[var(--foreground)] text-sm sm:text-base">
+            <div className="flex flex-wrap gap-3">
+              <div className="inline-flex items-center gap-2 px-3 py-2 bg-[var(--secondary-background)] border-2 border-[var(--border)] rounded-[var(--radius-base)] hover:-translate-y-0.5 transition-transform duration-200">
+                <span className="text-sm font-[var(--font-weight-heading)] text-[var(--muted-foreground)]">
+                  LAST UPDATED:
+                </span>
+                <span className="text-sm font-[var(--font-weight-heading)] text-[var(--foreground)]">
                   {formatDate(user.updated_at)}
                 </span>
               </div>
-              <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 sm:items-center">
-                <Badge variant="neutral" className="font-[var(--font-weight-heading)] w-fit">
-                  VERIFIED
-                </Badge>
-                <span className="font-[var(--font-weight-base)] text-[var(--foreground)] text-sm sm:text-base">
+
+              <div className="inline-flex items-center gap-2 px-3 py-2 bg-[var(--secondary-background)] border-2 border-[var(--border)] rounded-[var(--radius-base)] hover:-translate-y-0.5 transition-transform duration-200">
+                <span className="text-sm font-[var(--font-weight-heading)] text-[var(--muted-foreground)]">
+                  VERIFIED:
+                </span>
+                <span className="text-sm font-[var(--font-weight-heading)] text-[var(--foreground)]">
                   {user.is_verified ? 'Yes' : 'No'}
                 </span>
               </div>
-              <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 sm:items-center">
-                <Badge variant="neutral" className="font-[var(--font-weight-heading)] w-fit">
-                  PRIVATE
-                </Badge>
-                <span className="font-[var(--font-weight-base)] text-[var(--foreground)] text-sm sm:text-base">
+
+              <div className="inline-flex items-center gap-2 px-3 py-2 bg-[var(--secondary-background)] border-2 border-[var(--border)] rounded-[var(--radius-base)] hover:-translate-y-0.5 transition-transform duration-200">
+                <span className="text-sm font-[var(--font-weight-heading)] text-[var(--muted-foreground)]">
+                  PRIVATE:
+                </span>
+                <span className="text-sm font-[var(--font-weight-heading)] text-[var(--foreground)]">
                   {user.is_private ? 'Yes' : 'No'}
                 </span>
               </div>
