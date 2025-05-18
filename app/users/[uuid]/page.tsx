@@ -9,11 +9,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { InstagramUser } from '@/app/types/instagram';
-import { neoBrutalistColors } from '../utils/colors';
-import { formatNumber, formatDate } from '../utils/formatters';
 import { UserDetailSkeleton } from './components/UserDetailSkeleton';
 import { UserHistoryGrid } from './components/UserHistoryGrid';
-import { DiscussionEmbed, CommentCount } from 'disqus-react';
+import { DiscussionEmbed } from 'disqus-react';
+import { formatNumber, formatDate } from '../utils/formatters';
 
 interface UserDetailPageProps {
   params: Promise<{
@@ -51,12 +50,16 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
   if (error) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <Card className="w-full max-w-4xl mx-auto shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
-          <CardHeader className="border-b-2 border-black bg-red-400">
-            <CardTitle>Error</CardTitle>
+        <Card className="w-full max-w-4xl mx-auto shadow-[var(--shadow)] bg-[var(--background)]">
+          <CardHeader className="border-b-2 border-[var(--border)] bg-[var(--main)]">
+            <CardTitle className="text-[var(--foreground)] font-[var(--font-weight-heading)]">
+              Error
+            </CardTitle>
           </CardHeader>
           <CardContent className="p-8">
-            <p className="text-lg font-bold">Failed to load user details</p>
+            <p className="text-lg font-[var(--font-weight-heading)] text-[var(--foreground)]">
+              Failed to load user details
+            </p>
             <Link href="/users">
               <Button className="mt-4">Back to Users</Button>
             </Link>
@@ -76,12 +79,10 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
-      <Card className="w-full max-w-4xl mx-auto shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
-        <CardHeader
-          className={`border-b-2 border-black ${neoBrutalistColors.header[0]} p-4 sm:p-6`}
-        >
+      <Card className="w-full max-w-4xl mx-auto shadow-[var(--shadow)] bg-[var(--background)]">
+        <CardHeader className="border-b-2 border-[var(--border)] bg-[var(--main)] p-4 sm:p-6">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
-            <div className="relative w-24 h-24 sm:w-32 sm:h-32 border-4 border-black rounded-full overflow-hidden bg-white shrink-0">
+            <div className="relative w-24 h-24 sm:w-32 sm:h-32 border-4 border-[var(--border)] rounded-full overflow-hidden bg-[var(--secondary-background)] shrink-0">
               {user.profile_picture ? (
                 <Image
                   src={user.profile_picture}
@@ -90,8 +91,8 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
                   className="object-cover"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gray-300">
-                  <span className="text-4xl font-black">
+                <div className="w-full h-full flex items-center justify-center bg-[var(--secondary-background)]">
+                  <span className="text-4xl font-[var(--font-weight-heading)] text-[var(--foreground)]">
                     {user.username.charAt(0).toUpperCase()}
                   </span>
                 </div>
@@ -101,35 +102,39 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
             <div className="flex-1 w-full">
               <div className="flex flex-col items-center sm:items-start">
                 <div className="text-center sm:text-left">
-                  <CardTitle className="text-2xl sm:text-3xl font-black mb-2">
+                  <CardTitle className="text-2xl sm:text-3xl font-[var(--font-weight-heading)] text-[var(--foreground)] mb-2">
                     @{user.username}
                   </CardTitle>
                   {user.full_name && (
-                    <p className="text-lg sm:text-xl font-bold mb-4">{user.full_name}</p>
+                    <p className="text-lg sm:text-xl font-[var(--font-weight-heading)] text-[var(--foreground)] mb-4">
+                      {user.full_name}
+                    </p>
                   )}
                 </div>
               </div>
 
               <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-4">
-                <div
-                  className={`${neoBrutalistColors.stats.posts} border-2 border-black rounded-base p-2 sm:p-4 text-center`}
-                >
-                  <p className="text-xs sm:text-sm font-black">POSTS</p>
-                  <p className="text-lg sm:text-2xl font-black">{formatNumber(user.media_count)}</p>
+                <div className="border-2 border-[var(--border)] rounded-[var(--radius-base)] p-2 sm:p-4 text-center bg-[var(--secondary-background)]">
+                  <p className="text-xs sm:text-sm font-[var(--font-weight-heading)] text-[var(--foreground)]">
+                    POSTS
+                  </p>
+                  <p className="text-lg sm:text-2xl font-[var(--font-weight-heading)] text-[var(--foreground)]">
+                    {formatNumber(user.media_count)}
+                  </p>
                 </div>
-                <div
-                  className={`${neoBrutalistColors.stats.followers} border-2 border-black rounded-base p-2 sm:p-4 text-center`}
-                >
-                  <p className="text-xs sm:text-sm font-black">FOLLOWERS</p>
-                  <p className="text-lg sm:text-2xl font-black">
+                <div className="border-2 border-[var(--border)] rounded-[var(--radius-base)] p-2 sm:p-4 text-center bg-[var(--secondary-background)]">
+                  <p className="text-xs sm:text-sm font-[var(--font-weight-heading)] text-[var(--foreground)]">
+                    FOLLOWERS
+                  </p>
+                  <p className="text-lg sm:text-2xl font-[var(--font-weight-heading)] text-[var(--foreground)]">
                     {formatNumber(user.follower_count)}
                   </p>
                 </div>
-                <div
-                  className={`${neoBrutalistColors.stats.following} border-2 border-black rounded-base p-2 sm:p-4 text-center`}
-                >
-                  <p className="text-xs sm:text-sm font-black">FOLLOWING</p>
-                  <p className="text-lg sm:text-2xl font-black">
+                <div className="border-2 border-[var(--border)] rounded-[var(--radius-base)] p-2 sm:p-4 text-center bg-[var(--secondary-background)]">
+                  <p className="text-xs sm:text-sm font-[var(--font-weight-heading)] text-[var(--foreground)]">
+                    FOLLOWING
+                  </p>
+                  <p className="text-lg sm:text-2xl font-[var(--font-weight-heading)] text-[var(--foreground)]">
                     {formatNumber(user.following_count)}
                   </p>
                 </div>
@@ -140,16 +145,20 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
 
         <CardContent className="p-4 sm:p-8">
           <div className="mb-6 sm:mb-8">
-            <h2 className="text-lg sm:text-xl font-black mb-3 sm:mb-4">Biography</h2>
+            <h2 className="text-lg sm:text-xl font-[var(--font-weight-heading)] text-[var(--foreground)] mb-3 sm:mb-4">
+              Biography
+            </h2>
             {user.biography ? (
-              <div className={`border-2 border-black rounded-base ${neoBrutalistColors.bio}`}>
+              <div className="border-2 border-[var(--border)] rounded-[var(--radius-base)] bg-[var(--secondary-background)]">
                 <ScrollArea className="h-[100px] sm:h-[120px] w-full p-3 sm:p-4">
-                  <p className="font-medium text-sm sm:text-base">{user.biography}</p>
+                  <p className="font-[var(--font-weight-base)] text-[var(--foreground)] text-sm sm:text-base">
+                    {user.biography}
+                  </p>
                 </ScrollArea>
               </div>
             ) : (
-              <div className="border-2 border-black rounded-base bg-gray-100 p-3 sm:p-4">
-                <p className="font-medium text-sm sm:text-base text-gray-500 italic">
+              <div className="border-2 border-[var(--border)] rounded-[var(--radius-base)] bg-[var(--secondary-background)] p-3 sm:p-4">
+                <p className="font-[var(--font-weight-base)] text-[var(--foreground)] text-sm sm:text-base italic">
                   No biography available
                 </p>
               </div>
@@ -157,29 +166,31 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
           </div>
 
           <div>
-            <h2 className="text-lg sm:text-xl font-black mb-3 sm:mb-4">Account Information</h2>
+            <h2 className="text-lg sm:text-xl font-[var(--font-weight-heading)] text-[var(--foreground)] mb-3 sm:mb-4">
+              Account Information
+            </h2>
             <div className="grid gap-3 sm:gap-4">
               <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 sm:items-center">
-                <Badge variant="neutral" className="font-bold w-fit">
+                <Badge variant="neutral" className="font-[var(--font-weight-heading)] w-fit">
                   LAST UPDATED
                 </Badge>
-                <span className="font-medium text-sm sm:text-base">
+                <span className="font-[var(--font-weight-base)] text-[var(--foreground)] text-sm sm:text-base">
                   {formatDate(user.updated_at)}
                 </span>
               </div>
               <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 sm:items-center">
-                <Badge variant="neutral" className="font-bold w-fit">
+                <Badge variant="neutral" className="font-[var(--font-weight-heading)] w-fit">
                   VERIFIED
                 </Badge>
-                <span className="font-medium text-sm sm:text-base">
+                <span className="font-[var(--font-weight-base)] text-[var(--foreground)] text-sm sm:text-base">
                   {user.is_verified ? 'Yes' : 'No'}
                 </span>
               </div>
               <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 sm:items-center">
-                <Badge variant="neutral" className="font-bold w-fit">
+                <Badge variant="neutral" className="font-[var(--font-weight-heading)] w-fit">
                   PRIVATE
                 </Badge>
-                <span className="font-medium text-sm sm:text-base">
+                <span className="font-[var(--font-weight-base)] text-[var(--foreground)] text-sm sm:text-base">
                   {user.is_private ? 'Yes' : 'No'}
                 </span>
               </div>
@@ -187,13 +198,13 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
           </div>
         </CardContent>
 
-        <CardFooter className={`border-t-2 border-black ${neoBrutalistColors.footer} p-4 sm:p-6`}>
+        <CardFooter className="border-t-2 border-[var(--border)] bg-[var(--secondary-background)] p-4 sm:p-6">
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
             {user.has_history ? (
               <Link href={`/users/${user.uuid}/history`} className="flex-1">
                 <Button
                   variant="neutral"
-                  className="w-full font-black"
+                  className="w-full font-[var(--font-weight-heading)]"
                   data-testid="history-button"
                 >
                   VIEW HISTORY
@@ -203,7 +214,7 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
               <div className="flex-1">
                 <Button
                   variant="neutral"
-                  className="w-full font-black"
+                  className="w-full font-[var(--font-weight-heading)]"
                   data-testid="history-button"
                   disabled
                 >
@@ -216,17 +227,21 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
                 href={`/stories?search=${encodeURIComponent(user.username)}&page=1`}
                 className="flex-1"
               >
-                <Button className="w-full font-black">VIEW STORIES</Button>
+                <Button className="w-full font-[var(--font-weight-heading)]">VIEW STORIES</Button>
               </Link>
             ) : (
               <div className="flex-1">
-                <Button disabled={true} className="w-full font-black">
+                <Button disabled={true} className="w-full font-[var(--font-weight-heading)]">
                   VIEW STORIES
                 </Button>
               </div>
             )}
             <div className="flex-1">
-              <Button disabled={true} variant="neutral" className="w-full font-black">
+              <Button
+                disabled={true}
+                variant="neutral"
+                className="w-full font-[var(--font-weight-heading)]"
+              >
                 ARCHIVE POSTS
               </Button>
             </div>
@@ -234,9 +249,9 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
         </CardFooter>
       </Card>
 
-      <Card className="w-full max-w-4xl mx-auto border-4 border-black shadow-neo">
+      <Card className="w-full max-w-4xl mx-auto border-2 border-[var(--border)] shadow-[var(--shadow)] bg-[var(--background)]">
         <CardHeader>
-          <CardTitle className="text-2xl font-black"></CardTitle>
+          <CardTitle className="text-2xl font-[var(--font-weight-heading)] text-[var(--foreground)]"></CardTitle>
         </CardHeader>
         <CardContent>
           <DiscussionEmbed shortname="instagram-archiver" config={disqusConfig} />
