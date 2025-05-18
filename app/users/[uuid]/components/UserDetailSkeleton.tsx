@@ -45,14 +45,14 @@ export function UserDetailSkeleton() {
           </div>
 
           {/* Account Info Skeleton */}
-          <div>
-            <div className="h-6 bg-gray-200 rounded-base border-2 border-black w-40 mb-3 sm:mb-4 animate-pulse" />
-            <div className="grid gap-3 sm:gap-4">
+          <div className="mb-6">
+            <div className="h-6 bg-gray-200 rounded-base border-2 border-black w-40 mb-4 animate-pulse" />
+            <div className="flex flex-wrap gap-3">
               {[1, 2, 3].map(i => (
-                <div key={i} className="flex flex-col sm:flex-row gap-2 sm:gap-4 sm:items-center">
-                  <div className="h-6 bg-gray-200 rounded-base border-2 border-black w-24 animate-pulse" />
-                  <div className="h-5 bg-gray-200 rounded-base border-2 border-black w-16 animate-pulse" />
-                </div>
+                <div
+                  key={i}
+                  className="inline-flex h-9 px-3 py-2 bg-gray-200 border-2 border-black rounded-base animate-pulse w-32 sm:w-40"
+                />
               ))}
             </div>
           </div>
