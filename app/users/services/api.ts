@@ -5,7 +5,7 @@ import { InstagramUsersResponse } from '@/app/types/instagram';
 // Constants for the API
 const BASE_API_URL = process.env.NEXT_PUBLIC_INSTAGRAM_API_BASE_URL || 'https://api.animemoe.us';
 const API_ENDPOINT = '/instagram/users/';
-const COUNT_PER_PAGE = 9;
+const COUNT_PER_PAGE = 12;
 
 // Function to parse URL params from API URLs
 export const extractPageFromUrl = (url: string | null): number => {
