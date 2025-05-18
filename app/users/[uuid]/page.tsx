@@ -249,7 +249,7 @@ export default function UserDetailPage({ params }: UserDetailPageProps) {
         </CardFooter>
       </Card>
 
-      <Card className="w-full max-w-4xl mx-auto border-2 border-[var(--border)] shadow-[var(--shadow)] bg-[var(--background)]">
+      <Card className="w-full max-w-4xl mx-auto border-2 border-[var(--border)] shadow-[var(--shadow)] ">
         <CardHeader>
           <CardTitle className="text-2xl font-[var(--font-weight-heading)] text-[var(--foreground)]"></CardTitle>
         </CardHeader>
