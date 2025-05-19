@@ -21,7 +21,6 @@ interface StoryCardProps {
 
 export function StoryCard({ story }: StoryCardProps) {
   const [isLoading, setIsLoading] = useState(true);
-  const [isHovered, setIsHovered] = useState(false);
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -35,7 +34,7 @@ export function StoryCard({ story }: StoryCardProps) {
   };
 
   return (
-    <Card className="w-full border-2 border-[var(--border)] shadow-[var(--shadow)] bg-[var(--background)] overflow-hidden">
+    <Card className="w-full border-2 border-[var(--border)] shadow-[var(--shadow)] bg-[var(--background)] overflow-hidden hover:shadow-lg transition-all duration-300 hover:translate-y-[-2px]">
       <CardHeader className="border-b-2 border-[var(--border)] py-4 bg-[var(--main)]">
         <div className="flex items-center gap-4">
           {/* Profile image */}
@@ -66,17 +65,15 @@ export function StoryCard({ story }: StoryCardProps) {
 
       {/* Full-width media section - no padding */}
       <div
-        className="relative w-full border-t-2 border-b-2 border-[var(--border)] overflow-hidden"
+        className="relative w-full border-t-2 border-b-2 border-[var(--border)] overflow-hidden group"
         style={{ height: '400px' }}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
       >
         <Image
           src={story.thumbnail}
           alt="Story thumbnail"
           fill
           sizes="100vw"
-          className={`object-cover ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
+          className="object-cover transition-transform duration-300 group-hover:scale-105 transform-gpu"
           onLoad={() => setIsLoading(false)}
           onError={() => setIsLoading(false)}
         />
@@ -106,7 +103,7 @@ export function StoryCard({ story }: StoryCardProps) {
               <Button
                 variant="default"
                 size="lg"
-                className="w-full font-[var(--font-weight-heading)] text-base py-3 h-auto bg-[var(--main)] hover:bg-[var(--main)]/90 text-[var(--main-foreground)] border-2 border-[var(--border)]"
+                className="w-full font-[var(--font-weight-heading)] text-base py-3 h-auto bg-[var(--main)] hover:bg-[var(--main)]/90 text-[var(--main-foreground)] border-2 border-[var(--border)] transform transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
