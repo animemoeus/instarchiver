@@ -35,15 +35,15 @@ export function StoryCard({ story }: StoryCardProps) {
 
   return (
     <Card className="w-full border-2 border-[var(--border)] shadow-[var(--shadow)] bg-[var(--background)] overflow-hidden">
-      <CardHeader className="border-b-2 border-[var(--border)] py-4 bg-[var(--main)]">
-        <div className="flex items-center gap-4">
+      <CardHeader className="border-b-2 border-[var(--border)] py-3 bg-[var(--main)]">
+        <div className="flex items-center gap-3">
           {/* Profile image */}
-          <div className="relative w-16 h-16 min-w-[64px] min-h-[64px] border-2 border-[var(--border)] rounded-full overflow-hidden bg-[var(--secondary-background)]">
+          <div className="relative w-12 h-12 min-w-[48px] min-h-[48px] border-2 border-[var(--border)] rounded-full overflow-hidden bg-[var(--secondary-background)]">
             <Image
               src={story.user.profile_picture}
               alt={story.user.username}
               fill
-              sizes="(max-width: 768px) 64px, 64px"
+              sizes="(max-width: 768px) 48px, 48px"
               className="object-cover"
               onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
                 const target = e.target as HTMLImageElement;
@@ -64,15 +64,12 @@ export function StoryCard({ story }: StoryCardProps) {
       </CardHeader>
 
       {/* Full-width media section - no padding */}
-      <div
-        className="relative w-full border-t-2 border-b-2 border-[var(--border)] overflow-hidden group"
-        style={{ height: '400px' }}
-      >
+      <div className="relative w-full border-t-2 border-b-2 border-[var(--border)] overflow-hidden group aspect-[9/16]">
         <Image
           src={story.thumbnail}
           alt="Story thumbnail"
           fill
-          sizes="100vw"
+          sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
           className="object-cover"
           onLoad={() => setIsLoading(false)}
           onError={() => setIsLoading(false)}
@@ -89,9 +86,9 @@ export function StoryCard({ story }: StoryCardProps) {
         </div>
       </div>
 
-      <CardContent className="p-4">{/* Additional content if needed */}</CardContent>
+      <CardContent className="p-3">{/* Additional content if needed */}</CardContent>
 
-      <CardFooter className="border-t-2 border-[var(--border)] bg-[var(--secondary-background)] flex-col gap-3 p-4">
+      <CardFooter className="border-t-2 border-[var(--border)] bg-[var(--secondary-background)] flex-col gap-2 p-3">
         <div className="flex w-full justify-between items-center">
           <p className="text-sm font-[var(--font-weight-heading)] text-[var(--foreground)]">
             {formatDate(story.story_created_at)}
