@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Card,
   CardHeader,
@@ -10,116 +10,18 @@ import {
   CardTitle,
   CardDescription,
 } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { InstagramStory } from '@/app/types/instagram/story';
-import { toast } from 'sonner';
 
 interface StoryCardProps {
   story: InstagramStory;
-  volume: number; // Volume control passed from parent
-  isLooping: boolean; // Loop control passed from parent
-  isMuted: boolean; // Mute control passed from parent
 }
 
-export function StoryCard({ story, volume, isLooping, isMuted }: StoryCardProps) {
+export function StoryCard({ story }: StoryCardProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
-  const [localMuted, setLocalMuted] = useState(isMuted); // Local mute state that can be toggled by the button
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const isVideo = story.media.match(/\.(mp4|webm)$/i) !== null;
-
-  // Update local mute state when global setting changes
-  useEffect(() => {
-    setLocalMuted(isMuted);
-    if (videoRef.current) {
-      videoRef.current.muted = isMuted;
-    }
-  }, [isMuted]);
-
-  // Initialize video element when component mounts
-  useEffect(() => {
-    if (isVideo && videoRef.current) {
-      // Initial setup for the video
-      videoRef.current.muted = localMuted;
-      videoRef.current.loop = isLooping;
-      videoRef.current.volume = volume;
-      videoRef.current.preload = 'metadata'; // Preload metadata for faster playback
-
-      // Force load the video in background
-      videoRef.current.load();
-    }
-  }, [isVideo, isLooping, volume, localMuted]);
-
-  // Play/pause video on hover
-  useEffect(() => {
-    const currentVideo = videoRef.current;
-    let isPlaying = false;
-
-    const playVideo = async () => {
-      if (!currentVideo || isPlaying) return;
-
-      try {
-        // Set initial properties
-        currentVideo.volume = volume;
-        currentVideo.muted = localMuted;
-
-        isPlaying = true;
-        await currentVideo.play();
-        console.log('Video playing, muted:', localMuted, 'volume:', volume);
-      } catch (error) {
-        if (error instanceof Error && error.name === 'NotAllowedError') {
-          // Browser requires user interaction - try muted playback
-          try {
-            currentVideo.muted = true;
-            await currentVideo.play();
-            console.log('Playing muted due to autoplay restrictions');
-            if (!localMuted) {
-              toast.info('Click the sound icon to enable audio', {
-                duration: 2000,
-                id: 'sound-toast',
-              });
-            }
-          } catch (e) {
-            console.warn('Failed to play even with mute:', e);
-          }
-        } else if (error instanceof Error && error.name !== 'AbortError') {
-          // Log errors other than abort errors (which are expected during normal operation)
-          console.warn('Video playback error:', error);
-        }
-      }
-    };
-
-    const stopVideo = () => {
-      if (!currentVideo) return;
-
-      isPlaying = false;
-      // Only pause if the video is actually playing
-      if (!currentVideo.paused) {
-        currentVideo.pause();
-      }
-      currentVideo.currentTime = 0;
-      currentVideo.muted = localMuted;
-    };
-
-    if (isVideo && currentVideo) {
-      if (isHovered) {
-        playVideo();
-      } else {
-        stopVideo();
-      }
-    }
-  }, [isHovered, isVideo, volume, localMuted]);
-
-  // Update video settings when volume or looping changes
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.volume = volume; // Set video volume
-      videoRef.current.loop = isLooping; // Set looping
-    }
-  }, [volume, isLooping]);
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -159,70 +61,6 @@ export function StoryCard({ story, volume, isLooping, isMuted }: StoryCardProps)
               {story.user.full_name}
             </CardDescription>
           </div>
-
-          {isVideo && (
-            <div className="ml-auto">
-              <button
-                onClick={e => {
-                  e.stopPropagation();
-                  if (videoRef.current && !isMuted) {
-                    // Toggle the local muted state only if global mute is off
-                    const newMutedState = !localMuted;
-                    setLocalMuted(newMutedState);
-                    videoRef.current.muted = newMutedState;
-
-                    if (!newMutedState) {
-                      videoRef.current.volume = volume;
-                    }
-                    toast.success(newMutedState ? 'Sound off' : 'Sound on');
-                  }
-                }}
-                className={`${isMuted ? 'bg-gray-400 cursor-not-allowed' : 'bg-[var(--border)]'} text-[var(--secondary-background)] p-3 rounded-full hover:opacity-90 transition-colors border-2 border-[var(--border)]`}
-                title={
-                  isMuted
-                    ? 'Sound disabled globally'
-                    : localMuted
-                      ? 'Turn sound on'
-                      : 'Turn sound off'
-                }
-                disabled={isMuted}
-              >
-                {isMuted || localMuted ? (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                    <line x1="23" y1="9" x2="17" y2="15"></line>
-                    <line x1="17" y1="9" x2="23" y2="15"></line>
-                  </svg>
-                ) : (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
-                  </svg>
-                )}
-              </button>
-            </div>
-          )}
         </div>
       </CardHeader>
 
@@ -233,66 +71,20 @@ export function StoryCard({ story, volume, isLooping, isMuted }: StoryCardProps)
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {isVideo ? (
-          <>
-            <video
-              ref={videoRef}
-              src={story.media}
-              muted={localMuted}
-              playsInline
-              preload="auto"
-              loop
-              poster={story.thumbnail}
-              className={`absolute inset-0 w-full h-full object-cover ${!isHovered ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
-              onLoadedData={() => {
-                setIsLoading(false);
-                // Set initial volume when loaded
-                if (videoRef.current) {
-                  videoRef.current.volume = volume;
-                  videoRef.current.muted = localMuted;
-                }
-              }}
-              onError={() => {
-                console.error('Error loading video:', story.media);
-                setIsLoading(false);
-              }}
-            />
-            {(!isHovered || (isHovered && isLoading)) && (
-              <Image
-                src={story.thumbnail}
-                alt="Story thumbnail"
-                fill
-                sizes="100vw"
-                className={`object-cover transition-opacity duration-300`}
-                onLoad={() => setIsLoading(false)}
-                onError={() => {
-                  console.error('Error loading thumbnail:', story.thumbnail);
-                  setIsLoading(false);
-                }}
-              />
-            )}
-          </>
-        ) : (
-          <Image
-            src={story.thumbnail}
-            alt="Story thumbnail"
-            fill
-            sizes="100vw"
-            className={`object-cover ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
-            onLoad={() => setIsLoading(false)}
-            onError={() => setIsLoading(false)}
-          />
-        )}
+        <Image
+          src={story.thumbnail}
+          alt="Story thumbnail"
+          fill
+          sizes="100vw"
+          className={`object-cover ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
+          onLoad={() => setIsLoading(false)}
+          onError={() => setIsLoading(false)}
+        />
         {isLoading && (
           <div className="absolute inset-0 bg-[var(--secondary-background)] animate-pulse flex items-center justify-center">
             <div className="w-10 h-10 border-4 border-[var(--border)] border-t-transparent rounded-full animate-spin"></div>
           </div>
         )}
-        <div className="absolute top-4 right-4">
-          <Badge className="bg-[var(--main)] text-[var(--main-foreground)] font-[var(--font-weight-heading)] border-2 border-[var(--border)] text-sm px-3 py-1 shadow-[var(--shadow)]">
-            {isVideo ? 'VIDEO' : 'IMAGE'}
-          </Badge>
-        </div>
         <div className="absolute bottom-0 left-0 right-0 bg-[var(--overlay)] p-3 border-t-2 border-[var(--border)]">
           <p className="text-[var(--secondary-background)] text-sm font-[var(--font-weight-base)]">
             {formatDate(story.story_created_at)}
@@ -307,9 +99,6 @@ export function StoryCard({ story, volume, isLooping, isMuted }: StoryCardProps)
           <p className="text-sm font-[var(--font-weight-heading)] text-[var(--foreground)]">
             {formatDate(story.story_created_at)}
           </p>
-          <Badge className="bg-[var(--main)] text-[var(--main-foreground)] border-2 border-[var(--border)] font-[var(--font-weight-heading)] px-3 py-1 shadow-[var(--shadow)]">
-            {isVideo ? 'VIDEO' : 'IMAGE'}
-          </Badge>
         </div>
         <div className="flex w-full">
           <Dialog>
@@ -368,32 +157,15 @@ export function StoryCard({ story, volume, isLooping, isMuted }: StoryCardProps)
 
               {/* Full width media container */}
               <div className="w-full bg-[var(--border)] border-b-2 border-[var(--border)] flex items-center justify-center">
-                {isVideo ? (
-                  <video
+                <div className="w-full h-full max-h-[75vh] flex items-center justify-center">
+                  <Image
                     src={story.media}
-                    controls
-                    autoPlay
-                    muted={isMuted}
-                    className="w-full max-h-[75vh]"
-                    onLoadedData={e => {
-                      // Set volume and muted state on the dialog video
-                      e.currentTarget.volume = volume;
-                      e.currentTarget.muted = isMuted;
-                    }}
-                  >
-                    Your browser does not support the video tag.
-                  </video>
-                ) : (
-                  <div className="w-full h-full max-h-[75vh] flex items-center justify-center">
-                    <Image
-                      src={story.media}
-                      alt="Story media"
-                      width={1200}
-                      height={1200}
-                      className="max-h-[75vh] w-full object-contain"
-                    />
-                  </div>
-                )}
+                    alt="Story media"
+                    width={1200}
+                    height={1200}
+                    className="max-h-[75vh] w-full object-contain"
+                  />
+                </div>
               </div>
 
               <div className="p-6 bg-[var(--background)]">
