@@ -16,7 +16,6 @@ import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { InstagramStory } from '@/app/types/instagram/story';
 import { toast } from 'sonner';
-import { getConsistentColor, neoBrutalistColors } from '@/app/users/utils/colors';
 
 interface StoryCardProps {
   story: InstagramStory;
@@ -132,9 +131,6 @@ export function StoryCard({ story, volume, isLooping, isMuted }: StoryCardProps)
       minute: '2-digit',
     }).format(date);
   };
-
-  // Get a consistent color for this user
-  const userColor = getConsistentColor(story.user.username);
 
   return (
     <Card className="w-full shadow-[var(--shadow)] bg-[var(--background)]">

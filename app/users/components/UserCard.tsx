@@ -14,7 +14,6 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { InstagramUser } from '@/app/types/instagram';
-import { getConsistentColor, neoBrutalistColors } from '../utils/colors';
 
 interface UserCardProps {
   user: InstagramUser;
