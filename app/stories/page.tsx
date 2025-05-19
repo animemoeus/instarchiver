@@ -156,8 +156,8 @@ export default function StoriesPage() {
       <SearchBar onSearch={handleSearch} placeholder="Search by username..." className="mt-8" />
 
       {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
-          {[...Array(6)].map((_, index) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
+          {[...Array(8)].map((_, index) => (
             <StorySkeleton key={index} />
           ))}
         </div>
