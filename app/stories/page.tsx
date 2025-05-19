@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { StoriesGrid, StorySkeleton, MediaControls } from './components';
+import { StoriesGrid, StorySkeleton } from './components';
 import { SearchBar } from '../users/components/SearchBar';
 import { API_CONSTANTS } from './services/api';
 import { useStoriesQuery } from './hooks/useStories';
@@ -22,9 +22,6 @@ export default function StoriesPage() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
-  const [volume, setVolume] = useState(1);
-  const [isLooping, setIsLooping] = useState(true);
-  const [isMuted, setIsMuted] = useState(true);
 
   // Reset state when navigating away
   useEffect(() => {
@@ -154,28 +151,19 @@ export default function StoriesPage() {
           Browse and discover the latest Instagram stories. Search by username to find stories from
           specific users.
         </p>
-
-        <MediaControls
-          isMuted={isMuted}
-          setIsMuted={setIsMuted}
-          isLooping={isLooping}
-          setIsLooping={setIsLooping}
-          volume={volume}
-          setVolume={setVolume}
-        />
       </div>
 
       <SearchBar onSearch={handleSearch} placeholder="Search by username..." className="mt-8" />
 
       {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
-          {[...Array(6)].map((_, index) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
+          {[...Array(8)].map((_, index) => (
             <StorySkeleton key={index} />
           ))}
         </div>
       ) : (
         <>
-          <StoriesGrid stories={stories} volume={volume} isLooping={isLooping} isMuted={isMuted} />
+          <StoriesGrid stories={stories} />
           <Pagination className="mt-12">
             <PaginationContent className="flex flex-wrap justify-center gap-1 sm:gap-2">
               <PaginationItem className="min-w-9 sm:min-w-10">

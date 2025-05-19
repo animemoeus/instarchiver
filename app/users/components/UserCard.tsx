@@ -14,7 +14,6 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { InstagramUser } from '@/app/types/instagram';
-import { getConsistentColor, neoBrutalistColors } from '../utils/colors';
 
 interface UserCardProps {
   user: InstagramUser;
@@ -46,7 +45,7 @@ export function UserCard({ user, index }: UserCardProps) {
       <CardHeader className="border-b-2 border-[var(--border)] py-3 bg-[var(--main)]">
         <div className="flex items-center gap-3">
           {/* Profile image */}
-          <div className="relative w-14 h-14 border-2 border-[var(--border)] rounded-full overflow-hidden bg-[var(--secondary-background)]">
+          <div className="relative w-14 h-14 min-w-[56px] min-h-[56px] border-2 border-[var(--border)] rounded-full overflow-hidden bg-[var(--secondary-background)]">
             {user.profile_picture ? (
               <Image
                 src={user.profile_picture}
