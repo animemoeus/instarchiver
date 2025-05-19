@@ -137,7 +137,7 @@ export function StoryCard({ story, volume, isLooping, isMuted }: StoryCardProps)
       <CardHeader className="border-b-2 border-[var(--border)] py-3 bg-[var(--main)]">
         <div className="flex items-center gap-3">
           {/* Profile image */}
-          <div className="relative w-14 h-14 border-2 border-[var(--border)] rounded-full overflow-hidden bg-[var(--secondary-background)]">
+          <div className="relative w-14 h-14 min-w-[56px] min-h-[56px] border-2 border-[var(--border)] rounded-full overflow-hidden bg-[var(--secondary-background)]">
             <Image
               src={story.user.profile_picture}
               alt={story.user.username}
@@ -320,12 +320,12 @@ export function StoryCard({ story, volume, isLooping, isMuted }: StoryCardProps)
             <DialogContent className="p-0 max-w-3xl overflow-hidden border-2 border-[var(--border)] shadow-[var(--shadow)]">
               <div className="bg-[var(--main)] p-4 border-b-2 border-[var(--border)]">
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full overflow-hidden border-2 border-[var(--border)] bg-[var(--secondary-background)]">
+                  <div className="relative h-10 w-10 min-h-[40px] min-w-[40px] rounded-full overflow-hidden border-2 border-[var(--border)] bg-[var(--secondary-background)]">
                     <Image
                       src={story.user.profile_picture}
                       alt={story.user.username}
-                      width={40}
-                      height={40}
+                      fill
+                      sizes="40px"
                       className="object-cover"
                       onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
                         const target = e.target as HTMLImageElement;
