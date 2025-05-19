@@ -15,7 +15,6 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { InstagramStory } from '@/app/types/instagram/story';
-import { useDownloadStoryMedia } from '../hooks/useStories';
 import { toast } from 'sonner';
 import { getConsistentColor, neoBrutalistColors } from '@/app/users/utils/colors';
 
@@ -32,7 +31,6 @@ export function StoryCard({ story, volume, isLooping, isMuted }: StoryCardProps)
   const [localMuted, setLocalMuted] = useState(isMuted); // Local mute state that can be toggled by the button
   const videoRef = useRef<HTMLVideoElement>(null);
   const isVideo = story.media.match(/\.(mp4|webm)$/i) !== null;
-  const downloadMutation = useDownloadStoryMedia();
 
   // Update local mute state when global setting changes
   useEffect(() => {
@@ -307,71 +305,18 @@ export function StoryCard({ story, volume, isLooping, isMuted }: StoryCardProps)
             </p>
           </div>
         </div>
-
-        {/* Story Stats */}
-        <div className="p-3 border-2 border-[var(--border)] rounded-[var(--radius-base)] bg-[var(--secondary-background)] flex items-center justify-center mb-4">
-          <p className="text-[var(--foreground)] font-[var(--font-weight-heading)]">
-            <span className="text-xs mr-1">FOLLOWERS:</span>
-            <span className="text-lg">{story.user.follower_count.toLocaleString()}</span>
-          </p>
-        </div>
-
-        {/* Story ID display */}
-        <div className="border-2 border-[var(--border)] rounded-[var(--radius-base)] bg-[var(--secondary-background)]">
-          <ScrollArea className="h-[50px] w-full p-3 text-[var(--foreground)] rounded-[var(--radius-base)]">
-            <p className="font-[var(--font-weight-base)] text-sm">
-              <strong>Story ID:</strong> {story.story_id}
-            </p>
-          </ScrollArea>
-        </div>
       </CardContent>
 
       <CardFooter className="border-t-2 border-[var(--border)] bg-[var(--secondary-background)] flex-col gap-2 p-3">
         <p className="text-xs font-[var(--font-weight-base)] text-[var(--foreground)] w-full">
           Created: {formatDate(story.story_created_at)}
         </p>
-        <div className="flex w-full gap-2">
-          <Button
-            onClick={(e: React.MouseEvent) => {
-              e.preventDefault();
-              downloadMutation.mutate(story);
-            }}
-            disabled={downloadMutation.isPending}
-            className="flex-1 font-[var(--font-weight-heading)] text-xs py-2 h-auto"
-          >
-            {downloadMutation.isPending ? (
-              <div className="flex items-center">
-                <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                SAVING...
-              </div>
-            ) : (
-              <>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="mr-1"
-                >
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                  <polyline points="7 10 12 15 17 10"></polyline>
-                  <line x1="12" y1="15" x2="12" y2="3"></line>
-                </svg>
-                DOWNLOAD
-              </>
-            )}
-          </Button>
-
+        <div className="flex w-full">
           <Dialog>
             <DialogTrigger asChild>
               <Button
                 variant="neutral"
-                className="flex-1 font-[var(--font-weight-heading)] text-xs py-2 h-auto"
+                className="w-full font-[var(--font-weight-heading)] text-xs py-2 h-auto"
               >
                 VIEW STORY
               </Button>
