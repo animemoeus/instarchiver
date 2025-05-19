@@ -34,7 +34,7 @@ export function StoryCard({ story }: StoryCardProps) {
   };
 
   return (
-    <Card className="w-full border-2 border-[var(--border)] shadow-[var(--shadow)] bg-[var(--background)] overflow-hidden hover:shadow-lg transition-all duration-300 hover:translate-y-[-2px]">
+    <Card className="w-full border-2 border-[var(--border)] shadow-[var(--shadow)] bg-[var(--background)] overflow-hidden">
       <CardHeader className="border-b-2 border-[var(--border)] py-4 bg-[var(--main)]">
         <div className="flex items-center gap-4">
           {/* Profile image */}
@@ -73,7 +73,7 @@ export function StoryCard({ story }: StoryCardProps) {
           alt="Story thumbnail"
           fill
           sizes="100vw"
-          className="object-cover transition-transform duration-300 group-hover:scale-105 transform-gpu"
+          className="object-cover"
           onLoad={() => setIsLoading(false)}
           onError={() => setIsLoading(false)}
         />
@@ -103,7 +103,7 @@ export function StoryCard({ story }: StoryCardProps) {
               <Button
                 variant="default"
                 size="lg"
-                className="w-full font-[var(--font-weight-heading)] text-base py-3 h-auto bg-[var(--main)] hover:bg-[var(--main)]/90 text-[var(--main-foreground)] border-2 border-[var(--border)] transform transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg"
+                className="w-full font-[var(--font-weight-heading)] text-base py-3 h-auto bg-[var(--main)] hover:bg-[var(--main)]/90 text-[var(--main-foreground)] border-2 border-[var(--border)]"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
