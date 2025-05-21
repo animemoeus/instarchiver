@@ -10,8 +10,8 @@ export function StorySkeleton() {
       <CardHeader className="py-3 bg-[var(--main)]">
         <div className="flex items-center gap-2">
           {/* Profile image skeleton */}
-          <div className="relative min-w-[48px] min-h-[48px] border-2 border-[var(--border)] rounded-full overflow-hidden bg-[var(--secondary-background)]">
-            <Skeleton className="h-full w-full" />
+          <div className="relative  min-w-[48px] min-h-[48px] w-[48px] h-[48px] rounded-full overflow-hidden">
+            <Skeleton className="h-full w-full !rounded-full border-2 border-[var(--border)] bg-[var(--secondary-background)]" />
           </div>
           <div>
             <CardTitle className="text-lg text-[var(--foreground)] font-[var(--font-weight-heading)]">
