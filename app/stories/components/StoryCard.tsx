@@ -26,16 +26,15 @@ export function StoryCard({ story }: StoryCardProps) {
   };
 
   return (
-    <Card className="w-full  border-[var(--border)] shadow-[var(--shadow)] bg-[var(--background)] overflow-hidden">
-      <CardHeader className="border-b-2 border-[var(--border)] py-3 bg-[var(--main)]">
+    <Card className="w-full">
+      <CardHeader className="py-3 bg-[var(--main)]">
         <div className="flex items-center gap-2">
           {/* Profile image */}
-          <div className="relative w-12 h-12 min-w-[48px] min-h-[48px] border-2 border-[var(--border)] rounded-full overflow-hidden bg-[var(--secondary-background)]">
+          <div className="relative  min-w-[48px] min-h-[48px] border-2 border-[var(--border)] rounded-full overflow-hidden bg-[var(--secondary-background)]">
             <Image
               src={story.user.profile_picture}
               alt={story.user.username}
               fill
-              sizes="(max-width: 768px) 48px, 48px"
               className="object-cover"
             />
           </div>
