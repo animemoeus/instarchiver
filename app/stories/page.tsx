@@ -6,6 +6,7 @@ import { StoriesGrid, StorySkeleton } from './components';
 import { SearchBar } from '../users/components/SearchBar';
 import { API_CONSTANTS } from './services/api';
 import { useStoriesQuery } from './hooks/useStories';
+import { useIsMobile } from '@/hooks/use-mobile';
 import {
   Pagination,
   PaginationContent,
@@ -19,9 +20,11 @@ import {
 export default function StoriesPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const isMobile = useIsMobile();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
+  const [maxVisiblePages, setMaxVisiblePages] = useState(5);
 
   // Reset state when navigating away
   useEffect(() => {
@@ -31,6 +34,11 @@ export default function StoriesPage() {
       setCurrentPage(1);
     };
   }, []);
+
+  // Update maxVisiblePages when screen size changes
+  useEffect(() => {
+    setMaxVisiblePages(isMobile ? 3 : 5);
+  }, [isMobile]);
 
   // Only update URL when we have a search query or specific page
   useEffect(() => {
@@ -105,7 +113,7 @@ export default function StoriesPage() {
 
   const getPageNumbers = (): (number | string)[] => {
     const pages: (number | string)[] = [];
-    const maxVisiblePages = window.innerWidth < 640 ? 3 : 5; // Reduced pages for mobile
+    // Use the state value that is updated based on screen size
 
     pages.push(1);
 
