@@ -37,8 +37,8 @@ export function StorySkeleton() {
           </div>
         </div>
         <div className="flex w-full">
-          <Button disabled className="w-full opacity-70">
-            VIEW FULL STORY
+          <Button disabled className="relative overflow-hidden">
+            <span className="opacity-0">VIEW FULL STORY</span>
           </Button>
         </div>
       </CardFooter>
