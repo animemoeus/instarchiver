@@ -2,7 +2,7 @@
 
 ## What We Are Building:
 
-We are building a instagram archiver project that allows users to save and view their Instagram posts in a unique and visually striking way, inspired by the ui component provided in the repository. The project will be designed with a focus on the Neo Brutalism aesthetic, which emphasizes bold colors, strong contrasts, and a minimalist approach.
+We are building a instagram archiver project that allows users to save and view their Instagram posts in a unique and visually striking way, inspired by the ui component provided in the repository. The project will be designed using general components and css provided in the repository.
 
 - Only use the UI component provided in the repository.
 - Use React Query for data fetching.
