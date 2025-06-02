@@ -10,7 +10,7 @@ interface UserHistorySkeletonProps {
 
 export function UserHistorySkeleton({ index }: UserHistorySkeletonProps) {
   return (
-    <Card className="w-full shadow-[var(--shadow)] bg-[var(--background)]">
+    <Card className="w-full shadow-[var(--shadow)] bg-[var(--background)] flex flex-col h-full">
       {/* Header Skeleton */}
       <CardHeader className="border-b-2 border-[var(--border)] py-2 bg-[var(--main)]">
         <div className="flex items-center gap-2">
@@ -25,7 +25,7 @@ export function UserHistorySkeleton({ index }: UserHistorySkeletonProps) {
       </CardHeader>
 
       {/* Content Skeleton */}
-      <CardContent className="p-4">
+      <CardContent className="p-4 flex flex-col flex-grow">
         {/* Statistics Skeleton */}
         <div className="grid grid-cols-3 gap-2 mb-4">
           {[1, 2, 3].map((_, i) => (
@@ -40,16 +40,18 @@ export function UserHistorySkeleton({ index }: UserHistorySkeletonProps) {
         </div>
 
         {/* Biography Skeleton */}
-        <Skeleton className="h-[80px] w-full mb-4 border-2 border-[var(--border)] rounded-[var(--radius-base)] bg-[var(--secondary-background)]" />
+        <div className="mb-4">
+          <Skeleton className="h-[80px] w-full border-2 border-[var(--border)] rounded-[var(--radius-base)] bg-[var(--secondary-background)]" />
+        </div>
 
-        {/* Changes Skeleton */}
+        {/* Changes Skeleton - Matches the flex-grow behavior */}
         <div className="border-2 border-[var(--border)] rounded-[var(--radius-base)] bg-[var(--secondary-background)] p-3 flex-grow">
           <Skeleton className="h-3 w-48 mb-3 bg-[var(--background)] border-2 border-[var(--border)] rounded-[var(--radius-base)]" />
           <div className="space-y-2">
             {[...Array(2)].map((_, i) => (
               <div
                 key={i}
-                className="flex items-center gap-2 bg-[var(--background)] border-2 border-[var(--border)] rounded-[var(--radius-base)] p-2"
+                className="flex flex-wrap gap-2 items-center bg-[var(--background)] border-2 border-[var(--border)] rounded-[var(--radius-base)] p-2"
               >
                 <Skeleton className="h-4 w-20 bg-[var(--secondary-background)] border-2 border-[var(--border)] rounded-[var(--radius-base)]" />
                 <Skeleton className="h-3 w-32 bg-[var(--secondary-background)] border-2 border-[var(--border)] rounded-[var(--radius-base)]" />
@@ -59,7 +61,7 @@ export function UserHistorySkeleton({ index }: UserHistorySkeletonProps) {
         </div>
       </CardContent>
 
-      <CardFooter className="border-t-2 border-[var(--border)] bg-[var(--secondary-background)] p-2">
+      <CardFooter className="border-t-2 border-[var(--border)] bg-[var(--secondary-background)] p-2 mt-auto">
         <Skeleton className="h-3 w-1/2 bg-[var(--background)] border-2 border-[var(--border)] rounded-[var(--radius-base)]" />
       </CardFooter>
     </Card>
