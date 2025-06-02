@@ -41,7 +41,7 @@ const formatDate = (dateString: string): string => {
 
 export function UserCard({ user, index }: UserCardProps) {
   return (
-    <Card className="w-full shadow-[var(--shadow)] bg-[var(--background)]">
+    <Card className="w-full shadow-[var(--shadow)] bg-[var(--background)] flex flex-col h-full">
       <CardHeader className="border-b-2 border-[var(--border)] py-3 bg-[var(--main)]">
         <div className="flex items-center gap-3">
           {/* Profile image */}
@@ -80,7 +80,7 @@ export function UserCard({ user, index }: UserCardProps) {
         </div>
       </CardHeader>
 
-      <CardContent className="p-4">
+      <CardContent className="p-4 flex flex-col flex-grow">
         {/* User Statistics */}
         <div className="grid grid-cols-3 gap-2 mb-4">
           <div className="p-3 border-2 border-[var(--border)] rounded-[var(--radius-base)] bg-[var(--secondary-background)] flex flex-col items-center">
@@ -109,13 +109,13 @@ export function UserCard({ user, index }: UserCardProps) {
 
         {/* User Bio */}
         {user.biography ? (
-          <div className="border-2 border-[var(--border)] rounded-[var(--radius-base)] bg-[var(--secondary-background)]">
+          <div className="border-2 border-[var(--border)] rounded-[var(--radius-base)] bg-[var(--secondary-background)] flex-grow">
             <ScrollArea className="h-[100px] w-full p-3 text-[var(--foreground)] rounded-[var(--radius-base)]">
               <p className="font-[var(--font-weight-base)] text-sm">{user.biography}</p>
             </ScrollArea>
           </div>
         ) : (
-          <div className="p-3 border-2 border-[var(--border)] rounded-[var(--radius-base)] bg-[var(--secondary-background)] h-[100px] flex items-center justify-center">
+          <div className="p-3 border-2 border-[var(--border)] rounded-[var(--radius-base)] bg-[var(--secondary-background)] h-[100px] flex-grow flex items-center justify-center">
             <p className="font-[var(--font-weight-base)] text-[var(--foreground)] italic text-sm">
               No biography available
             </p>
@@ -123,7 +123,7 @@ export function UserCard({ user, index }: UserCardProps) {
         )}
       </CardContent>
 
-      <CardFooter className="border-t-2 border-[var(--border)] bg-[var(--secondary-background)] flex-col gap-2 p-3">
+      <CardFooter className="border-t-2 border-[var(--border)] bg-[var(--secondary-background)] flex-col gap-2 p-3 mt-auto">
         <p className="text-xs font-[var(--font-weight-base)] text-[var(--foreground)] w-full">
           Last Update: {formatDate(user.updated_at)}
         </p>
