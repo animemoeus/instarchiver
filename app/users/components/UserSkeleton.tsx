@@ -11,13 +11,13 @@ interface UserSkeletonProps {
 export function UserSkeleton({ index }: UserSkeletonProps) {
   return (
     <Card className="w-full shadow-[var(--shadow)] bg-[var(--background)]">
-      <CardHeader className="border-b-2 border-[var(--border)] py-3 bg-[var(--main)]">
-        <div className="flex items-center gap-3">
+      <CardHeader className="border-b-2 border-[var(--border)] py-2 bg-[var(--main)]">
+        <div className="flex items-center gap-2">
           {/* Profile image skeleton */}
-          <Skeleton className="w-14 h-14 border-2 border-[var(--border)] rounded-full overflow-hidden bg-[var(--secondary-background)]" />
-          <div className="space-y-2">
-            <Skeleton className="h-6 w-32 bg-[var(--secondary-background)] border-2 border-[var(--border)]" />
-            <Skeleton className="h-4 w-20 bg-[var(--secondary-background)] border-2 border-[var(--border)]" />
+          <Skeleton className="w-10 h-10 border-2 border-[var(--border)] rounded-full overflow-hidden bg-[var(--secondary-background)]" />
+          <div className="space-y-1">
+            <Skeleton className="h-5 w-28 bg-[var(--secondary-background)] border-2 border-[var(--border)]" />
+            <Skeleton className="h-3 w-16 bg-[var(--secondary-background)] border-2 border-[var(--border)]" />
           </div>
         </div>
       </CardHeader>
@@ -28,23 +28,23 @@ export function UserSkeleton({ index }: UserSkeletonProps) {
           {[1, 2, 3].map((_, i) => (
             <div
               key={i}
-              className="p-3 border-2 border-[var(--border)] rounded-[var(--radius-base)] bg-[var(--secondary-background)] flex flex-col items-center"
+              className="p-2 border-2 border-[var(--border)] rounded-[var(--radius-base)] bg-[var(--secondary-background)] flex flex-col items-center"
             >
-              <Skeleton className="h-3 w-12 bg-[var(--background)] border-2 border-[var(--border)] mb-2 rounded-[var(--radius-base)]" />
-              <Skeleton className="h-5 w-8 bg-[var(--background)] border-2 border-[var(--border)] rounded-[var(--radius-base)]" />
+              <Skeleton className="h-3 w-10 bg-[var(--background)] border-2 border-[var(--border)] mb-1 rounded-[var(--radius-base)]" />
+              <Skeleton className="h-4 w-6 bg-[var(--background)] border-2 border-[var(--border)] rounded-[var(--radius-base)]" />
             </div>
           ))}
         </div>
 
         {/* Biography skeleton */}
-        <Skeleton className="h-[100px] w-full border-2 border-[var(--border)] rounded-[var(--radius-base)] bg-[var(--secondary-background)]" />
+        <Skeleton className="h-[80px] w-full border-2 border-[var(--border)] rounded-[var(--radius-base)] bg-[var(--secondary-background)]" />
       </CardContent>
 
-      <CardFooter className="border-t-2 border-[var(--border)] bg-[var(--secondary-background)] flex-col gap-2 p-3">
-        <Skeleton className="h-4 w-1/2 bg-[var(--background)] border-2 border-[var(--border)] rounded-[var(--radius-base)]" />
-        <div className="flex w-full gap-2">
-          <Skeleton className="h-8 w-full bg-[var(--background)] border-2 border-[var(--border)] rounded-[var(--radius-base)]" />
-          <Skeleton className="h-8 w-full bg-[var(--background)] border-2 border-[var(--border)] rounded-[var(--radius-base)]" />
+      <CardFooter className="border-t-2 border-[var(--border)] bg-[var(--secondary-background)] flex-col gap-1 p-2">
+        <Skeleton className="h-3 w-1/2 bg-[var(--background)] border-2 border-[var(--border)] rounded-[var(--radius-base)]" />
+        <div className="flex w-full gap-1">
+          <Skeleton className="h-6 w-full bg-[var(--background)] border-2 border-[var(--border)] rounded-[var(--radius-base)]" />
+          <Skeleton className="h-6 w-full bg-[var(--background)] border-2 border-[var(--border)] rounded-[var(--radius-base)]" />
         </div>
       </CardFooter>
     </Card>
