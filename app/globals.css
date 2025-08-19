@@ -95,6 +95,7 @@ body::-webkit-scrollbar-track {
 
 body::-webkit-scrollbar-thumb {
   background: var(--sb-thumb-color);
+  border-radius: 2px;
 }
 
 .scrollbar::-webkit-scrollbar {
@@ -107,11 +108,54 @@ body::-webkit-scrollbar-thumb {
 
 .scrollbar::-webkit-scrollbar-thumb {
   background: var(--sb-thumb-color);
+  border-radius: 2px;
+}
+
+/* Mobile optimized scrollbars */
+@media (max-width: 768px) {
+  body::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  body::-webkit-scrollbar-track {
+    background: var(--sb-track-color);
+    border-left: 2px solid var(--border);
+  }
+
+  body::-webkit-scrollbar-thumb {
+    background: var(--sb-thumb-color);
+    border-radius: 4px;
+    min-height: 40px;
+  }
+
+  .scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar::-webkit-scrollbar-track {
+    background: var(--sb-track-color);
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: var(--sb-thumb-color);
+    border-radius: 3px;
+    min-height: 30px;
+  }
+
+  /* Better touch support on mobile */
+  body::-webkit-scrollbar-thumb:hover {
+    background: var(--sb-thumb-color);
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--sb-thumb-color);
+  }
 }
 
 @supports not selector(::-webkit-scrollbar) {
   body,
   .scrollbar {
     scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+    scrollbar-width: thin;
   }
 }
