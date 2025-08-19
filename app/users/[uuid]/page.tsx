@@ -1,18 +1,17 @@
 'use client';
 
 import React from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { Card, CardHeader, CardContent, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
-import { InstagramUser } from '@/app/types/instagram';
 import { UserDetailSkeleton } from './components/UserDetailSkeleton';
 import { UserHistoryGrid } from './components/UserHistoryGrid';
 import { DiscussionEmbed } from 'disqus-react';
 import { formatNumber, formatDate } from '../utils/formatters';
+import { useUserById } from '@/hooks/useUsers';
 
 interface UserDetailPageProps {
   params: Promise<{
@@ -20,28 +19,11 @@ interface UserDetailPageProps {
   }>;
 }
 
-async function fetchUserDetail(uuid: string): Promise<InstagramUser> {
-  const response = await fetch(`https://api.animemoe.us/instagram/users/${uuid}`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch user details');
-  }
-  return response.json();
-}
-
 export default function UserDetailPage({ params }: UserDetailPageProps) {
   const resolvedParams = React.use(params);
   const { uuid } = resolvedParams;
 
-  const {
-    data: user,
-    isLoading,
-    error,
-  } = useQuery<InstagramUser>({
-    queryKey: ['user', uuid],
-    queryFn: () => fetchUserDetail(uuid),
-    staleTime: 1000 * 60 * 5,
-    retry: 2,
-  });
+  const { data: user, isLoading, error } = useUserById(uuid);
 
   if (isLoading) {
     return <UserDetailSkeleton />;

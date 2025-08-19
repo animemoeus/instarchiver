@@ -3,7 +3,7 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { InstagramStory, InstagramStoriesResponse } from '@/app/types/instagram/story';
-import { fetchStories, fetchStoryById, downloadStoryMedia } from '../services/api';
+import { fetchStories, fetchStoryById, downloadStoryMedia } from '@/app/stories/services/api';
 
 export function useStoriesQuery(page: number = 1, searchQuery?: string, userId?: string) {
   return useQuery({

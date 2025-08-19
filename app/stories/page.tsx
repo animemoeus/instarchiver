@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { StoriesGrid, StorySkeleton } from './components';
 import { SearchBar } from '../users/components/SearchBar';
 import { API_CONSTANTS } from './services/api';
-import { useStoriesQuery } from './hooks/useStories';
+import { useStoriesQuery } from '@/hooks/useStories';
 import { useIsMobile } from '@/hooks/use-mobile';
 import {
   Pagination,
