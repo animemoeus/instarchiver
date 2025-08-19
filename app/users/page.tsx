@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useQuery, useQueryClient, type QueryKey } from '@tanstack/react-query';
-import { InstagramUsersResponse } from '@/app/types/instagram';
+import { useQueryClient } from '@tanstack/react-query';
 import { fetchInstagramUsers, extractPageFromUrl, API_CONSTANTS } from './services/api';
+import { useUsers } from '@/hooks/useUsers';
 
 const { COUNT_PER_PAGE } = API_CONSTANTS;
 
@@ -29,16 +29,10 @@ export default function InstagramUsersList() {
   // If there's a search query, always start at page 1 to ensure we're showing the first page of results
   const [currentPage, setCurrentPage] = useState<number>(searchQuery ? 1 : initialPage);
 
-  // Use React Query to fetch data
-  const { data, isLoading, error } = useQuery<InstagramUsersResponse, Error>({
-    queryKey: ['instagramUsers', currentPage, searchQuery] as QueryKey,
-    queryFn: () => {
-      // Always use page 1 when searching
-      const pageToUse = searchQuery ? 1 : currentPage;
-      return fetchInstagramUsers(pageToUse, searchQuery);
-    },
-    placeholderData: keepPreviousData => keepPreviousData,
-    staleTime: 60 * 1000, // 1 minute
+  // Use the new useUsers hook
+  const { data, isLoading, error } = useUsers({
+    page: searchQuery ? 1 : currentPage,
+    search: searchQuery,
   });
 
   // Prefetch next page data for smoother pagination
@@ -48,8 +42,8 @@ export default function InstagramUsersList() {
       // Don't prefetch if we're searching (we'll stay on page 1)
       if (!searchQuery) {
         queryClient.prefetchQuery({
-          queryKey: ['instagramUsers', nextPage, searchQuery] as QueryKey,
-          queryFn: () => fetchInstagramUsers(nextPage, searchQuery),
+          queryKey: ['users', nextPage, searchQuery, undefined, undefined],
+          queryFn: () => fetchInstagramUsers({ page: nextPage, search: searchQuery }),
         });
       }
     }

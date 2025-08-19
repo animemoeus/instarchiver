@@ -1,13 +1,13 @@
 'use client';
 
 import React from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { InstagramUserHistoryResponse } from '@/app/types/instagram/history';
-import { fetchUserHistory } from '../services/history';
+import { useQueryClient } from '@tanstack/react-query';
 import { UserHistoryList } from './components/UserHistoryList';
 import { InstagramPage } from '../../components/InstagramPage';
 import { PaginationControls } from '../../components/PaginationControls';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { useUserHistory } from '@/hooks/useUserHistory';
+import { fetchUserHistory } from '../services/history';
 
 interface UserHistoryPageProps {
   params: Promise<{
@@ -30,12 +30,8 @@ export default function UserHistoryPage({ params }: UserHistoryPageProps) {
   // Local state to manage pagination
   const [currentPage, setCurrentPage] = React.useState<number>(initialPage);
 
-  // Fetch history data using React Query
-  const { data, isLoading, error } = useQuery<InstagramUserHistoryResponse>({
-    queryKey: ['userHistory', uuid, currentPage],
-    queryFn: () => fetchUserHistory(uuid, currentPage),
-    staleTime: 1000 * 60 * 5, // 5 minutes
-  });
+  // Fetch history data using the useUserHistory hook
+  const { data, isLoading, error } = useUserHistory(uuid, currentPage);
 
   // Prefetch next page data for smoother pagination
   React.useEffect(() => {
