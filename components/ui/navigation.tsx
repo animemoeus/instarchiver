@@ -1,121 +1,103 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { Button } from './button';
 import { Card } from './card';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './sheet';
+import { Menu } from 'lucide-react';
 
 export function Navigation() {
   const pathname = usePathname();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const isActive = (path: string) => {
     return pathname === path;
   };
 
-  // Neo Brutalism color palette
-  const colors = ['bg-yellow-400', 'bg-pink-500', 'bg-blue-500', 'bg-green-500', 'bg-purple-500'];
-
-  const router = useRouter();
-
-  const handleNavClick = async (path: string, e: React.MouseEvent) => {
-    e.preventDefault();
-    // Force a clean navigation by replacing the current URL state
-    await router.replace(path);
-    // Then push the new path to ensure a fresh state
-    router.push(path);
-  };
-
+  // Navigation links configuration
   const navLinks = [
-    { name: 'Home', path: '/', color: colors[0] },
-    { name: 'Users', path: '/users', color: colors[1] },
-    { name: 'Stories', path: '/stories', color: colors[2] },
+    { name: 'Home', path: '/' },
+    { name: 'Users', path: '/users' },
+    { name: 'Stories', path: '/stories' },
   ];
 
   return (
-    <Card className="w-full border-b-4 border-black bg-white rounded-none shadow-none">
-      <div className="container mx-auto px-4 flex justify-between items-center h-16">
-        <Link href="/" className="flex items-center" onClick={e => handleNavClick('/', e)}>
-          <span className="font-black text-xl bg-yellow-400 px-3 py-2 border-2 border-black shadow-[4px_4px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all">
+    <Card
+      className="w-full border-b-4 border-border bg-background rounded-none shadow-none"
+      role="banner"
+    >
+      <nav
+        className="container mx-auto px-4 flex justify-between items-center h-16"
+        aria-label="Main navigation"
+      >
+        <Link href="/" className="flex items-center" aria-label="Instagram Archiver Home">
+          <Button variant="default" size="lg" className="font-heading text-xl">
             INSTA ARCHIVER
-          </span>
+          </Button>
         </Link>
 
-        {/* Mobile Menu Button */}
-        <Button
-          variant="noShadow"
-          className="md:hidden border-2 border-black p-2 bg-white shadow-[4px_4px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="3"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            {isMenuOpen ? (
-              <>
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </>
-            ) : (
-              <>
-                <line x1="4" y1="8" x2="20" y2="8"></line>
-                <line x1="4" y1="16" x2="20" y2="16"></line>
-              </>
-            )}
-          </svg>
-        </Button>
+        {/* Mobile Menu Sheet */}
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button
+              variant="noShadow"
+              size="icon"
+              className="md:hidden"
+              aria-label="Open navigation menu"
+            >
+              <Menu strokeWidth={3} />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-[300px]">
+            <SheetHeader>
+              <SheetTitle className="font-heading text-xl">
+                <Button variant="default" size="lg" className="w-fit">
+                  INSTA ARCHIVER
+                </Button>
+              </SheetTitle>
+            </SheetHeader>
+            <div className="flex flex-col space-y-2 mt-6">
+              {navLinks.map(link => (
+                <Button
+                  key={link.path}
+                  variant={isActive(link.path) ? 'default' : 'neutral'}
+                  size="lg"
+                  className="justify-start font-heading"
+                  asChild
+                >
+                  <Link
+                    href={link.path}
+                    aria-current={isActive(link.path) ? 'page' : undefined}
+                    aria-label={`Navigate to ${link.name} page`}
+                  >
+                    {link.name.toUpperCase()}
+                  </Link>
+                </Button>
+              ))}
+            </div>
+          </SheetContent>
+        </Sheet>
 
         {/* Desktop Menu */}
         <div className="hidden md:flex space-x-2">
-          {navLinks.map((link, index) => (
+          {navLinks.map(link => (
             <Button
               key={link.path}
               variant={isActive(link.path) ? 'default' : 'neutral'}
+              className="font-heading"
               asChild
-              className={`font-bold px-4 py-2 border-2 border-black transition-all ${
-                isActive(link.path)
-                  ? `${link.color} text-white shadow-[4px_4px_0px_rgba(0,0,0,1)]`
-                  : 'bg-white hover:shadow-[4px_4px_0px_rgba(0,0,0,1)] hover:bg-gray-100'
-              } hover:shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px]`}
             >
-              <Link href={link.path} onClick={e => handleNavClick(link.path, e)}>
+              <Link
+                href={link.path}
+                aria-current={isActive(link.path) ? 'page' : undefined}
+                aria-label={`Navigate to ${link.name} page`}
+              >
                 {link.name.toUpperCase()}
               </Link>
             </Button>
           ))}
         </div>
-      </div>
-
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden border-t-2 border-black bg-white">
-          {navLinks.map((link, index) => (
-            <Link
-              key={link.path}
-              href={link.path}
-              className={`block font-bold px-4 py-3 transition-all ${
-                isActive(link.path)
-                  ? `${link.color} text-white border-l-4 border-black`
-                  : 'hover:bg-gray-100 hover:border-l-4 hover:border-black'
-              }`}
-              onClick={e => {
-                setIsMenuOpen(false);
-                handleNavClick(link.path, e);
-              }}
-            >
-              {link.name.toUpperCase()}
-            </Link>
-          ))}
-        </div>
-      )}
+      </nav>
     </Card>
   );
 }

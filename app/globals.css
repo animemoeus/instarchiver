@@ -62,7 +62,7 @@
   --spacing-boxShadowY: 2px;
   --spacing-reverseBoxShadowX: -2px;
   --spacing-reverseBoxShadowY: -2px;
-  --radius-base: 10px;
+  --radius-base: 5px;
   --shadow-shadow: var(--shadow);
   --font-weight-base: 500;
   --font-weight-heading: 700;
