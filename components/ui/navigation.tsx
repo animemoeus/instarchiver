@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { Button } from './button';
 import { Card } from './card';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './sheet';
+import { ThemeToggle } from './theme-toggle';
 import { Menu } from 'lucide-react';
 
 export function Navigation() {
@@ -72,6 +73,12 @@ export function Navigation() {
                       </Link>
                     </Button>
                   ))}
+                  <div className="pt-3 mt-3 border-t-2 border-border">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-heading text-foreground/70">THEME</span>
+                      <ThemeToggle />
+                    </div>
+                  </div>
                 </div>
               </nav>
               <div className="p-4 border-t-2 border-border bg-secondary-background">
@@ -82,7 +89,7 @@ export function Navigation() {
         </Sheet>
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex space-x-2">
+        <div className="hidden md:flex items-center space-x-2">
           {navLinks.map(link => (
             <Button
               key={link.path}
@@ -99,6 +106,7 @@ export function Navigation() {
               </Link>
             </Button>
           ))}
+          <ThemeToggle />
         </div>
       </nav>
     </Card>

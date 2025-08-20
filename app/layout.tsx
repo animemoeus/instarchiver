@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
 import { QueryProvider } from '@/components/providers/query-provider';
+import { ThemeProvider } from '@/components/providers/theme-provider';
 import { Navigation } from '@/components/ui/navigation';
 
 const geistSans = Geist({
@@ -45,10 +46,17 @@ export default function RootLayout({
         </Script>
         {/* Google Analytics */}
 
-        <QueryProvider>
-          <Navigation />
-          {children}
-        </QueryProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <QueryProvider>
+            <Navigation />
+            {children}
+          </QueryProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
