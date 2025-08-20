@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { StoriesGrid, StorySkeleton } from './components';
+import { StoriesGrid, StorySkeleton, ViewToggle, StoryPreviewModal } from './components';
 import { SearchBar } from '../users/components/SearchBar';
 import { useStoriesQueryWithOptions, API_CONSTANTS, ORDERING_OPTIONS } from '@/hooks/useStories';
+import { InstagramStory } from '@/app/types/instagram/story';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useViewMode } from '@/hooks/useViewMode';
 import {
   Pagination,
   PaginationContent,
@@ -27,11 +29,14 @@ export default function StoriesPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const isMobile = useIsMobile();
+  const [viewMode, setViewMode] = useViewMode();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [maxVisiblePages, setMaxVisiblePages] = useState(5);
   const [ordering, setOrdering] = useState<string>(ORDERING_OPTIONS.NEWEST_FIRST);
+  const [previewStory, setPreviewStory] = useState<InstagramStory | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   // Reset state when navigating away
   useEffect(() => {
@@ -94,6 +99,16 @@ export default function StoriesPage() {
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleStoryPreview = (story: InstagramStory) => {
+    setPreviewStory(story);
+    setIsPreviewOpen(true);
+  };
+
+  const handleClosePreview = () => {
+    setIsPreviewOpen(false);
+    setPreviewStory(null);
   };
 
   const handleSearch = (query: string) => {
@@ -231,33 +246,37 @@ export default function StoriesPage() {
       <div className="mt-8 space-y-4">
         <SearchBar onSearch={handleSearch} placeholder="Search by username..." />
 
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-          <label htmlFor="ordering-select" className="text-sm font-medium text-text shrink-0">
-            Sort by:
-          </label>
-          <Select value={ordering} onValueChange={handleOrderingChange}>
-            <SelectTrigger className="w-full sm:w-48 min-h-[44px]">
-              <SelectValue placeholder="Select ordering" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={ORDERING_OPTIONS.NEWEST_FIRST}>
-                <span className="sm:hidden">Newest</span>
-                <span className="hidden sm:inline">Newest First</span>
-              </SelectItem>
-              <SelectItem value={ORDERING_OPTIONS.OLDEST_FIRST}>
-                <span className="sm:hidden">Oldest</span>
-                <span className="hidden sm:inline">Oldest First</span>
-              </SelectItem>
-              <SelectItem value={ORDERING_OPTIONS.UPLOAD_NEWEST}>
-                <span className="sm:hidden">Upload ↓</span>
-                <span className="hidden sm:inline">Upload Date (Newest)</span>
-              </SelectItem>
-              <SelectItem value={ORDERING_OPTIONS.UPLOAD_OLDEST}>
-                <span className="sm:hidden">Upload ↑</span>
-                <span className="hidden sm:inline">Upload Date (Oldest)</span>
-              </SelectItem>
-            </SelectContent>
-          </Select>
+        <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+            <label htmlFor="ordering-select" className="text-sm font-medium text-text shrink-0">
+              Sort by:
+            </label>
+            <Select value={ordering} onValueChange={handleOrderingChange}>
+              <SelectTrigger className="w-full sm:w-48 min-h-[44px]">
+                <SelectValue placeholder="Select ordering" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={ORDERING_OPTIONS.NEWEST_FIRST}>
+                  <span className="sm:hidden">Newest</span>
+                  <span className="hidden sm:inline">Newest First</span>
+                </SelectItem>
+                <SelectItem value={ORDERING_OPTIONS.OLDEST_FIRST}>
+                  <span className="sm:hidden">Oldest</span>
+                  <span className="hidden sm:inline">Oldest First</span>
+                </SelectItem>
+                <SelectItem value={ORDERING_OPTIONS.UPLOAD_NEWEST}>
+                  <span className="sm:hidden">Upload ↓</span>
+                  <span className="hidden sm:inline">Upload Date (Newest)</span>
+                </SelectItem>
+                <SelectItem value={ORDERING_OPTIONS.UPLOAD_OLDEST}>
+                  <span className="sm:hidden">Upload ↑</span>
+                  <span className="hidden sm:inline">Upload Date (Oldest)</span>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <ViewToggle currentView={viewMode} onViewChange={setViewMode} />
         </div>
       </div>
 
@@ -269,7 +288,7 @@ export default function StoriesPage() {
         </div>
       ) : (
         <>
-          <StoriesGrid stories={stories} />
+          <StoriesGrid stories={stories} viewMode={viewMode} onStoryPreview={handleStoryPreview} />
           <Pagination className="mt-12">
             <PaginationContent className="flex flex-wrap justify-center gap-1 sm:gap-2">
               <PaginationItem className="min-w-9 sm:min-w-10">
@@ -325,6 +344,8 @@ export default function StoriesPage() {
           </Pagination>
         </>
       )}
+
+      <StoryPreviewModal story={previewStory} isOpen={isPreviewOpen} onClose={handleClosePreview} />
     </div>
   );
 }
