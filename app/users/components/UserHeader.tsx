@@ -44,7 +44,7 @@ export function UserHeader({
               <div className="flex gap-1 border-2 border-[var(--border)] rounded-[var(--radius-base)] bg-[var(--secondary-background)] p-1">
                 <Button
                   size="sm"
-                  variant={viewMode === 'compact' ? 'default' : 'outline'}
+                  variant={viewMode === 'compact' ? 'default' : 'neutral'}
                   onClick={() => onViewModeChange('compact')}
                   className="h-8 px-2"
                 >
@@ -53,7 +53,7 @@ export function UserHeader({
                 </Button>
                 <Button
                   size="sm"
-                  variant={viewMode === 'detailed' ? 'default' : 'outline'}
+                  variant={viewMode === 'detailed' ? 'default' : 'neutral'}
                   onClick={() => onViewModeChange('detailed')}
                   className="h-8 px-2"
                 >

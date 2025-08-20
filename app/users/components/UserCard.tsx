@@ -87,7 +87,7 @@ export function UserCard({ user, index, variant = 'detailed' }: UserCardProps) {
             <div className="flex gap-1">
               <Button
                 size="sm"
-                variant="outline"
+                variant="neutral"
                 onClick={() => setIsExpanded(!isExpanded)}
                 className="w-8 h-8 p-0"
               >
