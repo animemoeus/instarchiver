@@ -15,6 +15,7 @@ interface UsersListProps {
   count: number;
   onRetry: () => void;
   searchQuery?: string;
+  viewMode?: 'compact' | 'detailed';
 }
 
 export function UsersList({
@@ -24,6 +25,7 @@ export function UsersList({
   count,
   onRetry,
   searchQuery = '',
+  viewMode = 'detailed',
 }: UsersListProps) {
   // Optimized rendering to support partial loading and streaming
   return (
@@ -38,20 +40,30 @@ export function UsersList({
         </Card>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div
+        className={
+          viewMode === 'compact'
+            ? 'space-y-3'
+            : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'
+        }
+      >
         {/* Display users when available, otherwise show skeletons */}
         {!isLoading && users.length > 0
-          ? users.map((user: InstagramUser, index: number) => (
-              <StreamedUserCard key={user.uuid} user={user} index={index} />
-            ))
+          ? users.map((user: InstagramUser, index: number) =>
+              viewMode === 'compact' ? (
+                <UserCard key={user.uuid} user={user} index={index} variant="compact" />
+              ) : (
+                <StreamedUserCard key={user.uuid} user={user} index={index} />
+              )
+            )
           : isLoading &&
             [...Array(count)].map((_, index: number) => (
-              <UserSkeleton key={`skeleton-${index}`} index={index} />
+              <UserSkeleton key={`skeleton-${index}`} index={index} variant={viewMode} />
             ))}
 
         {/* Display message when no users are found */}
         {!isLoading && users.length === 0 && !error && (
-          <div className="col-span-3">
+          <div className={viewMode === 'compact' ? '' : 'col-span-3'}>
             <Card className="text-center">
               <CardContent className="p-6">
                 {searchQuery ? (
