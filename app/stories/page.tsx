@@ -2,9 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { StoriesGrid, StorySkeleton, ViewToggle, StoryPreviewModal } from './components';
-import { SearchBar } from '../users/components/SearchBar';
-import { useStoriesQueryWithOptions, API_CONSTANTS, ORDERING_OPTIONS } from '@/hooks/useStories';
+import { StoriesGrid, StorySkeleton, StoryPage, StoryPreviewModal } from './components';
+import { useStoriesQueryWithOptions, API_CONSTANTS } from '@/hooks/useStories';
 import { InstagramStory } from '@/app/types/instagram/story';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useViewMode } from '@/hooks/useViewMode';
@@ -17,13 +16,6 @@ import {
   PaginationNext,
   PaginationEllipsis,
 } from '@/components/ui/pagination';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 
 export default function StoriesPage() {
   const router = useRouter();
@@ -34,7 +26,6 @@ export default function StoriesPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [maxVisiblePages, setMaxVisiblePages] = useState(5);
-  const [ordering, setOrdering] = useState<string>(ORDERING_OPTIONS.NEWEST_FIRST);
   const [previewStory, setPreviewStory] = useState<InstagramStory | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
@@ -56,13 +47,10 @@ export default function StoriesPage() {
   useEffect(() => {
     const search = searchParams.get('search');
     const page = searchParams.get('page');
-    const orderingParam = searchParams.get('ordering');
 
+    console.log(`[URL Effect] URL params - search: "${search}", page: "${page}"`);
     console.log(
-      `[URL Effect] URL params - search: "${search}", page: "${page}", ordering: "${orderingParam}"`
-    );
-    console.log(
-      `[URL Effect] Current state - searchQuery: "${searchQuery}", currentPage: ${currentPage}, ordering: "${ordering}"`
+      `[URL Effect] Current state - searchQuery: "${searchQuery}", currentPage: ${currentPage}`
     );
 
     if (search && search !== searchQuery) {
@@ -77,24 +65,18 @@ export default function StoriesPage() {
         setCurrentPage(pageNum);
       }
     }
-
-    if (orderingParam && orderingParam !== ordering) {
-      console.log(`[URL Effect] Setting ordering from URL: "${orderingParam}"`);
-      setOrdering(orderingParam);
-    }
-  }, [searchParams, currentPage, searchQuery, ordering]); // Include all dependencies
+  }, [searchParams, currentPage, searchQuery]); // Include all dependencies
 
   const { data, isLoading } = useStoriesQueryWithOptions({
     page: currentPage,
     searchQuery,
-    ordering,
   });
 
   const totalPages = data ? Math.ceil(data.count / API_CONSTANTS.COUNT_PER_PAGE) : 1;
   const stories = data ? data.results : [];
 
   console.log(
-    `[Stories Render] isLoading: ${isLoading}, stories count: ${stories.length}, currentPage: ${currentPage}, searchQuery: "${searchQuery}", ordering: "${ordering}"`
+    `[Stories Render] isLoading: ${isLoading}, stories count: ${stories.length}, currentPage: ${currentPage}, searchQuery: "${searchQuery}"`
   );
 
   const scrollToTop = () => {
@@ -116,25 +98,9 @@ export default function StoriesPage() {
     setSearchQuery(query);
     setCurrentPage(1);
 
-    // Build URL with search and current ordering
+    // Build URL with search
     const params = new URLSearchParams();
     if (query.trim()) params.set('search', query.trim());
-    if (ordering !== ORDERING_OPTIONS.NEWEST_FIRST) params.set('ordering', ordering);
-
-    const url = params.toString() ? `/stories?${params.toString()}` : '/stories';
-    router.push(url);
-    scrollToTop();
-  };
-
-  const handleOrderingChange = (newOrdering: string) => {
-    console.log(`[handleOrderingChange] Changing ordering to: "${newOrdering}"`);
-    setOrdering(newOrdering);
-    setCurrentPage(1);
-
-    // Build URL with current search and new ordering
-    const params = new URLSearchParams();
-    if (searchQuery) params.set('search', searchQuery);
-    if (newOrdering !== ORDERING_OPTIONS.NEWEST_FIRST) params.set('ordering', newOrdering);
 
     const url = params.toString() ? `/stories?${params.toString()}` : '/stories';
     router.push(url);
@@ -147,10 +113,9 @@ export default function StoriesPage() {
       console.log(`[handlePrevPage] Moving to page: ${newPage}`);
       setCurrentPage(newPage);
 
-      // Build URL with current search, ordering, and new page
+      // Build URL with current search and new page
       const params = new URLSearchParams();
       if (searchQuery) params.set('search', searchQuery);
-      if (ordering !== ORDERING_OPTIONS.NEWEST_FIRST) params.set('ordering', ordering);
       if (newPage > 1) params.set('page', newPage.toString());
 
       const url = params.toString() ? `/stories?${params.toString()}` : '/stories';
@@ -165,10 +130,9 @@ export default function StoriesPage() {
       console.log(`[handleNextPage] Moving to page: ${newPage}`);
       setCurrentPage(newPage);
 
-      // Build URL with current search, ordering, and new page
+      // Build URL with current search and new page
       const params = new URLSearchParams();
       if (searchQuery) params.set('search', searchQuery);
-      if (ordering !== ORDERING_OPTIONS.NEWEST_FIRST) params.set('ordering', ordering);
       params.set('page', newPage.toString());
 
       router.push(`/stories?${params.toString()}`);
@@ -181,10 +145,9 @@ export default function StoriesPage() {
       console.log(`[handlePageClick] Moving to page: ${targetPage}`);
       setCurrentPage(targetPage);
 
-      // Build URL with current search, ordering, and target page
+      // Build URL with current search and target page
       const params = new URLSearchParams();
       if (searchQuery) params.set('search', searchQuery);
-      if (ordering !== ORDERING_OPTIONS.NEWEST_FIRST) params.set('ordering', ordering);
       if (targetPage > 1) params.set('page', targetPage.toString());
 
       const url = params.toString() ? `/stories?${params.toString()}` : '/stories';
@@ -234,61 +197,37 @@ export default function StoriesPage() {
   const pageNumbers = getPageNumbers();
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div>
-        <h1 className="font-black text-5xl mb-4">INSTAGRAM STORIES ARCHIVE</h1>
-        <p className="text-xl mt-4 font-medium">
-          Browse and discover the latest Instagram stories. Search by username to find stories from
-          specific users.
-        </p>
-      </div>
-
-      <div className="mt-8 space-y-4">
-        <SearchBar onSearch={handleSearch} placeholder="Search by username..." />
-
-        <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-            <label htmlFor="ordering-select" className="text-sm font-medium text-text shrink-0">
-              Sort by:
-            </label>
-            <Select value={ordering} onValueChange={handleOrderingChange}>
-              <SelectTrigger className="w-full sm:w-48 min-h-[44px]">
-                <SelectValue placeholder="Select ordering" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={ORDERING_OPTIONS.NEWEST_FIRST}>
-                  <span className="sm:hidden">Newest</span>
-                  <span className="hidden sm:inline">Newest First</span>
-                </SelectItem>
-                <SelectItem value={ORDERING_OPTIONS.OLDEST_FIRST}>
-                  <span className="sm:hidden">Oldest</span>
-                  <span className="hidden sm:inline">Oldest First</span>
-                </SelectItem>
-                <SelectItem value={ORDERING_OPTIONS.UPLOAD_NEWEST}>
-                  <span className="sm:hidden">Upload ↓</span>
-                  <span className="hidden sm:inline">Upload Date (Newest)</span>
-                </SelectItem>
-                <SelectItem value={ORDERING_OPTIONS.UPLOAD_OLDEST}>
-                  <span className="sm:hidden">Upload ↑</span>
-                  <span className="hidden sm:inline">Upload Date (Oldest)</span>
-                </SelectItem>
-              </SelectContent>
-            </Select>
+    <StoryPage
+      totalStories={data?.count || 0}
+      currentPage={currentPage}
+      searchQuery={searchQuery}
+      viewMode={viewMode}
+      onSearch={handleSearch}
+      onViewModeChange={setViewMode}
+      storiesContent={
+        isLoading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-10">
+            {[...Array(8)].map((_, index) => (
+              <StorySkeleton key={index} />
+            ))}
           </div>
-
-          <ViewToggle currentView={viewMode} onViewChange={setViewMode} />
-        </div>
-      </div>
-
-      {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-10">
-          {[...Array(8)].map((_, index) => (
-            <StorySkeleton key={index} />
-          ))}
-        </div>
-      ) : (
-        <>
-          <StoriesGrid stories={stories} viewMode={viewMode} onStoryPreview={handleStoryPreview} />
+        ) : (
+          <>
+            <StoriesGrid
+              stories={stories}
+              viewMode={viewMode}
+              onStoryPreview={handleStoryPreview}
+            />
+            <StoryPreviewModal
+              story={previewStory}
+              isOpen={isPreviewOpen}
+              onClose={handleClosePreview}
+            />
+          </>
+        )
+      }
+      pagination={
+        !isLoading && (
           <Pagination className="mt-12">
             <PaginationContent className="flex flex-wrap justify-center gap-1 sm:gap-2">
               <PaginationItem className="min-w-9 sm:min-w-10">
@@ -342,10 +281,8 @@ export default function StoriesPage() {
               </PaginationItem>
             </PaginationContent>
           </Pagination>
-        </>
-      )}
-
-      <StoryPreviewModal story={previewStory} isOpen={isPreviewOpen} onClose={handleClosePreview} />
-    </div>
+        )
+      }
+    />
   );
 }
