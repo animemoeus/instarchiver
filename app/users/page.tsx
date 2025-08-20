@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, Suspense } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { fetchInstagramUsers, extractPageFromUrl, API_CONSTANTS } from './services/api';
 import { useUsers } from '@/hooks/useUsers';
@@ -15,6 +15,7 @@ import { UserSkeleton, UsersList, PaginationControls, InstagramPage } from './co
 export default function InstagramUsersList() {
   const queryClient = useQueryClient();
   const { search: searchQuery, page: currentPage, updateParams, resetParams } = useUrlState();
+  const [viewMode, setViewMode] = useState<'compact' | 'detailed'>('detailed');
 
   const { data, isLoading, error } = useUsers({
     page: searchQuery ? 1 : currentPage,
@@ -66,10 +67,18 @@ export default function InstagramUsersList() {
     <InstagramPage
       totalCount={data?.count || 0}
       currentPage={currentPage}
+      viewMode={viewMode}
+      onViewModeChange={setViewMode}
       usersList={
         <Suspense
           fallback={
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div
+              className={
+                viewMode === 'compact'
+                  ? 'space-y-3'
+                  : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'
+              }
+            >
               {[...Array(COUNT_PER_PAGE)].map((_, index) => (
                 <UserSkeleton key={`skeleton-${index}`} index={index} />
               ))}
@@ -83,6 +92,7 @@ export default function InstagramUsersList() {
             count={COUNT_PER_PAGE}
             onRetry={handleRetry}
             searchQuery={searchQuery}
+            viewMode={viewMode}
           />
         </Suspense>
       }

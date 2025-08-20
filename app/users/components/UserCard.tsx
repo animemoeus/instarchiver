@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -13,11 +13,13 @@ import {
 } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { InstagramUser } from '@/app/types/instagram';
 
 interface UserCardProps {
   user: InstagramUser;
-  index?: number; // Optional index for consistent color matching with skeleton
+  index?: number;
+  variant?: 'compact' | 'detailed';
 }
 
 // Helper functions
@@ -39,7 +41,128 @@ const formatDate = (dateString: string): string => {
   });
 };
 
-export function UserCard({ user, index }: UserCardProps) {
+export function UserCard({ user, index, variant = 'detailed' }: UserCardProps) {
+  const [isExpanded, setIsExpanded] = useState(variant === 'detailed');
+
+  if (variant === 'compact') {
+    return (
+      <Card className="w-full shadow-[var(--shadow)] bg-[var(--background)]">
+        <div className="p-3">
+          <div className="flex items-center gap-3">
+            {/* Profile image */}
+            <div className="relative w-10 h-10 min-w-[40px] min-h-[40px] border-2 border-[var(--border)] rounded-full overflow-hidden bg-[var(--secondary-background)]">
+              {user.profile_picture ? (
+                <Image
+                  src={user.profile_picture}
+                  alt={user.username}
+                  fill
+                  sizes="40px"
+                  className="object-cover"
+                  onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    target.parentElement!.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-[var(--secondary-background)]"><span class="text-sm font-[var(--font-weight-heading)] text-[var(--foreground)]">${user.username.charAt(0).toUpperCase()}</span></div>`;
+                  }}
+                />
+              ) : (
+                <div className="w-full h-full bg-[var(--secondary-background)] flex items-center justify-center">
+                  <span className="text-sm font-[var(--font-weight-heading)] text-[var(--foreground)]">
+                    {user.username.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* User info */}
+            <div className="flex-1 min-w-0">
+              <h3 className="font-[var(--font-weight-heading)] text-[var(--foreground)] truncate">
+                @{user.username}
+              </h3>
+              <p className="text-xs text-[var(--foreground)] opacity-75">
+                {formatNumber(user.follower_count)} followers
+              </p>
+            </div>
+
+            {/* Action buttons */}
+            <div className="flex gap-1">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="w-8 h-8 p-0"
+              >
+                {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+              </Button>
+              <Link href={`/users/${user.uuid}`}>
+                <Button size="sm" className="text-xs px-2">
+                  VIEW
+                </Button>
+              </Link>
+            </div>
+          </div>
+
+          {/* Expandable details */}
+          {isExpanded && (
+            <div className="mt-3 pt-3 border-t-2 border-[var(--border)]">
+              {user.full_name && (
+                <p className="text-sm font-[var(--font-weight-base)] text-[var(--foreground)] mb-2">
+                  {user.full_name}
+                </p>
+              )}
+
+              {/* Stats */}
+              <div className="grid grid-cols-3 gap-2 mb-3">
+                <div className="text-center">
+                  <p className="text-xs text-[var(--foreground)] font-[var(--font-weight-heading)]">
+                    POSTS
+                  </p>
+                  <p className="text-sm text-[var(--foreground)] font-[var(--font-weight-heading)]">
+                    --
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs text-[var(--foreground)] font-[var(--font-weight-heading)]">
+                    FOLLOWERS
+                  </p>
+                  <p className="text-sm text-[var(--foreground)] font-[var(--font-weight-heading)]">
+                    {formatNumber(user.follower_count)}
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs text-[var(--foreground)] font-[var(--font-weight-heading)]">
+                    FOLLOWING
+                  </p>
+                  <p className="text-sm text-[var(--foreground)] font-[var(--font-weight-heading)]">
+                    {formatNumber(user.following_count)}
+                  </p>
+                </div>
+              </div>
+
+              {/* Bio */}
+              {user.biography && (
+                <div className="mb-3">
+                  <p className="text-xs text-[var(--foreground)] line-clamp-2">{user.biography}</p>
+                </div>
+              )}
+
+              {/* Actions */}
+              <div className="flex gap-2">
+                <Link href={`/users/${user.uuid}`} className="flex-1">
+                  <Button size="sm" className="w-full text-xs">
+                    VIEW PROFILE
+                  </Button>
+                </Link>
+                <Button variant="neutral" size="sm" className="flex-1 text-xs">
+                  ARCHIVE
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      </Card>
+    );
+  }
+
   return (
     <Card className="w-full shadow-[var(--shadow)] bg-[var(--background)] flex flex-col h-full">
       <CardHeader className="py-3 bg-[var(--main)]">
