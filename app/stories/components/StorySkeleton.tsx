@@ -7,17 +7,17 @@ import { Button } from '@/components/ui/button';
 export function StorySkeleton() {
   return (
     <Card className="w-full">
-      <CardHeader className="py-3 bg-[var(--main)]">
+      <CardHeader className="py-3 bg-main">
         <div className="flex items-center gap-2">
           {/* Profile image skeleton */}
-          <div className="relative  min-w-[48px] min-h-[48px] w-[48px] h-[48px] rounded-full overflow-hidden">
-            <Skeleton className="h-full w-full !rounded-full border-2 border-[var(--border)] bg-[var(--secondary-background)]" />
+          <div className="relative min-w-[48px] min-h-[48px] w-[48px] h-[48px] rounded-full overflow-hidden">
+            <Skeleton className="h-full w-full !rounded-full border-2 border-border bg-secondary" />
           </div>
           <div>
-            <CardTitle className="text-lg text-[var(--foreground)] font-[var(--font-weight-heading)]">
+            <CardTitle className="text-lg text-text font-bold">
               <Skeleton className="h-6 w-32" /> {/* Username */}
             </CardTitle>
-            <CardDescription className="text-sm font-[var(--font-weight-base)] text-[var(--foreground)]">
+            <CardDescription className="text-sm font-medium text-text">
               <Skeleton className="h-4 w-24" /> {/* Full name */}
             </CardDescription>
           </div>
@@ -29,10 +29,10 @@ export function StorySkeleton() {
         <Skeleton className="h-full w-full !rounded-none border-0" />
       </div>
 
-      <CardFooter className="border-t-2 border-[var(--border)] bg-[var(--secondary-background)] flex-col gap-2 p-3">
+      <CardFooter className="border-t-2 border-border bg-secondary flex-col gap-2 p-3">
         <div className="flex w-full justify-between items-center">
           {/* Using div instead of p to avoid hydration issues with block elements inside p */}
-          <div className="text-sm font-[var(--font-weight-heading)] text-[var(--foreground)]">
+          <div className="text-sm font-bold text-text">
             <Skeleton className="h-4 w-32" /> {/* Date */}
           </div>
         </div>

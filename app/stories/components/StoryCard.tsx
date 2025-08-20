@@ -24,10 +24,10 @@ export function StoryCard({ story }: StoryCardProps) {
 
   return (
     <Card className="w-full">
-      <CardHeader className="py-3 bg-[var(--main)]">
+      <CardHeader className="py-3 bg-main">
         <div className="flex items-center gap-2">
           {/* Profile image */}
-          <div className="relative  min-w-[48px] min-h-[48px] border-2 border-[var(--border)] rounded-full overflow-hidden bg-[var(--secondary-background)]">
+          <div className="relative min-w-[48px] min-h-[48px] border-2 border-border rounded-full overflow-hidden bg-secondary">
             <Image
               src={story.user.profile_picture}
               alt={story.user.username}
@@ -37,10 +37,8 @@ export function StoryCard({ story }: StoryCardProps) {
             />
           </div>
           <div>
-            <CardTitle className="text-lg text-[var(--foreground)] font-[var(--font-weight-heading)]">
-              @{story.user.username}
-            </CardTitle>
-            <CardDescription className="text-sm font-[var(--font-weight-base)] text-[var(--foreground)]">
+            <CardTitle className="text-lg text-text font-bold">@{story.user.username}</CardTitle>
+            <CardDescription className="text-sm font-medium text-text">
               {story.user.full_name}
             </CardDescription>
           </div>
@@ -59,11 +57,9 @@ export function StoryCard({ story }: StoryCardProps) {
         />
       </div>
 
-      <CardFooter className="border-t-2 border-[var(--border)] bg-[var(--secondary-background)] flex-col gap-2 p-3">
+      <CardFooter className="border-t-2 border-border bg-secondary flex-col gap-2 p-3">
         <div className="flex w-full justify-between items-center">
-          <p className="text-sm font-[var(--font-weight-heading)] text-[var(--foreground)]">
-            {formatDate(story.story_created_at)}
-          </p>
+          <p className="text-sm font-bold text-text">{formatDate(story.story_created_at)}</p>
         </div>
         <div className="flex w-full">
           <Button>VIEW FULL STORY</Button>
