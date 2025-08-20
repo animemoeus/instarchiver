@@ -2,7 +2,6 @@
 // use when navigating to this route, using its automatic Suspense boundary.
 
 import { LoadingState } from './components/LoadingState';
-import { API_CONSTANTS } from './services/api';
 
 // Next.js will automatically wrap the page with this loading component
 // when the route is loading

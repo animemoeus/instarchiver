@@ -67,16 +67,16 @@ export function UserHistoryCard({ record, previousRecord, index }: UserHistoryCa
   return (
     <Card className="w-full shadow-[var(--shadow)] bg-[var(--background)] flex flex-col h-full">
       {/* Header with profile info */}
-      <CardHeader className="border-b-2 border-[var(--border)] py-2 bg-[var(--main)]">
+      <CardHeader className="py-3 bg-[var(--main)]">
         <div className="flex items-center gap-2">
           {/* Profile image */}
-          <div className="relative w-10 h-10 min-w-[40px] min-h-[40px] border-2 border-[var(--border)] rounded-full overflow-hidden bg-[var(--secondary-background)]">
+          <div className="relative w-12 h-12 min-w-[48px] min-h-[48px] border-2 border-[var(--border)] rounded-full overflow-hidden bg-[var(--secondary-background)]">
             {record.profile_picture ? (
               <Image
                 src={record.profile_picture}
                 alt={record.username}
                 fill
-                sizes="40px"
+                sizes="48px"
                 className="object-cover"
                 onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
                   const target = e.target as HTMLImageElement;
@@ -92,17 +92,17 @@ export function UserHistoryCard({ record, previousRecord, index }: UserHistoryCa
               </div>
             )}
           </div>
-          <div>
-            <CardTitle className="text-base text-[var(--foreground)] font-[var(--font-weight-heading)]">
+          <div className="flex-1">
+            <CardTitle className="text-lg text-[var(--foreground)] font-[var(--font-weight-heading)]">
               @{record.username}
             </CardTitle>
             {record.full_name && (
-              <p className="font-[var(--font-weight-base)] text-[var(--foreground)] text-xs">
+              <p className="font-[var(--font-weight-base)] text-[var(--foreground)] text-sm">
                 {record.full_name}
               </p>
             )}
           </div>
-          <Badge className="ml-auto text-xs font-[var(--font-weight-base)]">
+          <Badge className="text-xs font-[var(--font-weight-base)]">
             {formatDate(record.history_date)}
           </Badge>
         </div>
@@ -213,10 +213,12 @@ export function UserHistoryCard({ record, previousRecord, index }: UserHistoryCa
         )}
       </CardContent>
 
-      <CardFooter className="border-t-2 border-[var(--border)] bg-[var(--secondary-background)] p-2 mt-auto">
-        <p className="text-xs font-[var(--font-weight-base)] text-[var(--foreground)] w-full">
-          History Date: {formatDate(record.history_date)}
-        </p>
+      <CardFooter className="border-t-2 border-[var(--border)] bg-[var(--secondary-background)] flex-col gap-2 p-3">
+        <div className="flex w-full justify-between items-center">
+          <p className="text-sm font-[var(--font-weight-heading)] text-[var(--foreground)]">
+            History Date: {formatDate(record.history_date)}
+          </p>
+        </div>
       </CardFooter>
     </Card>
   );

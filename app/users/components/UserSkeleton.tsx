@@ -11,13 +11,13 @@ interface UserSkeletonProps {
 export function UserSkeleton({ index }: UserSkeletonProps) {
   return (
     <Card className="w-full shadow-[var(--shadow)] bg-[var(--background)]">
-      <CardHeader className="border-b-2 border-[var(--border)] py-2 bg-[var(--main)]">
+      <CardHeader className="py-3 bg-[var(--main)]">
         <div className="flex items-center gap-2">
           {/* Profile image skeleton */}
-          <Skeleton className="w-10 h-10 border-2 border-[var(--border)] rounded-full overflow-hidden bg-[var(--secondary-background)]" />
+          <Skeleton className="w-12 h-12 border-2 border-[var(--border)] rounded-full overflow-hidden bg-[var(--secondary-background)]" />
           <div className="space-y-1">
-            <Skeleton className="h-5 w-28 bg-[var(--secondary-background)] border-2 border-[var(--border)]" />
-            <Skeleton className="h-3 w-16 bg-[var(--secondary-background)] border-2 border-[var(--border)]" />
+            <Skeleton className="h-6 w-28 bg-[var(--secondary-background)] border-2 border-[var(--border)]" />
+            <Skeleton className="h-4 w-16 bg-[var(--secondary-background)] border-2 border-[var(--border)]" />
           </div>
         </div>
       </CardHeader>
@@ -40,11 +40,11 @@ export function UserSkeleton({ index }: UserSkeletonProps) {
         <Skeleton className="h-[80px] w-full border-2 border-[var(--border)] rounded-[var(--radius-base)] bg-[var(--secondary-background)]" />
       </CardContent>
 
-      <CardFooter className="border-t-2 border-[var(--border)] bg-[var(--secondary-background)] flex-col gap-1 p-2">
-        <Skeleton className="h-3 w-1/2 bg-[var(--background)] border-2 border-[var(--border)] rounded-[var(--radius-base)]" />
-        <div className="flex w-full gap-1">
-          <Skeleton className="h-6 w-full bg-[var(--background)] border-2 border-[var(--border)] rounded-[var(--radius-base)]" />
-          <Skeleton className="h-6 w-full bg-[var(--background)] border-2 border-[var(--border)] rounded-[var(--radius-base)]" />
+      <CardFooter className="border-t-2 border-[var(--border)] bg-[var(--secondary-background)] flex-col gap-2 p-3">
+        <Skeleton className="h-4 w-1/2 bg-[var(--background)] border-2 border-[var(--border)] rounded-[var(--radius-base)]" />
+        <div className="flex w-full gap-2">
+          <Skeleton className="h-8 w-full bg-[var(--background)] border-2 border-[var(--border)] rounded-[var(--radius-base)]" />
+          <Skeleton className="h-8 w-full bg-[var(--background)] border-2 border-[var(--border)] rounded-[var(--radius-base)]" />
         </div>
       </CardFooter>
     </Card>
