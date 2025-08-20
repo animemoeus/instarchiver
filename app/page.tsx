@@ -2,98 +2,86 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Users, ImageIcon } from 'lucide-react';
+import { Users, ImageIcon, ArrowRight, Code, Globe } from 'lucide-react';
+import Star32 from '@/components/stars/s32';
+import Star11 from '@/components/stars/s11';
 
 export default function Home() {
   return (
-    <div className="h-screen max-h-screen overflow-hidden bg-background flex flex-col">
-      {/* Hero Section - Top Half */}
-      <div className="flex-1 flex items-center justify-center px-4 py-4 min-h-0">
-        <div className="text-center space-y-4 max-w-4xl">
-          <div className="space-y-2">
-            <h1 className="text-4xl sm:text-5xl lg:text-7xl xl:text-8xl font-heading text-foreground">
-              INSTAGRAM
-            </h1>
-            <h1 className="text-4xl sm:text-5xl lg:text-7xl xl:text-8xl font-heading text-foreground">
-              ARCHIVER
+    <div className="min-h-screen bg-gradient-to-br from-main via-main to-main p-4 sm:p-6 lg:p-8 flex justify-center pt-16 sm:pt-20 lg:pt-24">
+      <div className="max-w-6xl mx-auto w-full">
+        {/* Main Card */}
+        <div className="bg-secondary-background rounded-3xl p-6 sm:p-8 lg:p-12 shadow-2xl border-2 border-border">
+          {/* Logo and Since Badge */}
+          <div className="flex flex-col sm:flex-row justify-between items-center mb-8 sm:mb-12 gap-4 sm:gap-0">
+            <div className="flex items-center space-x-3">
+              <div className="w-12 h-12 bg-foreground rounded-full flex items-center justify-center">
+                <Star32 size={32} color="white" />
+              </div>
+              <span className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground">
+                InstArchiver
+              </span>
+            </div>
+            <div className="bg-foreground text-secondary-background px-4 py-2 sm:px-6 rounded-full text-sm sm:text-lg font-medium">
+              Since 2024
+            </div>
+          </div>
+
+          {/* Main Title */}
+          <div className="text-center mb-8 sm:mb-12">
+            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black text-foreground leading-tight tracking-tight">
+              INSTAGRAM ARCHIVER
             </h1>
           </div>
 
-          <div className="flex gap-3 justify-center flex-wrap mt-4">
-            <Badge variant="neutral" className="text-sm px-3 py-1">
-              Neo Brutalist
-            </Badge>
-            <Badge variant="neutral" className="text-sm px-3 py-1">
-              Open Source
-            </Badge>
-            <Badge variant="neutral" className="text-sm px-3 py-1">
-              Modern
-            </Badge>
+          {/* Navigation Arrows and Service Badge */}
+          <div className="flex flex-col sm:flex-row justify-between items-center mb-8 sm:mb-16 gap-6 sm:gap-4">
+            <div className="flex space-x-4">
+              <Button variant="default" size="icon" asChild>
+                <Link href="/users">
+                  <ArrowRight size={20} />
+                </Link>
+              </Button>
+              <Button variant="default" size="icon" asChild>
+                <Link href="/stories">
+                  <ArrowRight size={20} />
+                </Link>
+              </Button>
+            </div>
+
+            <div className="bg-main text-main-foreground px-4 py-2 sm:px-6 lg:px-8 sm:py-3 rounded-full text-sm sm:text-base lg:text-lg font-semibold flex items-center space-x-2 text-center">
+              <div className="w-6 h-6 bg-foreground rounded flex items-center justify-center">
+                <Star11 size={16} color="white" />
+              </div>
+              <span>Content Archiving & Management</span>
+            </div>
           </div>
 
-          <p className="text-lg md:text-xl max-w-2xl mx-auto font-base text-foreground leading-relaxed">
-            A modern approach to archiving Instagram content
-          </p>
-        </div>
-      </div>
+          {/* Contact/Info Bar */}
+          <div className="bg-secondary-background border-2 border-border rounded-full p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row justify-between items-center text-foreground gap-4 sm:gap-2">
+              <div className="flex items-center space-x-3">
+                <Code className="w-5 h-5" />
+                <span className="text-sm sm:text-base lg:text-lg font-medium">
+                  Open Source Project
+                </span>
+              </div>
 
-      {/* Navigation Cards - Bottom Half */}
-      <div className="flex-1 flex items-center justify-center px-4 py-2 min-h-0">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full max-w-4xl h-full max-h-64">
-          <Link href="/users" className="group">
-            <Card className="h-full transition-all duration-300 hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none cursor-pointer">
-              <CardHeader className="text-center pb-3">
-                <div className="flex justify-center mb-3">
-                  <div className="size-16 border-2 border-border bg-secondary-background rounded-base flex items-center justify-center">
-                    <Users size={32} strokeWidth={2} className="text-foreground" />
-                  </div>
-                </div>
-                <CardTitle className="text-2xl font-heading text-foreground">USERS</CardTitle>
-              </CardHeader>
-              <CardContent className="text-center">
-                <p className="text-foreground font-medium leading-relaxed mb-3 text-sm">
-                  Browse Instagram user profiles and discover archived content
-                </p>
-                <Badge variant="neutral" className="text-xs">
-                  Browse Profiles
-                </Badge>
-              </CardContent>
-            </Card>
-          </Link>
+              <div className="flex items-center space-x-3">
+                <Globe className="w-5 h-5" />
+                <span className="text-sm sm:text-base lg:text-lg font-medium">
+                  Next.js • React Query
+                </span>
+              </div>
 
-          <Link href="/stories" className="group">
-            <Card className="h-full transition-all duration-300 hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none cursor-pointer">
-              <CardHeader className="text-center pb-3">
-                <div className="flex justify-center mb-3">
-                  <div className="size-16 border-2 border-border bg-secondary-background rounded-base flex items-center justify-center">
-                    <ImageIcon size={32} strokeWidth={2} className="text-foreground" />
-                  </div>
-                </div>
-                <CardTitle className="text-2xl font-heading text-foreground">STORIES</CardTitle>
-              </CardHeader>
-              <CardContent className="text-center">
-                <p className="text-foreground font-medium leading-relaxed mb-3 text-sm">
-                  Explore archived Instagram stories and organize media content
-                </p>
-                <Badge variant="neutral" className="text-xs">
-                  View Stories
-                </Badge>
-              </CardContent>
-            </Card>
-          </Link>
-        </div>
-      </div>
-
-      {/* Bottom Action Bar */}
-      <div className="border-t-2 border-border py-4 flex-shrink-0">
-        <div className="flex gap-4 items-center justify-center">
-          <Button variant="default" size="default" className="font-heading px-6 py-2" asChild>
-            <Link href="/users">GET STARTED</Link>
-          </Button>
-          <div className="text-foreground font-base text-sm">OR</div>
-          <Button variant="neutral" size="default" className="font-heading px-6 py-2" asChild>
-            <Link href="/stories">EXPLORE NOW</Link>
-          </Button>
+              <div className="flex items-center space-x-3">
+                <div className="w-5 h-5 bg-main rounded-full"></div>
+                <span className="text-sm sm:text-base lg:text-lg font-medium">
+                  Neo Brutalist Design
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
