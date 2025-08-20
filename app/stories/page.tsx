@@ -4,13 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { StoriesGrid, StorySkeleton } from './components';
 import { SearchBar } from '../users/components/SearchBar';
-import {
-  useStoriesQuery,
-  useStoriesQueryWithOptions,
-  API_CONSTANTS,
-  ORDERING_OPTIONS,
-  StoriesQueryOptions,
-} from '@/hooks/useStories';
+import { useStoriesQueryWithOptions, API_CONSTANTS, ORDERING_OPTIONS } from '@/hooks/useStories';
 import { useIsMobile } from '@/hooks/use-mobile';
 import {
   Pagination,
@@ -237,19 +231,31 @@ export default function StoriesPage() {
       <div className="mt-8 space-y-4">
         <SearchBar onSearch={handleSearch} placeholder="Search by username..." />
 
-        <div className="flex items-center gap-4">
-          <label htmlFor="ordering-select" className="text-sm font-medium text-text">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+          <label htmlFor="ordering-select" className="text-sm font-medium text-text shrink-0">
             Sort by:
           </label>
           <Select value={ordering} onValueChange={handleOrderingChange}>
-            <SelectTrigger className="w-48">
+            <SelectTrigger className="w-full sm:w-48 min-h-[44px]">
               <SelectValue placeholder="Select ordering" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={ORDERING_OPTIONS.NEWEST_FIRST}>Newest First</SelectItem>
-              <SelectItem value={ORDERING_OPTIONS.OLDEST_FIRST}>Oldest First</SelectItem>
-              <SelectItem value={ORDERING_OPTIONS.UPLOAD_NEWEST}>Upload Date (Newest)</SelectItem>
-              <SelectItem value={ORDERING_OPTIONS.UPLOAD_OLDEST}>Upload Date (Oldest)</SelectItem>
+              <SelectItem value={ORDERING_OPTIONS.NEWEST_FIRST}>
+                <span className="sm:hidden">Newest</span>
+                <span className="hidden sm:inline">Newest First</span>
+              </SelectItem>
+              <SelectItem value={ORDERING_OPTIONS.OLDEST_FIRST}>
+                <span className="sm:hidden">Oldest</span>
+                <span className="hidden sm:inline">Oldest First</span>
+              </SelectItem>
+              <SelectItem value={ORDERING_OPTIONS.UPLOAD_NEWEST}>
+                <span className="sm:hidden">Upload ↓</span>
+                <span className="hidden sm:inline">Upload Date (Newest)</span>
+              </SelectItem>
+              <SelectItem value={ORDERING_OPTIONS.UPLOAD_OLDEST}>
+                <span className="sm:hidden">Upload ↑</span>
+                <span className="hidden sm:inline">Upload Date (Oldest)</span>
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
