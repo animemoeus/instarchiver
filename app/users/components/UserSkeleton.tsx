@@ -6,9 +6,35 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 interface UserSkeletonProps {
   index: number;
+  variant?: 'compact' | 'detailed';
 }
 
-export function UserSkeleton({ index }: UserSkeletonProps) {
+export function UserSkeleton({ index, variant = 'detailed' }: UserSkeletonProps) {
+  if (variant === 'compact') {
+    return (
+      <Card className="w-full shadow-[var(--shadow)] bg-[var(--background)]">
+        <div className="p-3">
+          <div className="flex items-center gap-3">
+            {/* Profile image skeleton */}
+            <Skeleton className="w-10 h-10 border-2 border-[var(--border)] rounded-full bg-[var(--secondary-background)]" />
+
+            {/* User info skeleton */}
+            <div className="flex-1 min-w-0 space-y-1">
+              <Skeleton className="h-4 w-24 bg-[var(--secondary-background)] border-2 border-[var(--border)] rounded-[var(--radius-base)]" />
+              <Skeleton className="h-3 w-16 bg-[var(--secondary-background)] border-2 border-[var(--border)] rounded-[var(--radius-base)]" />
+            </div>
+
+            {/* Action buttons skeleton */}
+            <div className="flex gap-1">
+              <Skeleton className="w-8 h-8 bg-[var(--secondary-background)] border-2 border-[var(--border)] rounded-[var(--radius-base)]" />
+              <Skeleton className="w-12 h-8 bg-[var(--secondary-background)] border-2 border-[var(--border)] rounded-[var(--radius-base)]" />
+            </div>
+          </div>
+        </div>
+      </Card>
+    );
+  }
+
   return (
     <Card className="w-full shadow-[var(--shadow)] bg-[var(--background)]">
       <CardHeader className="py-3 bg-[var(--main)]">

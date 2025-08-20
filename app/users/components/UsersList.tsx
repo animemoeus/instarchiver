@@ -58,7 +58,7 @@ export function UsersList({
             )
           : isLoading &&
             [...Array(count)].map((_, index: number) => (
-              <UserSkeleton key={`skeleton-${index}`} index={index} />
+              <UserSkeleton key={`skeleton-${index}`} index={index} variant={viewMode} />
             ))}
 
         {/* Display message when no users are found */}

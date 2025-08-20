@@ -80,7 +80,7 @@ export default function InstagramUsersList() {
               }
             >
               {[...Array(COUNT_PER_PAGE)].map((_, index) => (
-                <UserSkeleton key={`skeleton-${index}`} index={index} />
+                <UserSkeleton key={`skeleton-${index}`} index={index} variant={viewMode} />
               ))}
             </div>
           }
