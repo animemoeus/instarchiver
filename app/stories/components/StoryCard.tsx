@@ -3,7 +3,6 @@
 import Image from 'next/image';
 import { Card, CardHeader, CardFooter, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { InstagramStory } from '@/app/types/instagram/story';
 
 interface StoryCardProps {

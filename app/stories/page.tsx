@@ -4,8 +4,13 @@ import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { StoriesGrid, StorySkeleton } from './components';
 import { SearchBar } from '../users/components/SearchBar';
-import { API_CONSTANTS } from './services/api';
-import { useStoriesQuery } from '@/hooks/useStories';
+import {
+  useStoriesQuery,
+  useStoriesQueryWithOptions,
+  API_CONSTANTS,
+  ORDERING_OPTIONS,
+  StoriesQueryOptions,
+} from '@/hooks/useStories';
 import { useIsMobile } from '@/hooks/use-mobile';
 import {
   Pagination,
@@ -16,6 +21,13 @@ import {
   PaginationNext,
   PaginationEllipsis,
 } from '@/components/ui/pagination';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export default function StoriesPage() {
   const router = useRouter();
@@ -25,6 +37,7 @@ export default function StoriesPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [maxVisiblePages, setMaxVisiblePages] = useState(5);
+  const [ordering, setOrdering] = useState<string>(ORDERING_OPTIONS.NEWEST_FIRST);
 
   // Reset state when navigating away
   useEffect(() => {
@@ -40,56 +53,99 @@ export default function StoriesPage() {
     setMaxVisiblePages(isMobile ? 3 : 5);
   }, [isMobile]);
 
-  // Only update URL when we have a search query or specific page
+  // Initialize state from URL params on mount
   useEffect(() => {
     const search = searchParams.get('search');
     const page = searchParams.get('page');
+    const orderingParam = searchParams.get('ordering');
 
-    // On initial load, update state from URL if we have search params
-    if (!searchQuery && search) {
+    console.log(
+      `[URL Effect] URL params - search: "${search}", page: "${page}", ordering: "${orderingParam}"`
+    );
+    console.log(
+      `[URL Effect] Current state - searchQuery: "${searchQuery}", currentPage: ${currentPage}, ordering: "${ordering}"`
+    );
+
+    if (search && search !== searchQuery) {
+      console.log(`[URL Effect] Setting search query from URL: "${search}"`);
       setSearchQuery(search);
-      return;
     }
 
-    // Don't update URL if we're just loading the page fresh
-    if (!searchQuery && (!page || page === '1')) {
-      return;
+    if (page) {
+      const pageNum = parseInt(page, 10);
+      if (!isNaN(pageNum) && pageNum !== currentPage) {
+        console.log(`[URL Effect] Setting page from URL: ${pageNum}`);
+        setCurrentPage(pageNum);
+      }
     }
 
-    // Only include search and page in URL if they have non-default values
-    const params = new URLSearchParams();
-    if (searchQuery) {
-      params.set('search', searchQuery);
+    if (orderingParam && orderingParam !== ordering) {
+      console.log(`[URL Effect] Setting ordering from URL: "${orderingParam}"`);
+      setOrdering(orderingParam);
     }
-    if (currentPage > 1) {
-      params.set('page', currentPage.toString());
-    }
+  }, [searchParams, currentPage, searchQuery, ordering]); // Include all dependencies
 
-    const newUrl = params.toString() ? `?${params.toString()}` : '/stories';
-    router.push(newUrl);
-  }, [searchParams, searchQuery, currentPage, router]);
-
-  const { data, isLoading, isError } = useStoriesQuery(currentPage, searchQuery);
+  const { data, isLoading } = useStoriesQueryWithOptions({
+    page: currentPage,
+    searchQuery,
+    ordering,
+  });
 
   const totalPages = data ? Math.ceil(data.count / API_CONSTANTS.COUNT_PER_PAGE) : 1;
   const stories = data ? data.results : [];
+
+  console.log(
+    `[Stories Render] isLoading: ${isLoading}, stories count: ${stories.length}, currentPage: ${currentPage}, searchQuery: "${searchQuery}", ordering: "${ordering}"`
+  );
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSearch = (query: string) => {
+    console.log(`[handleSearch] Searching for: "${query}"`);
     setSearchQuery(query);
     setCurrentPage(1);
-    router.push(`/stories?search=${encodeURIComponent(query)}&page=1`);
+
+    // Build URL with search and current ordering
+    const params = new URLSearchParams();
+    if (query.trim()) params.set('search', query.trim());
+    if (ordering !== ORDERING_OPTIONS.NEWEST_FIRST) params.set('ordering', ordering);
+
+    const url = params.toString() ? `/stories?${params.toString()}` : '/stories';
+    router.push(url);
+    scrollToTop();
+  };
+
+  const handleOrderingChange = (newOrdering: string) => {
+    console.log(`[handleOrderingChange] Changing ordering to: "${newOrdering}"`);
+    setOrdering(newOrdering);
+    setCurrentPage(1);
+
+    // Build URL with current search and new ordering
+    const params = new URLSearchParams();
+    if (searchQuery) params.set('search', searchQuery);
+    if (newOrdering !== ORDERING_OPTIONS.NEWEST_FIRST) params.set('ordering', newOrdering);
+
+    const url = params.toString() ? `/stories?${params.toString()}` : '/stories';
+    router.push(url);
     scrollToTop();
   };
 
   const handlePrevPage = () => {
     if (currentPage > 1) {
       const newPage = currentPage - 1;
+      console.log(`[handlePrevPage] Moving to page: ${newPage}`);
       setCurrentPage(newPage);
-      router.push(`/stories?search=${encodeURIComponent(searchQuery)}&page=${newPage}`);
+
+      // Build URL with current search, ordering, and new page
+      const params = new URLSearchParams();
+      if (searchQuery) params.set('search', searchQuery);
+      if (ordering !== ORDERING_OPTIONS.NEWEST_FIRST) params.set('ordering', ordering);
+      if (newPage > 1) params.set('page', newPage.toString());
+
+      const url = params.toString() ? `/stories?${params.toString()}` : '/stories';
+      router.push(url);
       scrollToTop();
     }
   };
@@ -97,16 +153,33 @@ export default function StoriesPage() {
   const handleNextPage = () => {
     if (currentPage < totalPages) {
       const newPage = currentPage + 1;
+      console.log(`[handleNextPage] Moving to page: ${newPage}`);
       setCurrentPage(newPage);
-      router.push(`/stories?search=${encodeURIComponent(searchQuery)}&page=${newPage}`);
+
+      // Build URL with current search, ordering, and new page
+      const params = new URLSearchParams();
+      if (searchQuery) params.set('search', searchQuery);
+      if (ordering !== ORDERING_OPTIONS.NEWEST_FIRST) params.set('ordering', ordering);
+      params.set('page', newPage.toString());
+
+      router.push(`/stories?${params.toString()}`);
       scrollToTop();
     }
   };
 
   const handlePageClick = (targetPage: number) => {
     if (targetPage !== currentPage) {
+      console.log(`[handlePageClick] Moving to page: ${targetPage}`);
       setCurrentPage(targetPage);
-      router.push(`/stories?search=${encodeURIComponent(searchQuery)}&page=${targetPage}`);
+
+      // Build URL with current search, ordering, and target page
+      const params = new URLSearchParams();
+      if (searchQuery) params.set('search', searchQuery);
+      if (ordering !== ORDERING_OPTIONS.NEWEST_FIRST) params.set('ordering', ordering);
+      if (targetPage > 1) params.set('page', targetPage.toString());
+
+      const url = params.toString() ? `/stories?${params.toString()}` : '/stories';
+      router.push(url);
       scrollToTop();
     }
   };
@@ -161,7 +234,26 @@ export default function StoriesPage() {
         </p>
       </div>
 
-      <SearchBar onSearch={handleSearch} placeholder="Search by username..." className="mt-8" />
+      <div className="mt-8 space-y-4">
+        <SearchBar onSearch={handleSearch} placeholder="Search by username..." />
+
+        <div className="flex items-center gap-4">
+          <label htmlFor="ordering-select" className="text-sm font-medium text-text">
+            Sort by:
+          </label>
+          <Select value={ordering} onValueChange={handleOrderingChange}>
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder="Select ordering" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={ORDERING_OPTIONS.NEWEST_FIRST}>Newest First</SelectItem>
+              <SelectItem value={ORDERING_OPTIONS.OLDEST_FIRST}>Oldest First</SelectItem>
+              <SelectItem value={ORDERING_OPTIONS.UPLOAD_NEWEST}>Upload Date (Newest)</SelectItem>
+              <SelectItem value={ORDERING_OPTIONS.UPLOAD_OLDEST}>Upload Date (Oldest)</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
 
       {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-10">
