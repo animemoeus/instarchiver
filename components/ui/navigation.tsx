@@ -45,35 +45,38 @@ export function Navigation() {
               className="md:hidden"
               aria-label="Open navigation menu"
             >
-              <Menu strokeWidth={3} />
+              <Menu strokeWidth={2} className="h-5 w-5" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-[300px]">
-            <SheetHeader>
-              <SheetTitle className="font-heading text-xl">
-                <Button variant="default" size="lg" className="w-fit">
-                  INSTA ARCHIVER
-                </Button>
-              </SheetTitle>
-            </SheetHeader>
-            <div className="flex flex-col space-y-2 mt-6">
-              {navLinks.map(link => (
-                <Button
-                  key={link.path}
-                  variant={isActive(link.path) ? 'default' : 'neutral'}
-                  size="lg"
-                  className="justify-start font-heading"
-                  asChild
-                >
-                  <Link
-                    href={link.path}
-                    aria-current={isActive(link.path) ? 'page' : undefined}
-                    aria-label={`Navigate to ${link.name} page`}
-                  >
-                    {link.name.toUpperCase()}
-                  </Link>
-                </Button>
-              ))}
+          <SheetContent side="right" className="w-[280px] sm:w-[320px] p-0">
+            <div className="flex flex-col h-full">
+              <div className="p-6 border-b-2 border-border bg-secondary-background">
+                <h2 className="font-heading text-lg font-bold text-foreground">NAVIGATION</h2>
+              </div>
+              <nav className="flex-1 p-4" aria-label="Mobile navigation">
+                <div className="flex flex-col space-y-3">
+                  {navLinks.map(link => (
+                    <Button
+                      key={link.path}
+                      variant={isActive(link.path) ? 'default' : 'neutral'}
+                      size="lg"
+                      className="justify-start font-heading text-left h-12 px-4"
+                      asChild
+                    >
+                      <Link
+                        href={link.path}
+                        aria-current={isActive(link.path) ? 'page' : undefined}
+                        aria-label={`Navigate to ${link.name} page`}
+                      >
+                        {link.name.toUpperCase()}
+                      </Link>
+                    </Button>
+                  ))}
+                </div>
+              </nav>
+              <div className="p-4 border-t-2 border-border bg-secondary-background">
+                <p className="text-sm text-foreground/70 font-heading">INSTA ARCHIVER</p>
+              </div>
             </div>
           </SheetContent>
         </Sheet>
