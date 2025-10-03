@@ -22,12 +22,12 @@ export function CompactStoryCard({ story, onPreview }: CompactStoryCardProps) {
   };
 
   return (
-    <Card className="w-full hover:shadow-lg transition-shadow">
+    <Card className="w-full shadow-[var(--shadow)] bg-[var(--background)] hover:shadow-lg transition-shadow">
       <CardContent className="p-3">
         <div className="flex gap-3">
           {/* Story Thumbnail */}
           <div
-            className="relative w-16 h-20 bg-secondary border-2 border-border flex-shrink-0 cursor-pointer hover:opacity-90 transition-opacity"
+            className="relative w-16 h-20 bg-[var(--secondary-background)] border-2 border-[var(--border)] flex-shrink-0 cursor-pointer hover:opacity-90 transition-opacity"
             onClick={() => onPreview?.(story)}
           >
             <Image
@@ -44,7 +44,7 @@ export function CompactStoryCard({ story, onPreview }: CompactStoryCardProps) {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-2">
               {/* Profile Picture */}
-              <div className="relative w-8 h-8 border border-border rounded-full overflow-hidden bg-secondary flex-shrink-0">
+              <div className="relative w-8 h-8 border border-[var(--border)] rounded-full overflow-hidden bg-[var(--secondary-background)] flex-shrink-0">
                 <Image
                   src={story.user.profile_picture}
                   alt={story.user.username}
@@ -56,14 +56,18 @@ export function CompactStoryCard({ story, onPreview }: CompactStoryCardProps) {
 
               {/* User Info */}
               <div className="min-w-0 flex-1">
-                <h3 className="text-sm font-bold text-text truncate">@{story.user.username}</h3>
-                <p className="text-xs text-text/70 truncate">{story.user.full_name}</p>
+                <h3 className="text-sm font-[var(--font-weight-heading)] text-[var(--foreground)] truncate">
+                  @{story.user.username}
+                </h3>
+                <p className="text-xs text-[var(--foreground)]/70 truncate">
+                  {story.user.full_name}
+                </p>
               </div>
             </div>
 
             {/* Date and Action */}
             <div className="flex items-center justify-between">
-              <p className="text-xs font-medium text-text/80">
+              <p className="text-xs font-[var(--font-weight-base)] text-[var(--foreground)]/80">
                 {formatDate(story.story_created_at)}
               </p>
               <Button
