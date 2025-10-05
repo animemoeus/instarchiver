@@ -50,7 +50,7 @@ export function StoryPreviewModal({ story, isOpen, onClose }: StoryPreviewModalP
         <DialogHeader>
           <div className="flex items-center gap-3">
             {/* Profile Picture */}
-            <div className="relative w-12 h-12 border-2 border-border rounded-full overflow-hidden bg-secondary flex-shrink-0">
+            <div className="relative w-12 h-12 border-2 border-[var(--border)] rounded-full overflow-hidden bg-[var(--secondary-background)] flex-shrink-0">
               <Image
                 src={story.user.profile_picture}
                 alt={story.user.username}
@@ -74,11 +74,15 @@ export function StoryPreviewModal({ story, isOpen, onClose }: StoryPreviewModalP
           </div>
 
           {/* Story Info */}
-          <div className="flex flex-col gap-3 p-4 bg-secondary rounded border-2 border-border">
+          <div className="flex flex-col gap-3 p-4 bg-[var(--secondary-background)] rounded border-2 border-[var(--border)]">
             <div className="flex justify-between items-start gap-4">
               <div>
-                <p className="text-sm font-medium text-text/80">Story Date</p>
-                <p className="text-sm font-bold">{formatDate(story.story_created_at)}</p>
+                <p className="text-sm font-[var(--font-weight-base)] text-[var(--foreground)]/80">
+                  Story Date
+                </p>
+                <p className="text-sm font-[var(--font-weight-heading)]">
+                  {formatDate(story.story_created_at)}
+                </p>
               </div>
 
               <div className="flex gap-2">
@@ -108,12 +112,16 @@ export function StoryPreviewModal({ story, isOpen, onClose }: StoryPreviewModalP
             {/* Additional metadata */}
             <div className="grid grid-cols-2 gap-4 text-xs">
               <div>
-                <p className="font-medium text-text/80">Story ID</p>
-                <p className="font-mono text-text">{story.story_id}</p>
+                <p className="font-[var(--font-weight-base)] text-[var(--foreground)]/80">
+                  Story ID
+                </p>
+                <p className="font-mono text-[var(--foreground)]">{story.story_id}</p>
               </div>
               <div>
-                <p className="font-medium text-text/80">Archived On</p>
-                <p className="text-text">{formatDate(story.created_at)}</p>
+                <p className="font-[var(--font-weight-base)] text-[var(--foreground)]/80">
+                  Archived On
+                </p>
+                <p className="text-[var(--foreground)]">{formatDate(story.created_at)}</p>
               </div>
             </div>
           </div>

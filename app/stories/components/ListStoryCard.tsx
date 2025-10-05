@@ -23,12 +23,12 @@ export function ListStoryCard({ story, onPreview }: ListStoryCardProps) {
   };
 
   return (
-    <Card className="w-full hover:shadow-lg transition-shadow">
+    <Card className="w-full shadow-[var(--shadow)] bg-[var(--background)] hover:shadow-lg transition-shadow">
       <CardContent className="p-4">
         <div className="flex items-center gap-4">
           {/* Story Thumbnail */}
           <div
-            className="relative w-12 h-16 bg-secondary border-2 border-border flex-shrink-0 cursor-pointer hover:opacity-90 transition-opacity"
+            className="relative w-12 h-16 bg-[var(--secondary-background)] border-2 border-[var(--border)] flex-shrink-0 cursor-pointer hover:opacity-90 transition-opacity"
             onClick={() => onPreview?.(story)}
           >
             <Image
@@ -44,7 +44,7 @@ export function ListStoryCard({ story, onPreview }: ListStoryCardProps) {
           {/* User Info */}
           <div className="flex items-center gap-3 min-w-0 flex-1">
             {/* Profile Picture */}
-            <div className="relative w-10 h-10 border-2 border-border rounded-full overflow-hidden bg-secondary flex-shrink-0">
+            <div className="relative w-10 h-10 border-2 border-[var(--border)] rounded-full overflow-hidden bg-[var(--secondary-background)] flex-shrink-0">
               <Image
                 src={story.user.profile_picture}
                 alt={story.user.username}
@@ -56,13 +56,15 @@ export function ListStoryCard({ story, onPreview }: ListStoryCardProps) {
 
             {/* User Details */}
             <div className="min-w-0 flex-1">
-              <h3 className="text-lg font-bold text-text truncate">@{story.user.username}</h3>
-              <p className="text-sm text-text/70 truncate">{story.user.full_name}</p>
+              <h3 className="text-lg font-[var(--font-weight-heading)] text-[var(--foreground)] truncate">
+                @{story.user.username}
+              </h3>
+              <p className="text-sm text-[var(--foreground)]/70 truncate">{story.user.full_name}</p>
             </div>
           </div>
 
           {/* Date */}
-          <div className="hidden sm:block text-sm font-medium text-text/80 flex-shrink-0">
+          <div className="hidden sm:block text-sm font-[var(--font-weight-base)] text-[var(--foreground)]/80 flex-shrink-0">
             {formatDate(story.story_created_at)}
           </div>
 
@@ -73,7 +75,7 @@ export function ListStoryCard({ story, onPreview }: ListStoryCardProps) {
         </div>
 
         {/* Mobile date */}
-        <div className="sm:hidden mt-2 text-xs font-medium text-text/80">
+        <div className="sm:hidden mt-2 text-xs font-[var(--font-weight-base)] text-[var(--foreground)]/80">
           {formatDate(story.story_created_at)}
         </div>
       </CardContent>

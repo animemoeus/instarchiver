@@ -34,7 +34,7 @@ export function StoryHeader({
       <Card>
         <CardHeader>
           <CardTitle>{title}</CardTitle>
-          {subtitle && <p className="text-gray-600">{subtitle}</p>}
+          {subtitle && <p className="text-[var(--foreground)]/60">{subtitle}</p>}
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-4 items-center justify-between mb-6">

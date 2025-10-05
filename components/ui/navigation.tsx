@@ -107,25 +107,28 @@ export function Navigation() {
         )}
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex items-center space-x-2">
-          {navLinks.map(link => (
-            <Button
-              key={link.path}
-              variant={isActive(link.path) ? 'default' : 'neutral'}
-              className="font-heading"
-              asChild
-            >
-              <Link
-                href={link.path}
-                aria-current={isActive(link.path) ? 'page' : undefined}
-                aria-label={`Navigate to ${link.name} page`}
+        <div className="hidden md:flex items-center">
+          <div className="flex items-center space-x-2 mr-4">
+            {navLinks.map(link => (
+              <Button
+                key={link.path}
+                variant={isActive(link.path) ? 'default' : 'neutral'}
+                className="font-heading"
+                asChild
               >
-                {link.name.toUpperCase()}
-              </Link>
-            </Button>
-          ))}
-          {/* Enable dark/light mode */}
-          {/* <ThemeToggle /> */}
+                <Link
+                  href={link.path}
+                  aria-current={isActive(link.path) ? 'page' : undefined}
+                  aria-label={`Navigate to ${link.name} page`}
+                >
+                  {link.name.toUpperCase()}
+                </Link>
+              </Button>
+            ))}
+          </div>
+          <div className="pl-4 border-l-2 border-border dark:border-foreground/20">
+            <ThemeToggle />
+          </div>
         </div>
       </nav>
     </Card>
